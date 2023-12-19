@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/dict/utf-8
+/dict/cp932
+/dict
+/migemo.dll
