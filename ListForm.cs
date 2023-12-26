@@ -16,5 +16,20 @@ namespace MiLauncher
         {
             InitializeComponent();
         }
+
+        internal void Reset(FileList fileList)
+        {
+            // Update listView
+            foreach (var fn in fileList.items)
+            {
+                listView.Items.Add(fn.FullPathName);
+            }
+
+            // Set size and location
+            listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            Height = listView.GetItemRect(0).Height * listView.Items.Count + 30;
+            Width = listView.GetItemRect(0).Width + 40;
+            //Location = new Point(Location.X - 10, Location.Y + Height);
+        }
     }
 }

@@ -53,16 +53,18 @@ namespace MiLauncher
             hotKey = new HotKey(MOD_KEY.ALT | MOD_KEY.CONTROL, Keys.F);
             hotKey.HotKeyPush += new EventHandler(hotKey_HotKeyPush);
 
-            // File List Form
+            // List Form
             listForm = new ListForm();
-            fileList=new FileList();
-
+            // File List
+            fileList = new FileList();
         }
         void hotKey_HotKeyPush(object sender, EventArgs e)
         {
             Visible = true;
-
-            RenewListView();
+            listForm.Reset(fileList);
+            listForm.StartPosition = FormStartPosition.Manual;
+            listForm.Location = new Point(Location.X - 10, Location.Y + Height);
+            listForm.Invalidate();
             listForm.Visible = true;
 
             Activate();
