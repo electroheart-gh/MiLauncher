@@ -13,13 +13,13 @@ using System.Windows.Forms;
 
 namespace MiLauncher
 {
-    public partial class Form1 : Form
+    public partial class MigemoTest : Form
     {
 
         private Migemo m_migemo;
 
 
-        public Form1()
+        public MigemoTest()
         {
             InitializeComponent();
         }

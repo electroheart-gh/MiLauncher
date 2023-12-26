@@ -1,6 +1,6 @@
 ﻿namespace MiLauncher
 {
-    partial class Form1
+    partial class MigemoTest
     {
         /// <summary>
         /// Required designer variable.
