@@ -53,6 +53,8 @@
             this.cmdBox.Name = "cmdBox";
             this.cmdBox.Size = new System.Drawing.Size(242, 28);
             this.cmdBox.TabIndex = 1;
+            this.cmdBox.TextChanged += new System.EventHandler(this.cmdBox_TextChanged);
+            this.cmdBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cmdBox_KeyDown);
             this.cmdBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cmdBox_KeyPress);
             // 
             // MainForm

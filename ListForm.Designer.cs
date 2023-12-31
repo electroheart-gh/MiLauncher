@@ -43,16 +43,18 @@
             this.listView.Location = new System.Drawing.Point(0, 0);
             this.listView.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.listView.Name = "listView";
-            this.listView.Size = new System.Drawing.Size(1067, 638);
+            this.listView.OwnerDraw = true;
+            this.listView.Size = new System.Drawing.Size(385, 541);
             this.listView.TabIndex = 0;
             this.listView.UseCompatibleStateImageBehavior = false;
             this.listView.View = System.Windows.Forms.View.Details;
+            this.listView.DrawItem += new System.Windows.Forms.DrawListViewItemEventHandler(this.listView_DrawItem);
             // 
             // ListForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1067, 638);
+            this.ClientSize = new System.Drawing.Size(385, 541);
             this.ControlBox = false;
             this.Controls.Add(this.listView);
             this.Font = new System.Drawing.Font("Meiryo UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
