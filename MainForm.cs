@@ -8,17 +8,16 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace MiLauncher
 {
     public partial class MainForm : Form
     {
-        // TODO: class FileList
-
-
         // Variable
         private Point dragStart;
         private HotKey hotKey;
@@ -227,20 +226,78 @@ namespace MiLauncher
                 }
             }
 
-            // TODO: select previous file
+            // select previous file
             if (e.KeyCode == Keys.P && ModifierKeys == Keys.Control)
             {
+                // Assuming number of selected items should be one
+                if (listForm.listView.SelectedIndices.Count > 0)
+                {
+                    var selectedIndex = listForm.listView.SelectedIndices[0];
+                    listForm.listView.Items[selectedIndex].Selected = false;
+                    if (selectedIndex == 0)
+                    {
+                        listForm.listView.Items[listForm.listView.Items.Count - 1].Selected = true;
+                    }
+                    else
+                    {
+                        listForm.listView.Items[selectedIndex - 1].Selected = true;
+                    }
+                }
 
             }
 
             // TODO: forward word
             if (e.KeyCode == Keys.F && ModifierKeys == Keys.Alt)
             {
+                //for (int i = cmdBox.SelectionStart+ 1; i < cmdBox.Text.Length; i++)
+                //{
+                //    if (char.IsWhiteSpace(cmdBox.Text[i]) || char.IsPunctuation(cmdBox.Text[i]))
+                //    {
+                //        // 空白または句読点の後に単語が始まる場合、その位置までカーソルを移動
+                //        // sample text, abc$ ,. def10, 
+                //        while (i < cmdBox.Text.Length && (char.IsWhiteSpace(cmdBox.Text[i]) || char.IsPunctuation(cmdBox.Text[i])))
+                //        {
+                //            i++;
+                //        }
+
+                //        cmdBox.SelectionStart = i;
+                //        cmdBox.SelectionLength = 0;
+                //        return;
+                //    }
+                //}
+
+                var pattern = new Regex(@"\w+\W*");
+                var m = pattern.Match(cmdBox.Text, cmdBox.SelectionStart);
+
+                //Console.WriteLine("m: " + m.ToString());
+                //Console.WriteLine("index: " + m.Index);
+                //Console.WriteLine("length: " + m.Length);
+                //Console.WriteLine("selectStart: " + cmdBox.SelectionStart);
+                //Console.WriteLine("text: " + cmdBox.Text);
+
+                cmdBox.SelectionStart = Math.Max(m.Index + m.Length, cmdBox.SelectionStart);
             }
 
-            // TODO: backward word
+            // backward word
             if (e.KeyCode == Keys.B && ModifierKeys == Keys.Alt)
             {
+                // Regex is difficult for backward search
+                var pattern = new Regex(@"(?>\w+\W*)(?!\w)");
+                //var pattern = new Regex(@"\w+\W*(?!\w)");
+                //var pattern = new Regex(@"\w+\W*");
+                //var searchText=cmdBox.Text.Substring(0, cmdBox.SelectionStart);
+
+                var m = pattern.Match(cmdBox.Text.Substring(0, cmdBox.SelectionStart));
+
+                //Console.WriteLine("M-b");
+                //Console.WriteLine("index: " + m.Index);
+                //Console.WriteLine("length: " + m.Length);
+                //Console.WriteLine("selectStart: " + cmdBox.SelectionStart);
+                //Console.WriteLine("search text: " + cmdBox.Text.Substring(0, cmdBox.SelectionStart));
+                //Console.WriteLine("text: " + cmdBox.Text);
+
+                cmdBox.SelectionStart = m.Index;
+
             }
 
             // TODO: delete word

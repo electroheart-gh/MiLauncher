@@ -53,7 +53,6 @@ namespace MiLauncher
                     }
                     //Debug.WriteLine(regex.ToString());  //生成された正規表現をデバッグコンソールに出力
 
-                    // TODO: Do migemo
                     if (!Regex.IsMatch(fn.FileName, regex.ToString(), RegexOptions.IgnoreCase))
                     {
                         patternMatched = false;
