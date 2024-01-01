@@ -1,21 +1,30 @@
-﻿using System;
+﻿using KaoriYa.Migemo;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace MiLauncher
 {
     public partial class ListForm : Form
     {
+        Migemo migemo;
+        Regex regex;
+
         public ListForm()
         {
             InitializeComponent();
+
+            // migemo object
+            migemo = new Migemo("./Dict/migemo-dict");
         }
 
         internal bool Reset(FileList fileList, string text)
@@ -23,18 +32,41 @@ namespace MiLauncher
             // Update listView
             listView.Items.Clear();
 
-            // TODO: Parse text to some patterns to be matched.
             // TODO: Parse text to exec special command such as multi pattern search,  full path search, calc etc.
 
+            // Simple Parse with patterns split by space
+            string[] patterns = text.Split(' ');
 
             foreach (var fn in fileList.items)
             {
-                // TODO: Do migemo !!
-                if (Regex.IsMatch(fn.FileName, text))
+                var patternMatched = true;
+
+                foreach (var pattern in patterns)
+                {
+                    try
+                    {
+                        regex = migemo.GetRegex(pattern);
+                    }
+                    catch (ArgumentException)
+                    {
+                        regex = new Regex(pattern);
+                    }
+                    //Debug.WriteLine(regex.ToString());  //生成された正規表現をデバッグコンソールに出力
+
+                    // TODO: Do migemo
+                    if (!Regex.IsMatch(fn.FileName, regex.ToString(), RegexOptions.IgnoreCase))
+                    {
+                        patternMatched = false;
+                        break;
+                    }
+                }
+
+                if (patternMatched)
                 {
                     listView.Items.Add(fn.FullPathName);
                 }
             }
+
             if (listView.Items.Count == 0)
             {
                 return false;
