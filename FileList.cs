@@ -9,8 +9,14 @@ namespace MiLauncher
 {
     internal class FileList
     {
+        // JsonSerializer requires properties instead of fields
         //public List<FileInfo> items;
-        public List<FileListInfo> items = new List<FileListInfo>();
+        private List<FileListInfo> items = new List<FileListInfo>();
+        public List<FileListInfo> Items { get => items; set => items = value; }
+
+        // Simple form {get; set; } leaves Items Null
+        //public List<FileListInfo> Items { get; set; }
+
 
 
         public FileList()
@@ -25,12 +31,22 @@ namespace MiLauncher
             foreach (string file in files)
             {
                 // Console.WriteLine(Path.GetFileName(file));
-                items.Add(new FileListInfo(Path.GetFileName(file), file, 0));
+                Items.Add(new FileListInfo(Path.GetFileName(file), file, 0));
             }
             //
             //
             //
+            //SettingManager.LoadSettings<FileList>(fileLdp)
+
+            // TODO: Update FileList in async as per config
+            // TODO: Implement some ways to update FileList manually
         }
+
+        //public FileList(string dataPath)
+        //{
+        //    SettingManager.LoadSettings<FileList>(dataPath);
+        //}
+
 
 
         public class FileListInfo
@@ -39,13 +55,18 @@ namespace MiLauncher
             public string FullPathName { get; set; }
             public int Priority { get; set; }
 
+            public FileListInfo()
+            {
+                FileName = "";
+                FullPathName = "";
+                Priority = 0;
+            }
             public FileListInfo(string fileName, string pathName, int priority)
             {
-                this.FileName = fileName;
-                this.FullPathName = pathName;
-                this.Priority = priority;
+                FileName = fileName;
+                FullPathName = pathName;
+                Priority = priority;
             }
-
         }
     }
 }

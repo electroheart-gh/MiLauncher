@@ -8,7 +8,8 @@ namespace MiLauncher
 {
     internal class AppSettings
     {
-        public List<NameModifier> NameModifiers { get; set; }
+        //public List<NameModifier> NameModifiers { get; set; }
+        public List<string> TargetFolders{ get; set; }
 
         // Configuration class to modify display of lblTaskName
         // If Pattern match, replace it with Substitution and set the Forecolor
@@ -28,7 +29,13 @@ namespace MiLauncher
 
         public AppSettings()
         {
-            NameModifiers = new List<NameModifier>();
+            //NameModifiers = new List<NameModifier>();
+
+            TargetFolders = new List<string>();
+            // TODO: configuration for Keymap 
+            // TODO: configuration for specific application to open file, such as sakura
+
+
         }
     }
 }

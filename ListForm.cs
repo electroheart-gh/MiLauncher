@@ -35,9 +35,10 @@ namespace MiLauncher
             // TODO: Parse text to exec special command such as multi pattern search,  full path search, calc etc.
 
             // Simple Parse with patterns split by space
+            // TODO: examine if hyphen(-) works properly in regex
             string[] patterns = text.Split(' ');
 
-            foreach (var fn in fileList.items)
+            foreach (var fn in fileList.Items)
             {
                 var patternMatched = true;
 

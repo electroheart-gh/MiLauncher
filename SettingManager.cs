@@ -10,19 +10,21 @@ namespace MiLauncher
 {
     internal class SettingManager
     {
-        private string settingsFilePath = "mySettings.json"; // 設定ファイルのパス
+        // TODO: Change place to define paths below
+        //private string settingsFilePath = "mySettings.json"; // 設定ファイルのパス
+        //private string fileListDataPath = "FileList.dat";
 
-        public void SaveSettings<T>(T settingsObject)
+        public static void SaveSettings<T>(T settingsObject, string path)
         {
             string json = JsonSerializer.Serialize(settingsObject, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(settingsFilePath, json);
+            File.WriteAllText(path, json);
         }
 
-        public T LoadSettings<T>()
+        public static T LoadSettings<T>(string path)
         {
             try
             {
-                string json = File.ReadAllText(settingsFilePath);
+                string json = File.ReadAllText(path);
                 return JsonSerializer.Deserialize<T>(json);
             }
             catch (Exception ex)

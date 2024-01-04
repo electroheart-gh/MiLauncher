@@ -24,6 +24,10 @@ namespace MiLauncher
         private ListForm listForm;
         private FileList fileList;
 
+        // Const
+        private string settingsFilePath = "mySettings.json"; // 設定ファイルのパス
+        private string fileListDataPath = "FileList.dat";
+
 
         //
         // Constructor
@@ -59,7 +63,8 @@ namespace MiLauncher
             // List Form
             listForm = new ListForm();
             // File List
-            fileList = new FileList();
+            fileList = SettingManager.LoadSettings<FileList>(fileListDataPath);
+
         }
         void hotKey_HotKeyPush(object sender, EventArgs e)
         {
@@ -77,7 +82,7 @@ namespace MiLauncher
         public void RenewListView()
         {
             // Update listView
-            foreach (var fn in fileList.items)
+            foreach (var fn in fileList.Items)
             {
                 listForm.listView.Items.Add(fn.FullPathName);
             }
@@ -309,6 +314,18 @@ namespace MiLauncher
             if (e.KeyCode == Keys.H && ModifierKeys == Keys.Alt)
             {
             }
+
+            // TODO: implement crawl folder mode like zii launcher, which requires another ListView class
+            // TODO: implement full path search mode, which should update ListForm class as well
+            // TODO: implement sorting list by timestamp, priority and alphabetic, which should update ListForm and FileList classes as well
+            // TODO: implement search history using C-i, C-o
+        }
+
+        private void MainForm_Deactivate(object sender, EventArgs e)
+        {
+            // TODO: save FileList
+            SettingManager.SaveSettings<FileList>(fileList, fileListDataPath);
+
         }
     }
 }
