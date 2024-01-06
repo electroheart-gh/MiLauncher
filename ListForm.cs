@@ -19,6 +19,9 @@ namespace MiLauncher
         Migemo migemo;
         Regex regex;
 
+        // TODO: Make it configurable
+        const int migemoMinLength = 3;
+
         public ListForm()
         {
             InitializeComponent();
@@ -44,20 +47,32 @@ namespace MiLauncher
 
                 foreach (var pattern in patterns)
                 {
-                    try
+                    // if pattern.length > migemoMinLength, handle pattern as migemo
+                    if (pattern.Length >= migemoMinLength)
                     {
-                        regex = migemo.GetRegex(pattern);
+                        try
+                        {
+                            regex = migemo.GetRegex(pattern);
+                        }
+                        catch (ArgumentException)
+                        {
+                            regex = new Regex(pattern);
+                        }
+                        // Debug.WriteLine("\"" + regex.ToString() + "\"");  //生成された正規表現をデバッグコンソールに出力
+                        if (!Regex.IsMatch(fn.FileName, regex.ToString(), RegexOptions.IgnoreCase))
+                        {
+                            patternMatched = false;
+                            break;
+                        }
                     }
-                    catch (ArgumentException)
+                    // if pattern.length < migemoMinLength, handle pattern as just string
+                    else
                     {
-                        regex = new Regex(pattern);
-                    }
-                    //Debug.WriteLine(regex.ToString());  //生成された正規表現をデバッグコンソールに出力
-
-                    if (!Regex.IsMatch(fn.FileName, regex.ToString(), RegexOptions.IgnoreCase))
-                    {
-                        patternMatched = false;
-                        break;
+                        if (!fn.FileName.Contains(pattern))
+                        {
+                            patternMatched = false;
+                            break;
+                        }
                     }
                 }
 
@@ -93,6 +108,7 @@ namespace MiLauncher
         {
             if (e.Item.Selected)
             {
+                // TODO: make it configurable
                 e.Graphics.FillRectangle(Brushes.LightGray, e.Bounds);
             }
             e.DrawText();

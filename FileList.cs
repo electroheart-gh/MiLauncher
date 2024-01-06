@@ -14,11 +14,6 @@ namespace MiLauncher
         private List<FileListInfo> items = new List<FileListInfo>();
         public List<FileListInfo> Items { get => items; set => items = value; }
 
-        // Simple form {get; set; } leaves Items Null
-        //public List<FileListInfo> Items { get; set; }
-
-
-
         public FileList()
         {
             //
@@ -41,13 +36,6 @@ namespace MiLauncher
             // TODO: Update FileList in async as per config
             // TODO: Implement some ways to update FileList manually
         }
-
-        //public FileList(string dataPath)
-        //{
-        //    SettingManager.LoadSettings<FileList>(dataPath);
-        //}
-
-
 
         public class FileListInfo
         {

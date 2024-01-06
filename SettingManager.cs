@@ -8,12 +8,9 @@ using System.Threading.Tasks;
 
 namespace MiLauncher
 {
+    // Used to save AppSettings and FileList object in the specified files
     internal class SettingManager
     {
-        // TODO: Change place to define paths below
-        //private string settingsFilePath = "mySettings.json"; // 設定ファイルのパス
-        //private string fileListDataPath = "FileList.dat";
-
         public static void SaveSettings<T>(T settingsObject, string path)
         {
             string json = JsonSerializer.Serialize(settingsObject, new JsonSerializerOptions { WriteIndented = true });

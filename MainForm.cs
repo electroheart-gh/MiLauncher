@@ -69,12 +69,6 @@ namespace MiLauncher
         void hotKey_HotKeyPush(object sender, EventArgs e)
         {
             Visible = true;
-            //listForm.Reset(fileList, cmdBox.Text);
-            //listForm.StartPosition = FormStartPosition.Manual;
-            //listForm.Location = new Point(Location.X - 10, Location.Y + Height);
-            //listForm.Invalidate();
-            //listForm.Visible = true;
-
             Activate();
             BringToFront();
         }
@@ -323,9 +317,7 @@ namespace MiLauncher
 
         private void MainForm_Deactivate(object sender, EventArgs e)
         {
-            // TODO: save FileList
             SettingManager.SaveSettings<FileList>(fileList, fileListDataPath);
-
         }
     }
 }
