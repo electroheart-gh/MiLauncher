@@ -9,8 +9,11 @@ namespace MiLauncher
 {
     internal class FileList
     {
+        // TODO: Update FileList in async as per config
+        // TODO: Implement some ways to update FileList manually
+
+        // Variables and Properties
         // JsonSerializer requires properties instead of fields
-        //public List<FileInfo> items;
         private List<FileListInfo> items = new List<FileListInfo>();
         public List<FileListInfo> Items { get => items; set => items = value; }
 
@@ -22,7 +25,6 @@ namespace MiLauncher
             string folderPath = @"C:\Users\JUNJI\Desktop\tools"; // フォルダのパスを指定
             string[] files = Directory.GetFiles(folderPath);
 
-            // ファイル名をコンソールに出力する例
             foreach (string file in files)
             {
                 // Console.WriteLine(Path.GetFileName(file));
@@ -31,10 +33,6 @@ namespace MiLauncher
             //
             //
             //
-            //SettingManager.LoadSettings<FileList>(fileLdp)
-
-            // TODO: Update FileList in async as per config
-            // TODO: Implement some ways to update FileList manually
         }
 
         public class FileListInfo

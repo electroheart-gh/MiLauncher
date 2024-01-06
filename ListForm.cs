@@ -16,18 +16,17 @@ namespace MiLauncher
 {
     public partial class ListForm : Form
     {
-        Migemo migemo;
+        // Variables
+        Migemo migemo = new Migemo("./Dict/migemo-dict");
         Regex regex;
 
+        // Constant
         // TODO: Make it configurable
         const int migemoMinLength = 3;
 
         public ListForm()
         {
             InitializeComponent();
-
-            // migemo object
-            migemo = new Migemo("./Dict/migemo-dict");
         }
 
         internal bool Reset(FileList fileList, string text)
@@ -36,19 +35,30 @@ namespace MiLauncher
             listView.Items.Clear();
 
             // TODO: Parse text to exec special command such as multi pattern search,  full path search, calc etc.
-
-            // Simple Parse with patterns split by space
+            // TODO: Consider to change async method if performance issue happens
             // TODO: examine if hyphen(-) works properly in regex
+
+            // Simple Parse by space to split patterns
             string[] patterns = text.Split(' ');
 
+            // Create list view by pattern matching from fileList
             foreach (var fn in fileList.Items)
             {
                 var patternMatched = true;
 
                 foreach (var pattern in patterns)
                 {
-                    // if pattern.length > migemoMinLength, handle pattern as migemo
-                    if (pattern.Length >= migemoMinLength)
+                    // Simple string search
+                    if (pattern.Length < migemoMinLength)
+                    {
+                        if (!fn.FileName.Contains(pattern))
+                        {
+                            patternMatched = false;
+                            break;
+                        }
+                    }
+                    // Migemo search
+                    else
                     {
                         try
                         {
@@ -65,23 +75,12 @@ namespace MiLauncher
                             break;
                         }
                     }
-                    // if pattern.length < migemoMinLength, handle pattern as just string
-                    else
-                    {
-                        if (!fn.FileName.Contains(pattern))
-                        {
-                            patternMatched = false;
-                            break;
-                        }
-                    }
                 }
-
                 if (patternMatched)
                 {
                     listView.Items.Add(fn.FullPathName);
                 }
             }
-
             if (listView.Items.Count == 0)
             {
                 return false;
@@ -92,16 +91,9 @@ namespace MiLauncher
             Height = listView.GetItemRect(0).Height * listView.Items.Count + 30;
             Width = listView.GetItemRect(0).Width + 40;
 
-            // Select the first line and change its color to exec the file
+            // Select the first line and change its color
             listView.Items[0].Selected = true;
-            // listView.OwnerDraw = true;
-
-            //listView.Items[0].ForeColor = Color.White;
-            //listView.Items[0].BackColor= Color.Gray;
-
-            //Location = new Point(Location.X - 10, Location.Y + Height);
             return true;
-
         }
 
         private void listView_DrawItem(object sender, DrawListViewItemEventArgs e)

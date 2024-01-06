@@ -18,16 +18,15 @@ namespace MiLauncher
 {
     public partial class MainForm : Form
     {
-        // Variable
+        // Variables
         private Point dragStart;
         private HotKey hotKey;
         private ListForm listForm;
         private FileList fileList;
 
-        // Const
+        // Constant
         private string settingsFilePath = "mySettings.json"; // 設定ファイルのパス
         private string fileListDataPath = "FileList.dat";
-
 
         //
         // Constructor
@@ -37,7 +36,9 @@ namespace MiLauncher
             InitializeComponent();
         }
 
-
+        //
+        // Event handler
+        //
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -72,22 +73,6 @@ namespace MiLauncher
             Activate();
             BringToFront();
         }
-
-        public void RenewListView()
-        {
-            // Update listView
-            foreach (var fn in fileList.Items)
-            {
-                listForm.listView.Items.Add(fn.FullPathName);
-            }
-
-            // Set size and location
-            listForm.listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-            listForm.Height = listForm.listView.GetItemRect(0).Height * listForm.listView.Items.Count + 30;
-            listForm.Width = listForm.listView.GetItemRect(0).Width + 40;
-            listForm.Location = new Point(Location.X - 10, Location.Y + Height);
-        }
-
 
         // Implement Ctrl- and Alt- commands in KeyDown event
         // It is because e.KeyChar of KeyPress returns a value depending on modifiers input,
@@ -161,19 +146,16 @@ namespace MiLauncher
             {
                 cmdBox.SelectionStart = 0;
             }
-
             // end of line
             if (e.KeyCode == Keys.E && ModifierKeys == Keys.Control)
             {
                 cmdBox.SelectionStart = cmdBox.Text.Length;
             }
-
             // forward char
             if (e.KeyCode == Keys.F && ModifierKeys == Keys.Control)
             {
                 cmdBox.SelectionStart++;
             }
-
             // backward char
             if (e.KeyCode == Keys.B && ModifierKeys == Keys.Control)
             {
@@ -193,7 +175,6 @@ namespace MiLauncher
                     cmdBox.SelectionStart = pos - 1;
                 }
             }
-
             // delete char
             if (e.KeyCode == Keys.D && ModifierKeys == Keys.Control)
             {
@@ -224,7 +205,6 @@ namespace MiLauncher
                     }
                 }
             }
-
             // select previous file
             if (e.KeyCode == Keys.P && ModifierKeys == Keys.Control)
             {
@@ -242,61 +222,22 @@ namespace MiLauncher
                         listForm.listView.Items[selectedIndex - 1].Selected = true;
                     }
                 }
-
             }
 
-            // TODO: forward word
+            // forward word
             if (e.KeyCode == Keys.F && ModifierKeys == Keys.Alt)
             {
-                //for (int i = cmdBox.SelectionStart+ 1; i < cmdBox.Text.Length; i++)
-                //{
-                //    if (char.IsWhiteSpace(cmdBox.Text[i]) || char.IsPunctuation(cmdBox.Text[i]))
-                //    {
-                //        // 空白または句読点の後に単語が始まる場合、その位置までカーソルを移動
-                //        // sample text, abc$ ,. def10, 
-                //        while (i < cmdBox.Text.Length && (char.IsWhiteSpace(cmdBox.Text[i]) || char.IsPunctuation(cmdBox.Text[i])))
-                //        {
-                //            i++;
-                //        }
-
-                //        cmdBox.SelectionStart = i;
-                //        cmdBox.SelectionLength = 0;
-                //        return;
-                //    }
-                //}
-
                 var pattern = new Regex(@"\w+\W*");
                 var m = pattern.Match(cmdBox.Text, cmdBox.SelectionStart);
-
-                //Console.WriteLine("m: " + m.ToString());
-                //Console.WriteLine("index: " + m.Index);
-                //Console.WriteLine("length: " + m.Length);
-                //Console.WriteLine("selectStart: " + cmdBox.SelectionStart);
-                //Console.WriteLine("text: " + cmdBox.Text);
-
                 cmdBox.SelectionStart = Math.Max(m.Index + m.Length, cmdBox.SelectionStart);
             }
-
             // backward word
             if (e.KeyCode == Keys.B && ModifierKeys == Keys.Alt)
             {
-                // Regex is difficult for backward search
+                // Using Non-backtracking and negative lookahead assertion of Regex
                 var pattern = new Regex(@"(?>\w+\W*)(?!\w)");
-                //var pattern = new Regex(@"\w+\W*(?!\w)");
-                //var pattern = new Regex(@"\w+\W*");
-                //var searchText=cmdBox.Text.Substring(0, cmdBox.SelectionStart);
-
                 var m = pattern.Match(cmdBox.Text.Substring(0, cmdBox.SelectionStart));
-
-                //Console.WriteLine("M-b");
-                //Console.WriteLine("index: " + m.Index);
-                //Console.WriteLine("length: " + m.Length);
-                //Console.WriteLine("selectStart: " + cmdBox.SelectionStart);
-                //Console.WriteLine("search text: " + cmdBox.Text.Substring(0, cmdBox.SelectionStart));
-                //Console.WriteLine("text: " + cmdBox.Text);
-
                 cmdBox.SelectionStart = m.Index;
-
             }
 
             // TODO: delete word
