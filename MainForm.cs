@@ -64,7 +64,12 @@ namespace MiLauncher
             // List Form
             listForm = new ListForm();
             // File List
-            fileList = SettingManager.LoadSettings<FileList>(fileListDataPath);
+            //fileList = SettingManager.LoadSettings<FileList>(fileListDataPath);
+            
+            // Test Code
+            fileList = FileList.FileListForTest();
+
+
 
         }
         void hotKey_HotKeyPush(object sender, EventArgs e)

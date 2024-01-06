@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -21,8 +22,9 @@ namespace MiLauncher
         Regex regex;
 
         // Constant
-        // TODO: Make it configurable
+        // TODO: Make them configurable
         const int migemoMinLength = 3;
+        const int maxListLine = 50;
 
         public ListForm()
         {
@@ -42,6 +44,10 @@ namespace MiLauncher
             string[] patterns = text.Split(' ');
 
             // Create list view by pattern matching from fileList
+
+
+            // TODO: Directory.EnumerateFiles()
+
             foreach (var fn in fileList.Items)
             {
                 var patternMatched = true;
@@ -79,6 +85,11 @@ namespace MiLauncher
                 if (patternMatched)
                 {
                     listView.Items.Add(fn.FullPathName);
+                    // max count should be const and configurable
+                    if (listView.Items.Count > maxListLine)
+                    {
+                        break;
+                    }
                 }
             }
             if (listView.Items.Count == 0)
