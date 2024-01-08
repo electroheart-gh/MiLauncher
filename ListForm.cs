@@ -1,5 +1,6 @@
 ﻿using KaoriYa.Migemo;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,6 +8,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -37,18 +39,19 @@ namespace MiLauncher
             listView.Items.Clear();
 
             // TODO: Parse text to exec special command such as multi pattern search,  full path search, calc etc.
-            // TODO: Consider to change async method if performance issue happens
+            // TODO: Consider to change async method because performance issue should happen with network drive
             // TODO: examine if hyphen(-) works properly in regex
 
             // Simple Parse by space to split patterns
             string[] patterns = text.Split(' ');
 
             // Create list view by pattern matching from fileList
+            // TODO: change or combine input of list view by user command or config,
+            // real time search and/or pre-scanned file list (priority, access time, created time etc.)
 
-
-            // TODO: Directory.EnumerateFiles()
-
-            foreach (var fn in fileList.Items)
+            //foreach (var fn in fileList.Items)
+            //foreach (var fn in Directory.EnumerateFiles(@"C:\Users\JUNJI\", "*", SearchOption.AllDirectories))
+            foreach (var fn in DirectorySearch.EnumerateAllFiles(@"C:\Users\JUNJI\Desktop\"))
             {
                 var patternMatched = true;
 
@@ -57,7 +60,8 @@ namespace MiLauncher
                     // Simple string search
                     if (pattern.Length < migemoMinLength)
                     {
-                        if (!fn.FileName.Contains(pattern))
+                        //if (!fn.FileName.Contains(pattern))
+                        if (!Path.GetFileName(fn).Contains(pattern))
                         {
                             patternMatched = false;
                             break;
@@ -75,7 +79,8 @@ namespace MiLauncher
                             regex = new Regex(pattern);
                         }
                         // Debug.WriteLine("\"" + regex.ToString() + "\"");  //生成された正規表現をデバッグコンソールに出力
-                        if (!Regex.IsMatch(fn.FileName, regex.ToString(), RegexOptions.IgnoreCase))
+                        //if (!Regex.IsMatch(fn.FileName, regex.ToString(), RegexOptions.IgnoreCase))
+                        if (!Regex.IsMatch(Path.GetFileName(fn), regex.ToString(), RegexOptions.IgnoreCase))
                         {
                             patternMatched = false;
                             break;
@@ -84,7 +89,8 @@ namespace MiLauncher
                 }
                 if (patternMatched)
                 {
-                    listView.Items.Add(fn.FullPathName);
+                    //listView.Items.Add(fn.FullPathName);
+                    listView.Items.Add(fn);
                     // max count should be const and configurable
                     if (listView.Items.Count > maxListLine)
                     {

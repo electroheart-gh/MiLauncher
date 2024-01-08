@@ -61,7 +61,8 @@ namespace MiLauncher
         public static FileList FileListForTest()
         {
             FileList fileList = new FileList();
-            string folderPath = @"C:\Users\JUNJI\Desktop\tools";
+            //string folderPath = @"C:\Users\JUNJI\Desktop\tools";
+            string folderPath = @"C:\Users\JUNJI\Desktop\";
             string[] files = Directory.GetFiles(folderPath, "*", SearchOption.AllDirectories);
 
             foreach (string file in files)
