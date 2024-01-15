@@ -9,6 +9,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Net.Mime.MediaTypeNames;
@@ -23,6 +24,7 @@ namespace MiLauncher
         private HotKey hotKey;
         private ListForm listForm;
         private FileList fileList;
+        private CancellationTokenSource tokenSource;
 
         // Constant
         private string settingsFilePath = "mySettings.json"; // 設定ファイルのパス
@@ -65,12 +67,9 @@ namespace MiLauncher
             listForm = new ListForm();
             // File List
             //fileList = SettingManager.LoadSettings<FileList>(fileListDataPath);
-            
+
             // Test Code
             fileList = FileList.FileListForTest();
-
-
-
         }
         void hotKey_HotKeyPush(object sender, EventArgs e)
         {
@@ -97,20 +96,58 @@ namespace MiLauncher
             }
         }
 
-        private void cmdBox_TextChanged(object sender, EventArgs e)
+        private async void cmdBox_TextChanged(object sender, EventArgs e)
         {
-            if (listForm.Reset(fileList, cmdBox.Text))
+            Console.WriteLine("text change started");
+            // 前回の処理をキャンセル
+            if (tokenSource != null)
             {
-                //if list has any items, 
-                listForm.StartPosition = FormStartPosition.Manual;
+                Console.WriteLine("cancel()");
+                tokenSource.Cancel();
+                tokenSource = null;
+            }
+
+            tokenSource = new CancellationTokenSource();
+            CancellationToken token = tokenSource.Token;
+
+            try
+            {
+                //using (tokenSource = new CancellationTokenSource())
+                //{
+                //    await listForm.ResetAsync(fileList, cmdBox.Text, tokenSource.Token);
+                //}
+                Console.WriteLine("await reset async");
+
+                //await listForm.ResetAsync(fileList, cmdBox.Text, tokenSource.Token);
+                await Task.Run(() => listForm.Reset(fileList, cmdBox.Text, tokenSource.Token), tokenSource.Token);
+
+
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            if (listForm.Visible)
+            {
                 listForm.Location = new Point(Location.X - 10, Location.Y + Height);
-                listForm.Visible = true;
                 Activate();
             }
-            else
-            {
-                listForm.Visible = false;
-            }
+
+            // if (listForm.Reset(fileList, cmdBox.Text))
+
+            //if (result)
+            //{
+            //    //if list has any items, 
+            //    listForm.StartPosition = FormStartPosition.Manual;
+            //    listForm.Location = new Point(Location.X - 10, Location.Y + Height);
+            //    listForm.Visible = true;
+            //    Activate();
+            //}
+            //else
+            //{
+            //    listForm.Visible = false;
+            //}
+            Console.WriteLine("text change finished");
 
         }
 
