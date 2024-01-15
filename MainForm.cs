@@ -118,9 +118,7 @@ namespace MiLauncher
                 //}
                 Console.WriteLine("await reset async");
 
-                //await listForm.ResetAsync(fileList, cmdBox.Text, tokenSource.Token);
-                await Task.Run(() => listForm.Reset(fileList, cmdBox.Text, tokenSource.Token), tokenSource.Token);
-
+                await listForm.ResetAsync(fileList, cmdBox.Text, tokenSource.Token);
 
             }
             catch (OperationCanceledException)
