@@ -1,9 +1,13 @@
-﻿using System;
+﻿using KaoriYa.Migemo;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace MiLauncher
 {
@@ -71,6 +75,81 @@ namespace MiLauncher
                 fileList.Items.Add(new FileListInfo(Path.GetFileName(file), file, 0));
             }
             return fileList;
+        }
+
+        internal List<string> Select(string[] words, CancellationToken token)
+        {
+            List<string> selectedList = new List<string>();
+            Migemo migemo = new Migemo("./Dict/migemo-dict");
+            Regex regex;
+
+            // TODO: Make them configurable
+            const int migemoMinLength = 3;
+            const int maxListLine = 50;
+
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                //foreach (var fn in fileList.Items)
+                //foreach (var fn in Directory.EnumerateFiles(@"C:\Users\JUNJI\", "*", SearchOption.AllDirectories))
+                foreach (var fn in DirectorySearch.EnumerateAllFiles(@"C:\Users\JUNJI\Desktop\"))
+                {
+                    //Console.WriteLine(cancellationToken.IsCancellationRequested);
+
+                    var patternMatched = true;
+
+                    foreach (var pattern in words)
+                    {
+                        // Simple string search
+                        if (pattern.Length < migemoMinLength)
+                        {
+                            //if (!fn.FileName.Contains(pattern))
+                            if (!Path.GetFileName(fn).Contains(pattern))
+                            {
+                                patternMatched = false;
+                                break;
+                            }
+                        }
+                        // Migemo search
+                        else
+                        {
+                            try
+                            {
+                                regex = migemo.GetRegex(pattern);
+                            }
+                            catch (ArgumentException)
+                            {
+                                regex = new Regex(pattern);
+                            }
+                            // Debug.WriteLine("\"" + regex.ToString() + "\"");  //生成された正規表現をデバッグコンソールに出力
+                            //if (!Regex.IsMatch(fn.FileName, regex.ToString(), RegexOptions.IgnoreCase))
+                            if (!Regex.IsMatch(Path.GetFileName(fn), regex.ToString(), RegexOptions.IgnoreCase))
+                            {
+                                patternMatched = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (patternMatched)
+                    {
+                        //listView.Items.Add(fn.FullPathName);
+                        selectedList.Add(fn);
+                        // max count should be const and configurable
+                        if (selectedList.Count > maxListLine)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // TODO: CACELLATION does not work!!!
+                Console.WriteLine("cancel occurs");
+                // throw;
+            }
+
+            return selectedList;
         }
     }
 }

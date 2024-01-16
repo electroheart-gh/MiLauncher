@@ -98,37 +98,46 @@ namespace MiLauncher
 
         private async void cmdBox_TextChanged(object sender, EventArgs e)
         {
+
             Console.WriteLine("text change started");
-            // 前回の処理をキャンセル
+
+            // TODO: Parse text to exec special command such as multi pattern search,  full path search, calc etc.
+            var words = cmdBox.Text.Split(' ');
+
+            // TODO: Determine what to do by args
+            // The followings are codes for normal search
+
+            // Cancel preceding process
             if (tokenSource != null)
             {
                 Console.WriteLine("cancel()");
                 tokenSource.Cancel();
                 tokenSource = null;
             }
-
             tokenSource = new CancellationTokenSource();
             CancellationToken token = tokenSource.Token;
 
+            listForm.Visible = false;
             try
             {
-                //using (tokenSource = new CancellationTokenSource())
-                //{
-                //    await listForm.ResetAsync(fileList, cmdBox.Text, tokenSource.Token);
-                //}
-                Console.WriteLine("await reset async");
+                // Console.WriteLine("await reset async");
+                //List<string> selectedList = await Task.Run<List<string>>(() => fileList.Select(words, token), token);
 
-                await listForm.ResetAsync(fileList, cmdBox.Text, tokenSource.Token);
+                // TODO: fix the problem; too quick input "short kill" makes wrong list and after 10 seconds update list another wrong list without any operation
 
+                var selectedList = await Task.Run(() => fileList.Select(words, token), token);
+                //var selectedList = fileList.Select(words, token);
+                if (selectedList.Count > 0)
+                {
+                    listForm.SetList(selectedList);
+                    listForm.Location = new Point(Location.X - 10, Location.Y + Height);
+                    listForm.Visible = true;
+                    Activate();
+                }
             }
             catch (OperationCanceledException)
             {
                 throw;
-            }
-            if (listForm.Visible)
-            {
-                listForm.Location = new Point(Location.X - 10, Location.Y + Height);
-                Activate();
             }
 
             // if (listForm.Reset(fileList, cmdBox.Text))
@@ -167,6 +176,8 @@ namespace MiLauncher
             // Exec file with associated app
             if (e.KeyCode == Keys.Enter || (e.KeyCode == Keys.M && ModifierKeys == Keys.Control))
             {
+                // TODO: Make it method of listForm
+                // TODO: Display the file in red
                 try
                 {
                     Process.Start(listForm.listView.SelectedItems[0].Text);
@@ -230,6 +241,7 @@ namespace MiLauncher
             if (e.KeyCode == Keys.N && ModifierKeys == Keys.Control)
             {
                 // TODO: Try MultiSelect false
+                // TODO: Make it method of listForm
                 // Assuming number of selected items should be one
                 if (listForm.listView.SelectedIndices.Count > 0)
                 {
@@ -248,6 +260,7 @@ namespace MiLauncher
             // select previous file
             if (e.KeyCode == Keys.P && ModifierKeys == Keys.Control)
             {
+                // TODO: Make it method of listForm
                 // Assuming number of selected items should be one
                 if (listForm.listView.SelectedIndices.Count > 0)
                 {

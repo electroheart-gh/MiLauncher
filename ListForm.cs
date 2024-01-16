@@ -43,7 +43,6 @@ namespace MiLauncher
             // Update listView
             listView.Items.Clear();
 
-            // TODO: Parse text to exec special command such as multi pattern search,  full path search, calc etc.
             // TODO: Consider to change async method because performance issue should happen with network drive
             // TODO: examine if hyphen(-) works properly in regex
 
@@ -224,8 +223,6 @@ namespace MiLauncher
                     // Select the first line and change its color
                     listView.Items[0].Selected = true;
                     Visible = true;
-
-
                 }
             }
             catch (OperationCanceledException)
@@ -248,6 +245,26 @@ namespace MiLauncher
                 e.Graphics.FillRectangle(Brushes.LightGray, e.Bounds);
             }
             e.DrawText();
+        }
+
+        //internal void SetList(List<string> list)
+        internal void SetList(List<string> list)
+        {
+            listView.Items.Clear();
+            foreach (string item in list)
+            {
+                listView.Items.Add(item);
+            }
+            // Set size and location
+            listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            Height = listView.GetItemRect(0).Height * listView.Items.Count + 30;
+            Width = listView.GetItemRect(0).Width + 40;
+
+            // TODO: try to delete the following line
+            StartPosition = FormStartPosition.Manual;
+
+            // Select the first line and change its color
+            listView.Items[0].Selected = true;
         }
     }
 }
