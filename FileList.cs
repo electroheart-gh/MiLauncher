@@ -89,17 +89,18 @@ namespace MiLauncher
 
             try
             {
-                token.ThrowIfCancellationRequested();
+                //token.ThrowIfCancellationRequested();
                 //foreach (var fn in fileList.Items)
                 //foreach (var fn in Directory.EnumerateFiles(@"C:\Users\JUNJI\", "*", SearchOption.AllDirectories))
+
                 foreach (var fn in DirectorySearch.EnumerateAllFiles(@"C:\Users\JUNJI\Desktop\"))
                 {
                     //Console.WriteLine(cancellationToken.IsCancellationRequested);
-
                     var patternMatched = true;
 
                     foreach (var pattern in words)
                     {
+                         token.ThrowIfCancellationRequested();
                         // Simple string search
                         if (pattern.Length < migemoMinLength)
                         {
@@ -141,15 +142,17 @@ namespace MiLauncher
                         }
                     }
                 }
+                return selectedList;
             }
             catch (OperationCanceledException)
             {
                 // TODO: CACELLATION does not work!!!
-                Console.WriteLine("cancel occurs");
-                // throw;
+                Console.WriteLine("cancel occurs Select");
+                selectedList.Clear();
+                return selectedList;
+                //throw;
             }
 
-            return selectedList;
         }
     }
 }

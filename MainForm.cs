@@ -99,7 +99,7 @@ namespace MiLauncher
         private async void cmdBox_TextChanged(object sender, EventArgs e)
         {
 
-            Console.WriteLine("text change started");
+            Console.WriteLine("text change started: " + cmdBox.Text);
 
             // TODO: Parse text to exec special command such as multi pattern search,  full path search, calc etc.
             var words = cmdBox.Text.Split(' ');
@@ -117,6 +117,7 @@ namespace MiLauncher
             tokenSource = new CancellationTokenSource();
             CancellationToken token = tokenSource.Token;
 
+            Console.WriteLine("visible false: "+ cmdBox.Text);
             listForm.Visible = false;
             try
             {
@@ -126,19 +127,27 @@ namespace MiLauncher
                 // TODO: fix the problem; too quick input "short kill" makes wrong list and after 10 seconds update list another wrong list without any operation
 
                 var selectedList = await Task.Run(() => fileList.Select(words, token), token);
+                // For syc
                 //var selectedList = fileList.Select(words, token);
-                if (selectedList.Count > 0)
+
+                if (selectedList.Count > 0 && !token.IsCancellationRequested)
                 {
                     listForm.SetList(selectedList);
                     listForm.Location = new Point(Location.X - 10, Location.Y + Height);
+
+                    Console.WriteLine("visible true: "+cmdBox.Text);
                     listForm.Visible = true;
                     Activate();
                 }
             }
             catch (OperationCanceledException)
             {
+                Console.WriteLine("Cancel occurs TextChanged");
                 throw;
             }
+            // tokenSource.Dispose();
+            // tokenSource = null;
+
 
             // if (listForm.Reset(fileList, cmdBox.Text))
 
@@ -154,7 +163,7 @@ namespace MiLauncher
             //{
             //    listForm.Visible = false;
             //}
-            Console.WriteLine("text change finished");
+            Console.WriteLine("text change finished: "+ cmdBox.Text);
 
         }
 
@@ -170,6 +179,8 @@ namespace MiLauncher
             {
                 cmdBox.Text = string.Empty;
                 Visible = false;
+
+                Console.WriteLine("visible false by ESC");
                 listForm.Visible = false;
             }
 
