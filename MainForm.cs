@@ -101,6 +101,12 @@ namespace MiLauncher
 
             Console.WriteLine("text change started: " + cmdBox.Text);
 
+            if (cmdBox.Text.Count() == 0)
+            {
+                listForm.Visible = false;
+                return;
+            }
+
             // TODO: Parse text to exec special command such as multi pattern search,  full path search, calc etc.
             var words = cmdBox.Text.Split(' ');
 
@@ -117,34 +123,35 @@ namespace MiLauncher
             tokenSource = new CancellationTokenSource();
             CancellationToken token = tokenSource.Token;
 
-            Console.WriteLine("visible false: "+ cmdBox.Text);
+            Console.WriteLine("visible false: " + cmdBox.Text);
             listForm.Visible = false;
-            try
+            //try
+            //{
+            // Console.WriteLine("await reset async");
+            //List<string> selectedList = await Task.Run<List<string>>(() => fileList.Select(words, token), token);
+
+            // TODO: fix the problem; too quick input "short kill" makes wrong list and after 10 seconds update list another wrong list without any operation
+
+            var selectedList = await Task.Run(() => fileList.Select(words, token), token);
+            // For syc
+            //var selectedList = fileList.Select(words, token);
+
+            if (selectedList.Count > 0 && !token.IsCancellationRequested)
             {
-                // Console.WriteLine("await reset async");
-                //List<string> selectedList = await Task.Run<List<string>>(() => fileList.Select(words, token), token);
+                listForm.SetList(selectedList);
+                listForm.Location = new Point(Location.X - 10, Location.Y + Height);
 
-                // TODO: fix the problem; too quick input "short kill" makes wrong list and after 10 seconds update list another wrong list without any operation
-
-                var selectedList = await Task.Run(() => fileList.Select(words, token), token);
-                // For syc
-                //var selectedList = fileList.Select(words, token);
-
-                if (selectedList.Count > 0 && !token.IsCancellationRequested)
-                {
-                    listForm.SetList(selectedList);
-                    listForm.Location = new Point(Location.X - 10, Location.Y + Height);
-
-                    Console.WriteLine("visible true: "+cmdBox.Text);
-                    listForm.Visible = true;
-                    Activate();
-                }
+                Console.WriteLine("visible true: " + cmdBox.Text);
+                listForm.Visible = true;
+                Activate();
             }
-            catch (OperationCanceledException)
-            {
-                Console.WriteLine("Cancel occurs TextChanged");
-                throw;
-            }
+            //}
+            //catch (OperationCanceledException)
+            //{
+            //    Console.WriteLine("Cancel occurs TextChanged");
+            //    throw;
+            //}
+
             // tokenSource.Dispose();
             // tokenSource = null;
 
@@ -163,7 +170,7 @@ namespace MiLauncher
             //{
             //    listForm.Visible = false;
             //}
-            Console.WriteLine("text change finished: "+ cmdBox.Text);
+            Console.WriteLine("text change finished: " + cmdBox.Text);
 
         }
 
