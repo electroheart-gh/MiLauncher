@@ -43,14 +43,14 @@ namespace MiLauncher
             // Update listView
             listView.Items.Clear();
 
-            // TODO: Consider to change async method because performance issue should happen with network drive
-            // TODO: examine if hyphen(-) works properly in regex
+            // TODO: --- Consider to change async method because performance issue should happen with network drive
+            // TODO: --- examine if hyphen(-) works properly in regex
 
             // Simple Parse by space to split patterns
             string[] patterns = text.Split(' ');
 
             // Create list view by pattern matching from fileList
-            // TODO: change or combine input of list view by user command or config,
+            // TODO: --- change or combine input of list view by user command or config,
             // real time search and/or pre-scanned file list (priority, access time, created time etc.)
 
             try
@@ -114,7 +114,7 @@ namespace MiLauncher
                     Height = listView.GetItemRect(0).Height * listView.Items.Count + 30;
                     Width = listView.GetItemRect(0).Width + 40;
 
-                    // TODO: try to delete the following line
+                    // TODO: --- try to delete the following line
                     StartPosition = FormStartPosition.Manual;
 
                     // Select the first line and change its color
@@ -126,9 +126,8 @@ namespace MiLauncher
             }
             catch (OperationCanceledException)
             {
-                // TODO: CACELLATION does not work!!!
+                // TODO: --- CACELLATION does not work!!!
                 Console.WriteLine("cancel occurs");
-                throw;
             }
 
             Console.WriteLine("reset finished");
@@ -145,17 +144,10 @@ namespace MiLauncher
             // Update listView
             listView.Items.Clear();
 
-            // TODO: Parse text to exec special command such as multi pattern search,  full path search, calc etc.
-            // TODO: Consider to change async method because performance issue should happen with network drive
-            // TODO: examine if hyphen(-) works properly in regex
-
             // Simple Parse by space to split patterns
             string[] patterns = text.Split(' ');
 
             // Create list view by pattern matching from fileList
-            // TODO: change or combine input of list view by user command or config,
-            // real time search and/or pre-scanned file list (priority, access time, created time etc.)
-
             try
             {
                 //foreach (var fn in fileList.Items)
@@ -217,7 +209,7 @@ namespace MiLauncher
                     Height = listView.GetItemRect(0).Height * listView.Items.Count + 30;
                     Width = listView.GetItemRect(0).Width + 40;
 
-                    // TODO: try to delete the following line
+                    // TODO: --- try to delete the following line
                     StartPosition = FormStartPosition.Manual;
 
                     // Select the first line and change its color
@@ -227,7 +219,7 @@ namespace MiLauncher
             }
             catch (OperationCanceledException)
             {
-                // TODO: CACELLATION does not work!!!
+                // TODO: --- CACELLATION does not work!!!
                 Console.WriteLine("cancel occurs");
                 throw;
             }
@@ -250,21 +242,29 @@ namespace MiLauncher
         //internal void SetList(List<string> list)
         internal void SetList(List<string> list)
         {
+
             listView.Items.Clear();
-            foreach (string item in list)
+
+            if (list.Count == 0)
             {
-                listView.Items.Add(item);
+                Height = 0;
+                listView.Columns[0].Width= 0;
+                Width = 100;
             }
-            // Set size and location
-            listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-            Height = listView.GetItemRect(0).Height * listView.Items.Count + 30;
-            Width = listView.GetItemRect(0).Width + 40;
+            else
+            {
+                foreach (string item in list)
+                {
+                    listView.Items.Add(item);
+                }
+                listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
 
-            // TODO: try to delete the following line
-            StartPosition = FormStartPosition.Manual;
+                Height = listView.GetItemRect(0).Height * listView.Items.Count + 30;
+                Width = listView.GetItemRect(0).Width + 40;
 
-            // Select the first line and change its color
-            listView.Items[0].Selected = true;
+                // Select the first line and change its color
+                listView.Items[0].Selected = true;
+            }
         }
     }
 }

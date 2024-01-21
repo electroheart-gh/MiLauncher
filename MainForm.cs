@@ -70,6 +70,9 @@ namespace MiLauncher
 
             // Test Code
             fileList = FileList.FileListForTest();
+            //fileList = FileList.Load();
+            //fileList = await Task.Run(() => fileList.Search(token), token);
+
         }
         void hotKey_HotKeyPush(object sender, EventArgs e)
         {
@@ -99,7 +102,7 @@ namespace MiLauncher
         private async void cmdBox_TextChanged(object sender, EventArgs e)
         {
 
-            Console.WriteLine("text change started: " + cmdBox.Text);
+            // Console.WriteLine("text change started: " + cmdBox.Text);
 
             if (cmdBox.Text.Count() == 0)
             {
@@ -123,54 +126,31 @@ namespace MiLauncher
             tokenSource = new CancellationTokenSource();
             CancellationToken token = tokenSource.Token;
 
-            Console.WriteLine("visible false: " + cmdBox.Text);
+            // Console.WriteLine("visible false: " + cmdBox.Text);
             listForm.Visible = false;
-            //try
-            //{
+
+
             // Console.WriteLine("await reset async");
-            //List<string> selectedList = await Task.Run<List<string>>(() => fileList.Select(words, token), token);
-
-            // TODO: fix the problem; too quick input "short kill" makes wrong list and after 10 seconds update list another wrong list without any operation
-
             var selectedList = await Task.Run(() => fileList.Select(words, token), token);
             // For syc
-            //var selectedList = fileList.Select(words, token);
+            // var selectedList = fileList.Select(words, token);
 
-            if (selectedList.Count > 0 && !token.IsCancellationRequested)
+            // TODO: Consider how to show file search is running/finished
+            //if (selectedList.Count > 0 && !token.IsCancellationRequested)
+            if (!token.IsCancellationRequested)
             {
                 listForm.SetList(selectedList);
                 listForm.Location = new Point(Location.X - 10, Location.Y + Height);
 
-                Console.WriteLine("visible true: " + cmdBox.Text);
+                // Console.WriteLine("visible true: " + cmdBox.Text);
                 listForm.Visible = true;
                 Activate();
             }
-            //}
-            //catch (OperationCanceledException)
-            //{
-            //    Console.WriteLine("Cancel occurs TextChanged");
-            //    throw;
-            //}
 
             // tokenSource.Dispose();
             // tokenSource = null;
 
-
-            // if (listForm.Reset(fileList, cmdBox.Text))
-
-            //if (result)
-            //{
-            //    //if list has any items, 
-            //    listForm.StartPosition = FormStartPosition.Manual;
-            //    listForm.Location = new Point(Location.X - 10, Location.Y + Height);
-            //    listForm.Visible = true;
-            //    Activate();
-            //}
-            //else
-            //{
-            //    listForm.Visible = false;
-            //}
-            Console.WriteLine("text change finished: " + cmdBox.Text);
+            // Console.WriteLine("text change finished: " + cmdBox.Text);
 
         }
 
@@ -324,7 +304,7 @@ namespace MiLauncher
             // TODO: implement crawl folder mode like zii launcher, which requires another ListView class
             // TODO: implement full path search mode, which should update ListForm class as well
             // TODO: implement sorting list by timestamp, priority and alphabetic, which should update ListForm and FileList classes as well
-            // TODO: implement search history using C-i, C-o
+            // TODO: implement search history using M-p, M-n
         }
 
         private void MainForm_Deactivate(object sender, EventArgs e)

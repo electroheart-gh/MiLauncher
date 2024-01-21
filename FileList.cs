@@ -89,10 +89,8 @@ namespace MiLauncher
 
             try
             {
-                //token.ThrowIfCancellationRequested();
-                //foreach (var fn in fileList.Items)
-                //foreach (var fn in Directory.EnumerateFiles(@"C:\Users\JUNJI\", "*", SearchOption.AllDirectories))
-
+                //foreach (var fn in Items)
+                //foreach (var fn in DirectorySearch.EnumerateAllFiles(@"C:\Users\JUNJI\"))
                 foreach (var fn in DirectorySearch.EnumerateAllFiles(@"C:\Users\JUNJI\Desktop\"))
                 {
                     //Console.WriteLine(cancellationToken.IsCancellationRequested);
@@ -146,11 +144,9 @@ namespace MiLauncher
             }
             catch (OperationCanceledException)
             {
-                // TODO: CACELLATION does not work!!!
-                Console.WriteLine("cancel occurs Select");
+                // Console.WriteLine("cancel occurs Select");
                 selectedList.Clear();
                 return selectedList;
-                //throw;
             }
 
         }
