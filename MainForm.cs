@@ -29,6 +29,7 @@ namespace MiLauncher
         // Constant
         private string settingsFilePath = "mySettings.json"; // 設定ファイルのパス
         private string fileListDataPath = "FileList.dat";
+        private char[] wordSeparator = {' '};
 
         //
         // Constructor
@@ -57,8 +58,10 @@ namespace MiLauncher
             }
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
+        private async void MainForm_Load(object sender, EventArgs e)
         {
+            Console.WriteLine("MainForm Load");
+
             // Global Hot Key
             hotKey = new HotKey(MOD_KEY.ALT | MOD_KEY.CONTROL, Keys.F);
             hotKey.HotKeyPush += new EventHandler(hotKey_HotKeyPush);
@@ -70,8 +73,14 @@ namespace MiLauncher
 
             // Test Code
             fileList = FileList.FileListForTest();
+            Console.WriteLine("fileList.count 1st: " + fileList.Items.Count);
+
             //fileList = FileList.Load();
-            //fileList = await Task.Run(() => fileList.Search(token), token);
+
+            // TODO: consider when to run the file search !!!
+            string[] searchPaths = { @"C:\Users\JUNJI\Desktop\", @"E:\Documents\RocksmithTabs\" };
+            fileList = await Task.Run(() => fileList.Search(searchPaths));
+            Console.WriteLine("fileList.count after search: " + fileList.Items.Count);
 
         }
         void hotKey_HotKeyPush(object sender, EventArgs e)
@@ -111,7 +120,8 @@ namespace MiLauncher
             }
 
             // TODO: Parse text to exec special command such as multi pattern search,  full path search, calc etc.
-            var words = cmdBox.Text.Split(' ');
+            var words = cmdBox.Text.Split(wordSeparator, StringSplitOptions.RemoveEmptyEntries);
+
 
             // TODO: Determine what to do by args
             // The followings are codes for normal search

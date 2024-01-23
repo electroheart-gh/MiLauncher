@@ -64,20 +64,94 @@ namespace MiLauncher
         //
         public static FileList FileListForTest()
         {
-            FileList fileList = new FileList();
+            var fileListTest = new FileList();
+            string folderPath = @"C:\Users\JUNJI\Desktop\tools\backup script";
             //string folderPath = @"C:\Users\JUNJI\Desktop\tools";
-            string folderPath = @"C:\Users\JUNJI\Desktop\";
+            //string folderPath = @"C:\Users\JUNJI\Desktop\";
             string[] files = Directory.GetFiles(folderPath, "*", SearchOption.AllDirectories);
 
             foreach (string file in files)
             {
                 // Console.WriteLine(Path.GetFileName(file));
-                fileList.Items.Add(new FileListInfo(Path.GetFileName(file), file, 0));
+                fileListTest.Items.Add(new FileListInfo(Path.GetFileName(file), file, 0));
             }
-            return fileList;
+            Console.WriteLine("FileListForTest count: " + fileListTest.Items.Count);
+            return fileListTest;
         }
 
         internal List<string> Select(string[] words, CancellationToken token)
+        {
+            List<string> selectedList = new List<string>();
+            Migemo migemo = new Migemo("./Dict/migemo-dict");
+            Regex regex;
+
+            // TODO: Make them configurable
+            const int migemoMinLength = 3;
+            const int maxListLine = 50;
+
+            try
+            {
+                foreach (var fn in Items)
+                //foreach (var fn in DirectorySearch.EnumerateAllFiles(@"C:\Users\JUNJI\"))
+                //foreach (var fn in DirectorySearch.EnumerateAllFiles(@"C:\Users\JUNJI\Desktop\"))
+                {
+                    //Console.WriteLine(cancellationToken.IsCancellationRequested);
+                    var patternMatched = true;
+
+                    foreach (var pattern in words)
+                    {
+                         token.ThrowIfCancellationRequested();
+                        // Simple string search
+                        if (pattern.Length < migemoMinLength)
+                        {
+                            if (fn.FileName.Contains(pattern))
+                            {
+                                patternMatched = false;
+                                break;
+                            }
+                        }
+                        // Migemo search
+                        else
+                        {
+                            try
+                            {
+                                regex = migemo.GetRegex(pattern);
+                            }
+                            catch (ArgumentException)
+                            {
+                                regex = new Regex(pattern);
+                            }
+                            // Debug.WriteLine("\"" + regex.ToString() + "\"");  //生成された正規表現をデバッグコンソールに出力
+                            if (!Regex.IsMatch(fn.FileName, regex.ToString(), RegexOptions.IgnoreCase))
+                            {
+                                patternMatched = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (patternMatched)
+                    {
+                        //listView.Items.Add(fn.FullPathName);
+                        selectedList.Add(fn.FullPathName);
+                        // max count should be const and configurable
+                        if (selectedList.Count > maxListLine)
+                        {
+                            break;
+                        }
+                    }
+                }
+                return selectedList;
+            }
+            catch (OperationCanceledException)
+            {
+                // Console.WriteLine("cancel occurs Select");
+                selectedList.Clear();
+                return selectedList;
+            }
+
+        }
+
+        internal List<string> SelectRealtimeSearch(string[] words, CancellationToken token)
         {
             List<string> selectedList = new List<string>();
             Migemo migemo = new Migemo("./Dict/migemo-dict");
@@ -98,7 +172,7 @@ namespace MiLauncher
 
                     foreach (var pattern in words)
                     {
-                         token.ThrowIfCancellationRequested();
+                        token.ThrowIfCancellationRequested();
                         // Simple string search
                         if (pattern.Length < migemoMinLength)
                         {
@@ -149,6 +223,25 @@ namespace MiLauncher
                 return selectedList;
             }
 
+        }
+
+        internal FileList Search(string[] searchPaths)
+        {
+            var fileList = new FileList();
+            //string folderPath = @"C:\Users\JUNJI\Desktop\tools";
+
+            //string[] files = Directory.GetFiles(folderPath, "*", SearchOption.AllDirectories);
+
+            //foreach (var fn in DirectorySearch.EnumerateAllFiles(@"C:\Users\JUNJI\Desktop\"))
+            foreach (var searchPath in searchPaths)
+            {
+                foreach(var fn in DirectorySearch.EnumerateAllFiles(searchPath))
+            {
+                    // Console.WriteLine(Path.GetFileName(file));
+                    fileList.Items.Add(new FileListInfo(Path.GetFileName(fn), fn, 0));
+                }
+            }
+            return fileList;
         }
     }
 }
