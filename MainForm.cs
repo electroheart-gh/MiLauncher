@@ -25,6 +25,7 @@ namespace MiLauncher
         private ListForm listForm;
         private FileList fileList;
         private CancellationTokenSource tokenSource;
+        private AppSettings appSettings;
 
         // Constant
         private string settingsFilePath = "mySettings.json"; // 設定ファイルのパス
@@ -68,19 +69,20 @@ namespace MiLauncher
 
             // List Form
             listForm = new ListForm();
+
             // File List
-            //fileList = SettingManager.LoadSettings<FileList>(fileListDataPath);
-
+            fileList = SettingManager.LoadSettings<FileList>(fileListDataPath);
             // Test Code
-            fileList = FileList.FileListForTest();
-            Console.WriteLine("fileList.count 1st: " + fileList.Items.Count);
-
-            //fileList = FileList.Load();
+            // fileList = FileList.FileListForTest();
 
             // TODO: consider when to run the file search !!!
-            string[] searchPaths = { @"C:\Users\JUNJI\Desktop\", @"E:\Documents\RocksmithTabs\" };
+            // TODO: MUST make it configurable !!!
+            //string[] searchPaths = { @"C:\Users\JUNJI\Desktop\", @"E:\Documents\RocksmithTabs\" };
+            //string[] searchPaths = { @"C:\Users\JUNJI\Desktop\"};
+            string[] searchPaths = { @"C:\Users\JUNJI\Desktop\", @"E:\Documents\" };
             fileList = await Task.Run(() => fileList.Search(searchPaths));
             Console.WriteLine("fileList.count after search: " + fileList.Items.Count);
+            SettingManager.SaveSettings(fileList, fileListDataPath);
 
         }
         void hotKey_HotKeyPush(object sender, EventArgs e)
@@ -169,7 +171,7 @@ namespace MiLauncher
         // which requires to check KeyChar of Ctrl-(char) in advance of coding
         private void cmdBox_KeyDown(object sender, KeyEventArgs e)
         {
-            // TODO: make keymap to be configurable
+            // TODO: implement keymap class to make keymap configurable
 
             // Close MainForm
             if (e.KeyCode == Keys.Escape)
@@ -180,7 +182,6 @@ namespace MiLauncher
                 Console.WriteLine("visible false by ESC");
                 listForm.Visible = false;
             }
-
             // Exec file with associated app
             if (e.KeyCode == Keys.Enter || (e.KeyCode == Keys.M && ModifierKeys == Keys.Control))
             {
@@ -199,7 +200,6 @@ namespace MiLauncher
                 Visible = false;
                 listForm.Visible = false;
             }
-
             // beginning of line
             if (e.KeyCode == Keys.A && ModifierKeys == Keys.Control)
             {
@@ -223,7 +223,6 @@ namespace MiLauncher
                     cmdBox.SelectionStart--;
                 }
             }
-
             // backspace
             if (e.KeyCode == Keys.H && ModifierKeys == Keys.Control)
             {
@@ -244,7 +243,6 @@ namespace MiLauncher
                     cmdBox.SelectionStart = pos;
                 }
             }
-
             // select next file
             if (e.KeyCode == Keys.N && ModifierKeys == Keys.Control)
             {
@@ -284,7 +282,6 @@ namespace MiLauncher
                     }
                 }
             }
-
             // forward word
             if (e.KeyCode == Keys.F && ModifierKeys == Keys.Alt)
             {
@@ -300,15 +297,22 @@ namespace MiLauncher
                 var m = pattern.Match(cmdBox.Text.Substring(0, cmdBox.SelectionStart));
                 cmdBox.SelectionStart = m.Index;
             }
-
-            // TODO: delete word
+            // delete word
             if (e.KeyCode == Keys.D && ModifierKeys == Keys.Alt)
             {
+                var cursorPosition = cmdBox.SelectionStart;
+                var pattern = new Regex(@"\w+\W*");
+                cmdBox.Text = pattern.Replace(cmdBox.Text, "", 1, cursorPosition);
+                cmdBox.SelectionStart = cursorPosition;
             }
-
-            // TODO: backward delete word
+            // backward delete word
             if (e.KeyCode == Keys.H && ModifierKeys == Keys.Alt)
             {
+                // Using Non-backtracking and negative lookahead assertion of Regex
+                var pattern = new Regex(@"(?>\w+\W*)(?!\w)");
+                var firstHalf = pattern.Replace(cmdBox.Text.Substring(0, cmdBox.SelectionStart), "");
+                cmdBox.Text = firstHalf + cmdBox.Text.Substring(cmdBox.SelectionStart);
+                cmdBox.SelectionStart = firstHalf.Length;
             }
 
             // TODO: implement crawl folder mode like zii launcher, which requires another ListView class
@@ -319,7 +323,8 @@ namespace MiLauncher
 
         private void MainForm_Deactivate(object sender, EventArgs e)
         {
-            SettingManager.SaveSettings<FileList>(fileList, fileListDataPath);
+            // TODO: consider when to save fileList
+            // SettingManager.SaveSettings<FileList>(fileList, fileListDataPath);
         }
     }
 }
