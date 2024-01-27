@@ -235,6 +235,8 @@ namespace MiLauncher
             {
                 // TODO: make it configurable
                 e.Graphics.FillRectangle(Brushes.LightGray, e.Bounds);
+
+                // TODO: Display the file in red if file not exist
             }
             e.DrawText();
         }

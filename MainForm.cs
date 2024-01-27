@@ -30,6 +30,7 @@ namespace MiLauncher
         // Constant
         private string settingsFilePath = "mySettings.json"; // 設定ファイルのパス
         private string fileListDataPath = "FileList.dat";
+        // TODO: If .NET updated, consider use wordSeparator as <char> instead of <char[]>
         private char[] wordSeparator = {' '};
 
         //
@@ -112,43 +113,34 @@ namespace MiLauncher
 
         private async void cmdBox_TextChanged(object sender, EventArgs e)
         {
-
             // Console.WriteLine("text change started: " + cmdBox.Text);
+            listForm.Visible = false;
 
-            if (cmdBox.Text.Count() == 0)
-            {
-                listForm.Visible = false;
-                return;
-            }
-
-            // TODO: Parse text to exec special command such as multi pattern search,  full path search, calc etc.
-            var words = cmdBox.Text.Split(wordSeparator, StringSplitOptions.RemoveEmptyEntries);
-
-
-            // TODO: Determine what to do by args
-            // The followings are codes for normal search
-
-            // Cancel preceding process
             if (tokenSource != null)
             {
-                Console.WriteLine("cancel()");
                 tokenSource.Cancel();
                 tokenSource = null;
             }
+
+            if (cmdBox.Text.Count() == 0)
+            {
+                return;
+            }
+
+            // TODO: Parse text to determine what todo, exec special command such as calculation etc.
+            var words = cmdBox.Text.Split(wordSeparator, StringSplitOptions.RemoveEmptyEntries);
+
+            //
+            // The followings are codes for normal search
+            //
             tokenSource = new CancellationTokenSource();
             CancellationToken token = tokenSource.Token;
 
-            // Console.WriteLine("visible false: " + cmdBox.Text);
-            listForm.Visible = false;
-
-
-            // Console.WriteLine("await reset async");
             var selectedList = await Task.Run(() => fileList.Select(words, token), token);
-            // For syc
+            // For sync test
             // var selectedList = fileList.Select(words, token);
 
             // TODO: Consider how to show file search is running/finished
-            //if (selectedList.Count > 0 && !token.IsCancellationRequested)
             if (!token.IsCancellationRequested)
             {
                 listForm.SetList(selectedList);
@@ -158,12 +150,9 @@ namespace MiLauncher
                 listForm.Visible = true;
                 Activate();
             }
-
             // tokenSource.Dispose();
             // tokenSource = null;
-
             // Console.WriteLine("text change finished: " + cmdBox.Text);
-
         }
 
         // Implement Ctrl- and Alt- commands in KeyDown event
@@ -186,14 +175,17 @@ namespace MiLauncher
             if (e.KeyCode == Keys.Enter || (e.KeyCode == Keys.M && ModifierKeys == Keys.Control))
             {
                 // TODO: Make it method of listForm
-                // TODO: Display the file in red
-                try
+                if (listForm.Visible)
                 {
-                    Process.Start(listForm.listView.SelectedItems[0].Text);
-                }
-                catch (System.IO.FileNotFoundException)
-                {
-                    Console.WriteLine("File Not Found");
+                    try
+                    {
+                        Process.Start(listForm.listView.SelectedItems[0].Text);
+                    }
+                    catch (System.IO.FileNotFoundException)
+                    {
+                        // TODO: Display the file in red if file not exist
+                        Console.WriteLine("File Not Found");
+                    }
                 }
 
                 cmdBox.Text = string.Empty;
@@ -318,7 +310,6 @@ namespace MiLauncher
             }
 
             // TODO: implement crawl folder mode like zii launcher, which requires another ListView class
-            // TODO: implement full path search mode, which should update ListForm class as well
             // TODO: implement sorting list by timestamp, priority and alphabetic, which should update ListForm and FileList classes as well
             // TODO: implement search history using M-p, M-n
         }
