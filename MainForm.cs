@@ -285,7 +285,7 @@ namespace MiLauncher
             // forward word
             if (e.KeyCode == Keys.F && ModifierKeys == Keys.Alt)
             {
-                var pattern = new Regex(@"\w+\W*");
+                var pattern = new Regex(@"\w*\W*");
                 var m = pattern.Match(cmdBox.Text, cmdBox.SelectionStart);
                 cmdBox.SelectionStart = Math.Max(m.Index + m.Length, cmdBox.SelectionStart);
             }
@@ -293,7 +293,7 @@ namespace MiLauncher
             if (e.KeyCode == Keys.B && ModifierKeys == Keys.Alt)
             {
                 // Using Non-backtracking and negative lookahead assertion of Regex
-                var pattern = new Regex(@"(?>\w+\W*)(?!\w)");
+                var pattern = new Regex(@"(?>\w*\W*)(?!\w)");
                 var m = pattern.Match(cmdBox.Text.Substring(0, cmdBox.SelectionStart));
                 cmdBox.SelectionStart = m.Index;
             }
@@ -301,7 +301,8 @@ namespace MiLauncher
             if (e.KeyCode == Keys.D && ModifierKeys == Keys.Alt)
             {
                 var cursorPosition = cmdBox.SelectionStart;
-                var pattern = new Regex(@"\w+\W*");
+                //var pattern = new Regex(@"\w+\W*");
+                var pattern = new Regex(@"\w*\W*");
                 cmdBox.Text = pattern.Replace(cmdBox.Text, "", 1, cursorPosition);
                 cmdBox.SelectionStart = cursorPosition;
             }
@@ -309,7 +310,8 @@ namespace MiLauncher
             if (e.KeyCode == Keys.H && ModifierKeys == Keys.Alt)
             {
                 // Using Non-backtracking and negative lookahead assertion of Regex
-                var pattern = new Regex(@"(?>\w+\W*)(?!\w)");
+                //var pattern = new Regex(@"(?>\w+\W*)(?!\w)");
+                var pattern = new Regex(@"(?>\w*\W*)(?!\w)");
                 var firstHalf = pattern.Replace(cmdBox.Text.Substring(0, cmdBox.SelectionStart), "");
                 cmdBox.Text = firstHalf + cmdBox.Text.Substring(cmdBox.SelectionStart);
                 cmdBox.SelectionStart = firstHalf.Length;

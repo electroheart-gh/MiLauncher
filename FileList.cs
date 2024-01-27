@@ -89,6 +89,40 @@ namespace MiLauncher
             const int migemoMinLength = 3;
             const int maxListLine = 50;
 
+            bool IsPatternMatch(string name, string pattern)
+            {
+                // Simple search
+                if (pattern.Length < migemoMinLength)
+                {
+                    //if (name.IndexOf(pattern, StringComparison.OrdinalIgnoreCase) > 0)
+                    if (name.ToLower().Contains(pattern.ToLower()))
+                    {
+                        return true;
+                    }
+                }
+                // Migemo search
+                else
+                {
+                    try
+                    {
+                        regex = migemo.GetRegex(pattern);
+                        // Console.WriteLine("\"" + regex.ToString() + "\"");  //生成された正規表現をコンソールに出力
+                        if (Regex.IsMatch(name, regex.ToString(), RegexOptions.IgnoreCase))
+                        {
+                            return true;
+                        }
+                    }
+                    catch (ArgumentException)
+                    {
+                        if (name.IndexOf(pattern, StringComparison.OrdinalIgnoreCase) > 0)
+                        {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+
             try
             {
                 foreach (var fn in Items)
@@ -100,33 +134,29 @@ namespace MiLauncher
 
                     foreach (var pattern in words)
                     {
-                         token.ThrowIfCancellationRequested();
-                        // Simple string search
-                        if (pattern.Length < migemoMinLength)
+                        token.ThrowIfCancellationRequested();
+
+                        switch (pattern.Substring(0, 1))
                         {
-                            if (fn.FileName.Contains(pattern))
-                            {
-                                patternMatched = false;
+                            case "-":
+                                patternMatched = !IsPatternMatch(fn.FullPathName, pattern.Substring(1));
                                 break;
-                            }
+
+                            case "!":
+                                patternMatched = !IsPatternMatch(fn.FileName, pattern.Substring(1));
+                                break;
+
+                            case "\\":
+                                patternMatched = IsPatternMatch(fn.FullPathName, pattern.Substring(1));
+                                break;
+
+                            default:
+                                patternMatched = IsPatternMatch(fn.FileName, pattern);
+                                break;
                         }
-                        // Migemo search
-                        else
+                        if (!patternMatched)
                         {
-                            try
-                            {
-                                regex = migemo.GetRegex(pattern);
-                            }
-                            catch (ArgumentException)
-                            {
-                                regex = new Regex(pattern);
-                            }
-                            // Debug.WriteLine("\"" + regex.ToString() + "\"");  //生成された正規表現をデバッグコンソールに出力
-                            if (!Regex.IsMatch(fn.FileName, regex.ToString(), RegexOptions.IgnoreCase))
-                            {
-                                patternMatched = false;
-                                break;
-                            }
+                            break;
                         }
                     }
                     if (patternMatched)
@@ -235,8 +265,8 @@ namespace MiLauncher
             //foreach (var fn in DirectorySearch.EnumerateAllFiles(@"C:\Users\JUNJI\Desktop\"))
             foreach (var searchPath in searchPaths)
             {
-                foreach(var fn in DirectorySearch.EnumerateAllFiles(searchPath))
-            {
+                foreach (var fn in DirectorySearch.EnumerateAllFiles(searchPath))
+                {
                     // Console.WriteLine(Path.GetFileName(file));
                     fileList.Items.Add(new FileListInfo(Path.GetFileName(fn), fn, 0));
                 }
