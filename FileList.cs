@@ -94,9 +94,7 @@ namespace MiLauncher
                 // Simple search
                 if (pattern.Length < migemoMinLength)
                 {
-                    // TODO: if .NET updated, consider use name.Contains(pattern, optionIgnoreCase)
-                    //if (name.IndexOf(pattern, StringComparison.OrdinalIgnoreCase) > 0)
-                    if (name.ToLower().Contains(pattern.ToLower()))
+                    if (name.Contains(pattern, StringComparison.OrdinalIgnoreCase))
                     {
                         return true;
                     }

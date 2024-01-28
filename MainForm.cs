@@ -30,8 +30,7 @@ namespace MiLauncher
         // Constant
         private string settingsFilePath = "mySettings.json"; // 設定ファイルのパス
         private string fileListDataPath = "FileList.dat";
-        // TODO: If .NET updated, consider use wordSeparator as <char> instead of <char[]>
-        private char[] wordSeparator = {' '};
+        private char wordSeparator = ' ';
 
         //
         // Constructor
@@ -73,6 +72,10 @@ namespace MiLauncher
 
             // File List
             fileList = SettingManager.LoadSettings<FileList>(fileListDataPath);
+            if (fileList == null)
+            {
+                fileList = new FileList();
+            }
             // Test Code
             // fileList = FileList.FileListForTest();
 
