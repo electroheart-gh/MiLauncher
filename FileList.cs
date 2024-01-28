@@ -1,6 +1,7 @@
 ﻿using KaoriYa.Migemo;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -23,20 +24,8 @@ namespace MiLauncher
 
         public FileList()
         {
-            //
-            // for pre-release
-            //
-            string folderPath = @"C:\Users\JUNJI\Desktop\tools"; // フォルダのパスを指定
-            string[] files = Directory.GetFiles(folderPath, "*", SearchOption.AllDirectories);
-
-            foreach (string file in files)
-            {
-                // Console.WriteLine(Path.GetFileName(file));
-                Items.Add(new FileListInfo(Path.GetFileName(file), file, 0));
-            }
-            //
-            //
-            //
+            Debug.WriteLine("blank file list");
+            //Items.Add(new FileListInfo(Path.GetFileName(file), file, 0));
         }
 
         public class FileListInfo

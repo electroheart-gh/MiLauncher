@@ -29,8 +29,10 @@ namespace MiLauncher
 
         // Constant
         private string settingsFilePath = "mySettings.json"; // 設定ファイルのパス
-        private string fileListDataPath = "FileList.dat";
-        private char wordSeparator = ' ';
+        private const string fileListDataPath = "FileList.dat";
+        private const char wordSeparator = ' ';
+        private const int CS_DROPSHADOW = 0x00020000;
+
 
         //
         // Constructor
@@ -38,6 +40,15 @@ namespace MiLauncher
         public MainForm()
         {
             InitializeComponent();
+        }
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.ClassStyle |= CS_DROPSHADOW;
+                return cp;
+            }
         }
 
         //
