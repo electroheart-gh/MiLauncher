@@ -193,7 +193,9 @@ namespace MiLauncher
                 {
                     try
                     {
-                        Process.Start(listForm.listView.SelectedItems[0].Text);
+                        //var psi = new ProcessStartInfo(listForm.listView.SelectedItems[0].Text);
+                        //Process.Start(psi);
+                        Process.Start("explorer.exe", listForm.listView.SelectedItems[0].Text);
                     }
                     catch (System.IO.FileNotFoundException)
                     {

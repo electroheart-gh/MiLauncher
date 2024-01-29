@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,9 +17,15 @@ namespace MiLauncher
         public static IEnumerable<string> EnumerateAllFiles(string path, string searchPattern)
         {
             var files = Enumerable.Empty<string>();
+            files = files.Append(path);
+            //Debug.WriteLine(string.Join(" ", files));
+            //Debug.WriteLine("path: " + path);
+            //Debug.WriteLine("files: " + files);
+
             try
             {
-                files = System.IO.Directory.EnumerateFiles(path, searchPattern);
+                //files = System.IO.Directory.EnumerateFiles(path, searchPattern);
+                files = System.IO.Directory.EnumerateFileSystemEntries(path, searchPattern);
             }
             catch (System.UnauthorizedAccessException)
             {
@@ -26,10 +33,7 @@ namespace MiLauncher
             try
             {
                 files = System.IO.Directory.EnumerateDirectories(path)
-                    .Aggregate<string, IEnumerable<string>>(
-                        files,
-                        (a, v) => a.Union(EnumerateAllFiles(v, searchPattern))
-                    );
+                    .Aggregate(files, (a, v) => a.Union(EnumerateAllFiles(v, searchPattern)));
             }
             catch (System.UnauthorizedAccessException)
             {
