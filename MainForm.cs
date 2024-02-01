@@ -187,7 +187,7 @@ namespace MiLauncher
                 listForm.Visible = false;
             }
             // Exec file with associated app
-            if (e.KeyCode == Keys.Enter || (e.KeyCode == Keys.M && ModifierKeys == Keys.Control))
+            if (e.KeyCode == Keys.Enter || (e.KeyCode == Keys.M && e.Control))
             {
                 // TODO: Make it method of listForm
                 if (listForm.Visible & listForm.listView.Items.Count > 0)
@@ -206,23 +206,23 @@ namespace MiLauncher
                 Visible = false;
                 listForm.Visible = false;
             }
-            // TODO: Fix beginning of line
-            if (e.KeyCode == Keys.A && ModifierKeys == Keys.Control)
+            // beginning of line
+            if (e.KeyCode == Keys.A && e.Control)
             {
                 cmdBox.SelectionStart = 0;
             }
             // end of line
-            if (e.KeyCode == Keys.E && ModifierKeys == Keys.Control)
+            if (e.KeyCode == Keys.E && e.Control)
             {
                 cmdBox.SelectionStart = cmdBox.Text.Length;
             }
             // forward char
-            if (e.KeyCode == Keys.F && ModifierKeys == Keys.Control)
+            if (e.KeyCode == Keys.F && e.Control)
             {
                 cmdBox.SelectionStart++;
             }
             // backward char
-            if (e.KeyCode == Keys.B && ModifierKeys == Keys.Control)
+            if (e.KeyCode == Keys.B && e.Control)
             {
                 if (cmdBox.SelectionStart > 0)
                 {
@@ -230,7 +230,7 @@ namespace MiLauncher
                 }
             }
             // backspace
-            if (e.KeyCode == Keys.H && ModifierKeys == Keys.Control)
+            if (e.KeyCode == Keys.H && e.Control)
             {
                 var pos = cmdBox.SelectionStart;
                 if (pos > 0)
@@ -240,7 +240,7 @@ namespace MiLauncher
                 }
             }
             // delete char
-            if (e.KeyCode == Keys.D && ModifierKeys == Keys.Control)
+            if (e.KeyCode == Keys.D && e.Control)
             {
                 var pos = cmdBox.SelectionStart;
                 if (pos < cmdBox.Text.Length)
@@ -250,7 +250,7 @@ namespace MiLauncher
                 }
             }
             // select next file
-            if (e.KeyCode == Keys.N && ModifierKeys == Keys.Control)
+            if (e.KeyCode == Keys.N && e.Control)
             {
                 // TODO: Try MultiSelect false
                 // TODO: Make it method of listForm
@@ -270,7 +270,7 @@ namespace MiLauncher
                 }
             }
             // select previous file
-            if (e.KeyCode == Keys.P && ModifierKeys == Keys.Control)
+            if (e.KeyCode == Keys.P && e.Control)
             {
                 // TODO: Make it method of listForm
                 // Assuming number of selected items should be one
@@ -289,14 +289,14 @@ namespace MiLauncher
                 }
             }
             // forward word
-            if (e.KeyCode == Keys.F && ModifierKeys == Keys.Alt)
+            if (e.KeyCode == Keys.F && e.Alt)
             {
                 var pattern = new Regex(@"\w*\W*");
                 var m = pattern.Match(cmdBox.Text, cmdBox.SelectionStart);
                 cmdBox.SelectionStart = Math.Max(m.Index + m.Length, cmdBox.SelectionStart);
             }
             // backward word
-            if (e.KeyCode == Keys.B && ModifierKeys == Keys.Alt)
+            if (e.KeyCode == Keys.B && e.Alt)
             {
                 // Using Non-backtracking and negative lookahead assertion of Regex
                 var pattern = new Regex(@"(?>\w*\W*)(?!\w)");
@@ -304,7 +304,7 @@ namespace MiLauncher
                 cmdBox.SelectionStart = m.Index;
             }
             // delete word
-            if (e.KeyCode == Keys.D && ModifierKeys == Keys.Alt)
+            if (e.KeyCode == Keys.D && e.Alt)
             {
                 var cursorPosition = cmdBox.SelectionStart;
                 //var pattern = new Regex(@"\w+\W*");
@@ -313,7 +313,7 @@ namespace MiLauncher
                 cmdBox.SelectionStart = cursorPosition;
             }
             // backward delete word
-            if (e.KeyCode == Keys.H && ModifierKeys == Keys.Alt)
+            if (e.KeyCode == Keys.H && e.Alt)
             {
                 // Using Non-backtracking and negative lookahead assertion of Regex
                 //var pattern = new Regex(@"(?>\w+\W*)(?!\w)");
@@ -332,6 +332,14 @@ namespace MiLauncher
         {
             // TODO: consider when to save fileList
             // SettingManager.SaveSettings<FileList>(fileList, fileListDataPath);
+        }
+
+        private void cmdBox_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            if (e.KeyCode == Keys.A && e.Control)
+            {
+                e.IsInputKey = true;
+            }
         }
     }
 }

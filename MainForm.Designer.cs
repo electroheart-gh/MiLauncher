@@ -59,6 +59,7 @@
             cmdBox.TextChanged += cmdBox_TextChanged;
             cmdBox.KeyDown += cmdBox_KeyDown;
             cmdBox.KeyPress += cmdBox_KeyPress;
+            cmdBox.PreviewKeyDown += cmdBox_PreviewKeyDown;
             // 
             // MainForm
             // 
