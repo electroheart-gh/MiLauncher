@@ -25,7 +25,7 @@ namespace MiLauncher
         private ListForm listForm;
         private FileList fileList;
         private CancellationTokenSource tokenSource;
-        private AppSettings appSettings;
+        //private AppSettings appSettings;
 
         // Constant
         private string settingsFilePath = "mySettings.json"; // 設定ファイルのパス
@@ -94,11 +94,12 @@ namespace MiLauncher
             // TODO: MUST make it configurable !!!
             //string[] searchPaths = { @"C:\Users\JUNJI\Desktop\", @"E:\Documents\RocksmithTabs\" };
             //string[] searchPaths = { @"C:\Users\JUNJI\Desktop\"};
-            string[] searchPaths = { @"C:\Users\JUNJI\Desktop\", @"E:\Documents\" };
-            fileList = await Task.Run(() => fileList.Search(searchPaths));
-            Console.WriteLine("fileList.count after search: " + fileList.Items.Count);
-            SettingManager.SaveSettings(fileList, fileListDataPath);
+            //string[] searchPaths = { @"C:\Users\JUNJI\Desktop\", @"E:\Documents\" };
+            var searchPaths = Program.appSettings.TargetFolders;
 
+            fileList = await Task.Run(() => fileList.Search(searchPaths));
+            //Debug.WriteLine("fileList.count after search: " + fileList.Items.Count);
+            SettingManager.SaveSettings(fileList, fileListDataPath);
         }
         void hotKey_HotKeyPush(object sender, EventArgs e)
         {
@@ -189,12 +190,10 @@ namespace MiLauncher
             if (e.KeyCode == Keys.Enter || (e.KeyCode == Keys.M && ModifierKeys == Keys.Control))
             {
                 // TODO: Make it method of listForm
-                if (listForm.Visible)
+                if (listForm.Visible & listForm.listView.Items.Count > 0)
                 {
                     try
                     {
-                        //var psi = new ProcessStartInfo(listForm.listView.SelectedItems[0].Text);
-                        //Process.Start(psi);
                         Process.Start("explorer.exe", listForm.listView.SelectedItems[0].Text);
                     }
                     catch (System.IO.FileNotFoundException)
@@ -203,12 +202,11 @@ namespace MiLauncher
                         Console.WriteLine("File Not Found");
                     }
                 }
-
                 cmdBox.Text = string.Empty;
                 Visible = false;
                 listForm.Visible = false;
             }
-            // beginning of line
+            // TODO: Fix beginning of line
             if (e.KeyCode == Keys.A && ModifierKeys == Keys.Control)
             {
                 cmdBox.SelectionStart = 0;

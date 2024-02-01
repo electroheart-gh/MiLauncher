@@ -10,8 +10,7 @@ namespace MiLauncher
     {
         // Global variable for configuration
         static string configFilePath = "myConfig.json";
-        static public AppSettings appSettings = new AppSettings();
-
+        static public AppSettings appSettings;
 
         /// <summary>
         /// The main entry point for the application.
@@ -20,7 +19,12 @@ namespace MiLauncher
         static void Main()
         {
             // Read configuration
-            var appSettings = SettingManager.LoadSettings<AppSettings>(configFilePath);
+            appSettings = SettingManager.LoadSettings<AppSettings>(configFilePath);
+            if (appSettings == null)
+            {
+                appSettings = new AppSettings();
+                SettingManager.SaveSettings(appSettings, configFilePath);
+            }
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

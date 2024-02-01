@@ -13,15 +13,9 @@ namespace MiLauncher
         {
             return EnumerateAllFiles(path, "*");
         }
-
         public static IEnumerable<string> EnumerateAllFiles(string path, string searchPattern)
         {
             var files = Enumerable.Empty<string>();
-            files = files.Append(path);
-            //Debug.WriteLine(string.Join(" ", files));
-            //Debug.WriteLine("path: " + path);
-            //Debug.WriteLine("files: " + files);
-
             try
             {
                 //files = System.IO.Directory.EnumerateFiles(path, searchPattern);
@@ -38,7 +32,6 @@ namespace MiLauncher
             catch (System.UnauthorizedAccessException)
             {
             }
-
             return files;
         }
     }
