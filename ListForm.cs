@@ -20,10 +20,6 @@ namespace MiLauncher
 {
     public partial class ListForm : Form
     {
-        // Variables
-        Migemo migemo = new Migemo("./Dict/migemo-dict");
-        Regex regex;
-
         public ListForm()
         {
             InitializeComponent();
@@ -41,10 +37,8 @@ namespace MiLauncher
             e.DrawText();
         }
 
-        //internal void SetList(List<string> list)
         internal void SetList(List<string> list)
         {
-
             listView.Items.Clear();
 
             if (list.Count == 0)
@@ -67,6 +61,24 @@ namespace MiLauncher
                 // Select the first line and change its color
                 listView.Items[0].Selected = true;
             }
+        }
+
+        internal string ExecFile()
+        {
+            if (Visible & listView.Items.Count > 0)
+            {
+                try
+                {
+                    Process.Start("explorer.exe", listView.SelectedItems[0].Text);
+                    Visible = false;
+                    return listView.SelectedItems[0].Text;
+                }
+                catch (FileNotFoundException)
+                {
+                    Debug.WriteLine("File Not Found");
+                }
+            }
+            return string.Empty;
         }
     }
 }

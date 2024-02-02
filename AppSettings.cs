@@ -9,26 +9,10 @@ namespace MiLauncher
 {
     internal class AppSettings
     {
+        // TODO: Consider to use <Record> Type
         public List<string> TargetFolders{ get; set; }
         public int MigemoMinLength {  get; set; }
         public int MaxListLine {  get; set; }
-
-        //// Configuration class to modify display of lblTaskName
-        //// If Pattern match, replace it with Substitution and set the Forecolor
-        //public List<NameModifier> NameModifiers { get; set; }
-        //public class NameModifier
-        //{
-        //    public string Pattern { get; set; }
-        //    public string Substitution { get; set; }
-        //    public string ForeColor { get; set; }
-
-        //    public NameModifier()
-        //    {
-        //        Pattern = string.Empty;
-        //        Substitution = string.Empty;
-        //        ForeColor = string.Empty;
-        //    }
-        //}
 
         public AppSettings()
         {

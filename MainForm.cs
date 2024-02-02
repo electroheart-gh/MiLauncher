@@ -28,7 +28,6 @@ namespace MiLauncher
         //private AppSettings appSettings;
 
         // Constant
-        private string settingsFilePath = "mySettings.json"; // 設定ファイルのパス
         private const string fileListDataPath = "FileList.dat";
         private const char wordSeparator = ' ';
         private const int CS_DROPSHADOW = 0x00020000;
@@ -87,17 +86,12 @@ namespace MiLauncher
             {
                 fileList = new FileList();
             }
-            // Test Code
-            // fileList = FileList.FileListForTest();
+            // Test Code: fileList = FileList.FileListForTest();
 
-            // TODO: consider when to run the file search !!!
-            // TODO: MUST make it configurable !!!
-            //string[] searchPaths = { @"C:\Users\JUNJI\Desktop\", @"E:\Documents\RocksmithTabs\" };
-            //string[] searchPaths = { @"C:\Users\JUNJI\Desktop\"};
-            //string[] searchPaths = { @"C:\Users\JUNJI\Desktop\", @"E:\Documents\" };
             var searchPaths = Program.appSettings.TargetFolders;
+            //string[] searchPaths = { @"C:\Users\JUNJI\Desktop\", @"E:\Documents\RocksmithTabs\" };
 
-            fileList = await Task.Run(() => fileList.Search(searchPaths));
+            fileList = await Task.Run(() => fileList.SearchFiles(searchPaths));
             //Debug.WriteLine("fileList.count after search: " + fileList.Items.Count);
             SettingManager.SaveSettings(fileList, fileListDataPath);
         }
@@ -118,7 +112,6 @@ namespace MiLauncher
             {
                 e.Handled = true;
             }
-
             // Disable default behavior for Enter and ESC including beep sound
             if (e.KeyChar == (char)Keys.Enter || e.KeyChar == (char)Keys.Escape)
             {
@@ -128,7 +121,6 @@ namespace MiLauncher
 
         private async void cmdBox_TextChanged(object sender, EventArgs e)
         {
-            // Console.WriteLine("text change started: " + cmdBox.Text);
             listForm.Visible = false;
 
             if (tokenSource != null)
@@ -136,38 +128,25 @@ namespace MiLauncher
                 tokenSource.Cancel();
                 tokenSource = null;
             }
-
             if (cmdBox.Text.Count() == 0)
             {
                 return;
             }
 
-            // TODO: Parse text to determine what todo, exec special command such as calculation etc.
-            var words = cmdBox.Text.Split(wordSeparator, StringSplitOptions.RemoveEmptyEntries);
-
-            //
-            // The followings are codes for normal search
-            //
             tokenSource = new CancellationTokenSource();
             CancellationToken token = tokenSource.Token;
 
+            var words = cmdBox.Text.Split(wordSeparator, StringSplitOptions.RemoveEmptyEntries);
             var selectedList = await Task.Run(() => fileList.Select(words, token), token);
-            // For sync test
-            // var selectedList = fileList.Select(words, token);
 
-            // TODO: Consider how to show file search is running/finished
             if (!token.IsCancellationRequested)
             {
                 listForm.SetList(selectedList);
                 listForm.Location = new Point(Location.X - 10, Location.Y + Height);
 
-                // Console.WriteLine("visible true: " + cmdBox.Text);
                 listForm.Visible = true;
                 Activate();
             }
-            // tokenSource.Dispose();
-            // tokenSource = null;
-            // Console.WriteLine("text change finished: " + cmdBox.Text);
         }
 
         // Implement Ctrl- and Alt- commands in KeyDown event
@@ -189,22 +168,11 @@ namespace MiLauncher
             // Exec file with associated app
             if (e.KeyCode == Keys.Enter || (e.KeyCode == Keys.M && e.Control))
             {
-                // TODO: Make it method of listForm
-                if (listForm.Visible & listForm.listView.Items.Count > 0)
-                {
-                    try
-                    {
-                        Process.Start("explorer.exe", listForm.listView.SelectedItems[0].Text);
-                    }
-                    catch (System.IO.FileNotFoundException)
-                    {
-                        // TODO: Display the file in red if file not exist
-                        Console.WriteLine("File Not Found");
-                    }
-                }
+                var fullPathName = listForm.ExecFile();
+                // priorityFileList.Entry(fullPathName);
                 cmdBox.Text = string.Empty;
                 Visible = false;
-                listForm.Visible = false;
+
             }
             // beginning of line
             if (e.KeyCode == Keys.A && e.Control)

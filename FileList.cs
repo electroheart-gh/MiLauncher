@@ -197,7 +197,7 @@ namespace MiLauncher
             }
         }
 
-        internal FileList Search(List<string> searchPaths)
+        internal FileList SearchFiles(List<string> searchPaths)
         {
             var fileList = new FileList();
             //string folderPath = @"C:\Users\JUNJI\Desktop\tools";
