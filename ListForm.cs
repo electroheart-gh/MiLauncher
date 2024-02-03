@@ -37,29 +37,30 @@ namespace MiLauncher
             e.DrawText();
         }
 
-        internal void SetList(List<string> list)
+        internal void SetList(IEnumerable<string> listItems)
         {
             listView.Items.Clear();
 
-            if (list.Count == 0)
+            if (listItems.Any())
             {
-                Height = 0;
-                listView.Columns[0].Width= 0;
-                Width = 100;
-            }
-            else
-            {
-                foreach (string item in list)
-                {
-                    listView.Items.Add(item);
-                }
-                listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+                //foreach (string item in list)
+                //{
+                //    listView.Items.Add(item);
+                //}
+                listView.Items.AddRange(listItems.Select(item => new ListViewItem(item)).ToArray());
 
+                listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
                 Height = listView.GetItemRect(0).Height * listView.Items.Count + 30;
                 Width = listView.GetItemRect(0).Width + 40;
 
                 // Select the first line and change its color
                 listView.Items[0].Selected = true;
+            }
+            else
+            {
+                Height = 0;
+                listView.Columns[0].Width = 0;
+                Width = 100;
             }
         }
 

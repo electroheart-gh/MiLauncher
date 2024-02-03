@@ -10,15 +10,15 @@ namespace MiLauncher
     internal class AppSettings
     {
         // TODO: Consider to use <Record> Type
-        public List<string> TargetFolders{ get; set; }
-        public int MigemoMinLength {  get; set; }
-        public int MaxListLine {  get; set; }
+        public List<string> TargetFolders { get; set; }
+        public int MigemoMinLength { get; set; }
+        public int MaxListLine { get; set; }
 
         public AppSettings()
         {
             //var userProfilePath = Environment.GetEnvironmentVariable("UserProfile");
             //TargetFolders = new List<string>();
-            TargetFolders = [Environment.GetFolderPath(Environment.SpecialFolder.Desktop),Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)];
+            TargetFolders = [Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)];
 
             MigemoMinLength = 3;
             MaxListLine = 50;

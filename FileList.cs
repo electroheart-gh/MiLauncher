@@ -135,7 +135,7 @@ namespace MiLauncher
             }
         }
 
-        internal List<string> SelectRealtimeSearch(string[] words, CancellationToken token)
+        internal List<string> SelectRealtimeSearch(string searchPath, string[] words, CancellationToken token)
         {
             var selectedList = new List<string>();
             var migemo = new Migemo("./Dict/migemo-dict");
@@ -143,7 +143,8 @@ namespace MiLauncher
 
             try
             {
-                foreach (var fn in DirectorySearch.EnumerateAllFiles(@"C:\Users\JUNJI\Desktop\"))
+                //foreach (var fn in DirectorySearch.EnumerateAllFiles(@"C:\Users\JUNJI\Desktop\"))
+                foreach (var fn in DirectorySearch.EnumerateAllFiles(searchPath))
                 {
                     var patternMatched = true;
 
@@ -197,21 +198,27 @@ namespace MiLauncher
             }
         }
 
-        internal FileList SearchFiles(List<string> searchPaths)
+        internal FileList SearchFiles(IEnumerable<string> searchPaths)
         {
             var fileList = new FileList();
-            //string folderPath = @"C:\Users\JUNJI\Desktop\tools";
-            //string[] files = Directory.GetFiles(folderPath, "*", SearchOption.AllDirectories);
 
-            //foreach (var fn in DirectorySearch.EnumerateAllFiles(@"C:\Users\JUNJI\Desktop\"))
-            foreach (var searchPath in searchPaths)
-            {
-                foreach (var fn in DirectorySearch.EnumerateAllFiles(searchPath))
-                {
-                    // Console.WriteLine(Path.GetFileName(file));
-                    fileList.Items.Add(new FileListInfo(Path.GetFileName(fn), fn, 0));
-                }
-            }
+            //foreach (var searchPath in searchPaths)
+            //{
+            //    foreach (var fn in DirectorySearch.EnumerateAllFiles(searchPath))
+            //    {
+            //        // Console.WriteLine(Path.GetFileName(file));
+            //        fileList.Items.Add(new FileListInfo(Path.GetFileName(fn), fn, 0));
+            //    }
+            //}
+
+            //fileList.Items.AddRange(
+            //    searchPaths.SelectMany(DirectorySearch.EnumerateAllFiles, 
+            //                           (_, fn) => new FileListInfo(Path.GetFileName(fn), fn, 0)));
+
+            fileList.Items.AddRange(
+                searchPaths.SelectMany(searchPath => DirectorySearch.EnumerateAllFiles(searchPath)
+                .Select(fn => new FileListInfo(Path.GetFileName(fn), fn, 0))));
+
             return fileList;
         }
         public static FileList FileListForTest()
