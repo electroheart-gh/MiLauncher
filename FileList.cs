@@ -24,8 +24,7 @@ namespace MiLauncher
 
         public FileList()
         {
-            Debug.WriteLine("blank file list");
-            //Items.Add(new FileListInfo(Path.GetFileName(file), file, 0));
+            // Debug.WriteLine("blank file list");
         }
 
         public class FileListInfo
@@ -48,10 +47,6 @@ namespace MiLauncher
             }
         }
 
-        //
-        // Method for test to create sample File List
-        //
-        
         internal List<string> Select(string[] words, CancellationToken token)
         {
             // Variables
@@ -76,7 +71,7 @@ namespace MiLauncher
                     try
                     {
                         regex = migemo.GetRegex(pattern);
-                        // Console.WriteLine("\"" + regex.ToString() + "\"");  //生成された正規表現をコンソールに出力
+                        // Debug.WriteLine("\"" + regex.ToString() + "\"");  //生成された正規表現をコンソールに出力
                         if (Regex.IsMatch(name, regex.ToString(), RegexOptions.IgnoreCase))
                         {
                             return true;
@@ -103,11 +98,11 @@ namespace MiLauncher
                     {
                         token.ThrowIfCancellationRequested();
 
-                        patternMatched = pattern.Substring(0, 1) switch
+                        patternMatched = pattern[..1] switch
                         {
-                            "-" => !IsPatternMatch(fn.FullPathName, pattern.Substring(1)),
-                            "!" => !IsPatternMatch(fn.FileName, pattern.Substring(1)),
-                            "\\" => IsPatternMatch(fn.FullPathName, pattern.Substring(1)),
+                            "-" => !IsPatternMatch(fn.FullPathName, pattern[1..]),
+                            "!" => !IsPatternMatch(fn.FileName, pattern[1..]),
+                            "\\" => IsPatternMatch(fn.FullPathName, pattern[1..]),
                             _ => IsPatternMatch(fn.FileName, pattern),
                         };
                         if (!patternMatched)
@@ -129,7 +124,7 @@ namespace MiLauncher
             }
             catch (OperationCanceledException)
             {
-                // Console.WriteLine("cancel occurs Select");
+                // Debug.WriteLine("cancel occurs Select");
                 selectedList.Clear();
                 return selectedList;
             }
@@ -206,7 +201,7 @@ namespace MiLauncher
             //{
             //    foreach (var fn in DirectorySearch.EnumerateAllFiles(searchPath))
             //    {
-            //        // Console.WriteLine(Path.GetFileName(file));
+            //        // Debug.WriteLine(Path.GetFileName(file));
             //        fileList.Items.Add(new FileListInfo(Path.GetFileName(fn), fn, 0));
             //    }
             //}
@@ -224,15 +219,16 @@ namespace MiLauncher
         public static FileList FileListForTest()
         {
             var fileListTest = new FileList();
+
             string folderPath = @"C:\Users\JUNJI\Desktop\tools";
             string[] files = Directory.GetFiles(folderPath, "*", SearchOption.AllDirectories);
 
             foreach (string file in files)
             {
-                // Console.WriteLine(Path.GetFileName(file));
+                // Debug.WriteLine(Path.GetFileName(file));
                 fileListTest.Items.Add(new FileListInfo(Path.GetFileName(file), file, 0));
             }
-            Console.WriteLine("FileListForTest count: " + fileListTest.Items.Count);
+            //Debug.WriteLine("FileListForTest count: " + fileListTest.Items.Count);
             return fileListTest;
         }
 

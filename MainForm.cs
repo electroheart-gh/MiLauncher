@@ -1,19 +1,9 @@
-﻿using KaoriYa.Migemo;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
+﻿using System;
 using System.Drawing;
-using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace MiLauncher
 {
@@ -25,9 +15,9 @@ namespace MiLauncher
         private ListForm listForm;
         private FileList fileList;
         private CancellationTokenSource tokenSource;
-        //private AppSettings appSettings;
 
         // Constant
+        // Consider to make FileList.dat configurable
         private const string fileListDataPath = "FileList.dat";
         private const char wordSeparator = ' ';
         private const int CS_DROPSHADOW = 0x00020000;
@@ -55,6 +45,7 @@ namespace MiLauncher
         //
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
+            // Move MainForm by left button dragging
             if (e.Button == MouseButtons.Left)
             {
                 dragStart = e.Location;
@@ -63,6 +54,7 @@ namespace MiLauncher
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
+            // Move MainForm by left button dragging
             if (e.Button == MouseButtons.Left)
             {
                 Location = new Point(Location.X + e.Location.X - dragStart.X, Location.Y + e.Location.Y - dragStart.Y);
@@ -71,8 +63,6 @@ namespace MiLauncher
 
         private async void MainForm_Load(object sender, EventArgs e)
         {
-            Console.WriteLine("MainForm Load");
-
             // Global Hot Key
             hotKey = new HotKey(MOD_KEY.ALT | MOD_KEY.CONTROL, Keys.F);
             hotKey.HotKeyPush += new EventHandler(hotKey_HotKeyPush);
@@ -81,15 +71,11 @@ namespace MiLauncher
             listForm = new ListForm();
 
             // File List
-            fileList = SettingManager.LoadSettings<FileList>(fileListDataPath);
-            if (fileList == null)
-            {
-                fileList = new FileList();
-            }
+            fileList = SettingManager.LoadSettings<FileList>(fileListDataPath) ?? new FileList();
             // Test Code: fileList = FileList.FileListForTest();
 
             var searchPaths = Program.appSettings.TargetFolders;
-            //string[] searchPaths = { @"C:\Users\JUNJI\Desktop\", @"E:\Documents\RocksmithTabs\" };
+            // Test Code: var searchPaths = new List<string>{ @"C:\Users\JUNJI\Desktop\", @"E:\Documents\RocksmithTabs\" };
 
             fileList = await Task.Run(() => fileList.SearchFiles(searchPaths));
             //Debug.WriteLine("fileList.count after search: " + fileList.Items.Count);
@@ -128,7 +114,7 @@ namespace MiLauncher
                 tokenSource.Cancel();
                 tokenSource = null;
             }
-            if (cmdBox.Text.Count() == 0)
+            if (cmdBox.Text.Length == 0)
             {
                 return;
             }
@@ -162,7 +148,7 @@ namespace MiLauncher
                 cmdBox.Text = string.Empty;
                 Visible = false;
 
-                Console.WriteLine("visible false by ESC");
+                // Debug.WriteLine("visible false by ESC");
                 listForm.Visible = false;
             }
             // Exec file with associated app
@@ -248,7 +234,7 @@ namespace MiLauncher
                     listForm.listView.Items[selectedIndex].Selected = false;
                     if (selectedIndex == 0)
                     {
-                        listForm.listView.Items[listForm.listView.Items.Count - 1].Selected = true;
+                        listForm.listView.Items[^1].Selected = true;
                     }
                     else
                     {
@@ -259,24 +245,22 @@ namespace MiLauncher
             // forward word
             if (e.KeyCode == Keys.F && e.Alt)
             {
-                var pattern = new Regex(@"\w*\W*");
+                var pattern = NextWordRegex();
                 var m = pattern.Match(cmdBox.Text, cmdBox.SelectionStart);
                 cmdBox.SelectionStart = Math.Max(m.Index + m.Length, cmdBox.SelectionStart);
             }
             // backward word
             if (e.KeyCode == Keys.B && e.Alt)
             {
-                // Using Non-backtracking and negative lookahead assertion of Regex
-                var pattern = new Regex(@"(?>\w*\W*)(?!\w)");
-                var m = pattern.Match(cmdBox.Text.Substring(0, cmdBox.SelectionStart));
+                var pattern = PreviousWordRegex();
+                var m = pattern.Match(cmdBox.Text[..cmdBox.SelectionStart]);
                 cmdBox.SelectionStart = m.Index;
             }
             // delete word
             if (e.KeyCode == Keys.D && e.Alt)
             {
                 var cursorPosition = cmdBox.SelectionStart;
-                //var pattern = new Regex(@"\w+\W*");
-                var pattern = new Regex(@"\w*\W*");
+                var pattern = NextWordRegex();
                 cmdBox.Text = pattern.Replace(cmdBox.Text, "", 1, cursorPosition);
                 cmdBox.SelectionStart = cursorPosition;
             }
@@ -284,10 +268,9 @@ namespace MiLauncher
             if (e.KeyCode == Keys.H && e.Alt)
             {
                 // Using Non-backtracking and negative lookahead assertion of Regex
-                //var pattern = new Regex(@"(?>\w+\W*)(?!\w)");
-                var pattern = new Regex(@"(?>\w*\W*)(?!\w)");
-                var firstHalf = pattern.Replace(cmdBox.Text.Substring(0, cmdBox.SelectionStart), "");
-                cmdBox.Text = firstHalf + cmdBox.Text.Substring(cmdBox.SelectionStart);
+                var pattern = PreviousWordRegex();
+                var firstHalf = pattern.Replace(cmdBox.Text[..cmdBox.SelectionStart], "");
+                cmdBox.Text = firstHalf + cmdBox.Text[cmdBox.SelectionStart..];
                 cmdBox.SelectionStart = firstHalf.Length;
             }
 
@@ -309,5 +292,12 @@ namespace MiLauncher
                 e.IsInputKey = true;
             }
         }
+
+        [GeneratedRegex(@"\w*\W*")]
+        private static partial Regex NextWordRegex();
+
+        // Using Non-backtracking and negative lookahead assertion of Regex
+        [GeneratedRegex(@"(?>\w*\W*)(?!\w)")]
+        private static partial Regex PreviousWordRegex();
     }
 }

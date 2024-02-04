@@ -9,8 +9,10 @@ namespace MiLauncher
     internal static class Program
     {
         // Global variable for configuration
-        static string configFilePath = "myConfig.json";
         static public AppSettings appSettings;
+
+        // Constant for configuration
+        private const string configFilePath = "myConfig.json";
 
         /// <summary>
         /// The main entry point for the application.
