@@ -6,30 +6,30 @@ using System.Text.RegularExpressions;
 
 namespace KaoriYa.Migemo
 {
-	public class Migemo : IDisposable
-	{
-#region Enumerations (from migemo.h)
-#region enum DictionaryIndex
-		public enum DictionaryId
-		{
-			Invalid		= 0,
-			Migemo		= 1,
-			RomaToHira	= 2,
-			HiraToKata	= 3,
-			HanToZen	= 4,
-		}
-#endregion
+    public class Migemo : IDisposable
+    {
+        #region Enumerations (from migemo.h)
+        #region enum DictionaryIndex
+        public enum DictionaryId
+        {
+            Invalid = 0,
+            Migemo = 1,
+            RomaToHira = 2,
+            HiraToKata = 3,
+            HanToZen = 4,
+        }
+        #endregion
 
-#region enum OperatorIndex
-		public enum OperatorIndex
-		{
-			Or			= 0,
-			NestIn		= 1,
-			NestOut		= 2,
-			SelectIn	= 3,
-			SelectOut	= 4,
-			NewLine		= 5,
-		}
+        #region enum OperatorIndex
+        public enum OperatorIndex
+        {
+            Or = 0,
+            NestIn = 1,
+            NestOut = 2,
+            SelectIn = 3,
+            SelectOut = 4,
+            NewLine = 5,
+        }
         #endregion
         #endregion
 
@@ -59,112 +59,118 @@ namespace KaoriYa.Migemo
 
         private IntPtr migemoObject = IntPtr.Zero;
 
-		public IntPtr MigemoObject
-		{
-			get
-			{
-				return this.migemoObject;
-			}
-		}
+        public IntPtr MigemoObject
+        {
+            get
+            {
+                return this.migemoObject;
+            }
+        }
 
-		public bool SetOperator(OperatorIndex index, string op)
-		{
-			return migemo_set_operator(this.migemoObject, index, op) != 0;
-		}
-		public string GetOperator(OperatorIndex index)
-		{
-			IntPtr result = migemo_get_operator(this.migemoObject, index);
-			if (result != IntPtr.Zero)
-				return Marshal.PtrToStringAnsi(result);
-			else
-				return "";
-		}
+        public bool SetOperator(OperatorIndex index, string op)
+        {
+            return migemo_set_operator(this.migemoObject, index, op) != 0;
+        }
+        public string GetOperator(OperatorIndex index)
+        {
+            IntPtr result = migemo_get_operator(this.migemoObject, index);
+            if (result != IntPtr.Zero)
+                return Marshal.PtrToStringAnsi(result);
+            else
+                return "";
+        }
 
-#region Operator properties
-		public string OperatorOr {
-			get { return GetOperator(OperatorIndex.Or); }
-			set { SetOperator(OperatorIndex.Or, value); }
-		}
-		public string OperatorNestIn {
-			get { return GetOperator(OperatorIndex.NestIn); }
-			set { SetOperator(OperatorIndex.NestIn, value); }
-		}
-		public string OperatorNestOut {
-			get { return GetOperator(OperatorIndex.NestOut); }
-			set { SetOperator(OperatorIndex.NestOut, value); }
-		}
-		public string OperatorSelectIn {
-			get { return GetOperator(OperatorIndex.SelectIn); }
-			set { SetOperator(OperatorIndex.SelectIn, value); }
-		}
-		public string OperatorSelectOut {
-			get { return GetOperator(OperatorIndex.SelectOut); }
-			set { SetOperator(OperatorIndex.SelectOut, value); }
-		}
-		public string OperatorNewLine {
-			get { return GetOperator(OperatorIndex.NewLine); }
-			set { SetOperator(OperatorIndex.NewLine, value); }
-		}
-#endregion
+        #region Operator properties
+        public string OperatorOr
+        {
+            get { return GetOperator(OperatorIndex.Or); }
+            set { SetOperator(OperatorIndex.Or, value); }
+        }
+        public string OperatorNestIn
+        {
+            get { return GetOperator(OperatorIndex.NestIn); }
+            set { SetOperator(OperatorIndex.NestIn, value); }
+        }
+        public string OperatorNestOut
+        {
+            get { return GetOperator(OperatorIndex.NestOut); }
+            set { SetOperator(OperatorIndex.NestOut, value); }
+        }
+        public string OperatorSelectIn
+        {
+            get { return GetOperator(OperatorIndex.SelectIn); }
+            set { SetOperator(OperatorIndex.SelectIn, value); }
+        }
+        public string OperatorSelectOut
+        {
+            get { return GetOperator(OperatorIndex.SelectOut); }
+            set { SetOperator(OperatorIndex.SelectOut, value); }
+        }
+        public string OperatorNewLine
+        {
+            get { return GetOperator(OperatorIndex.NewLine); }
+            set { SetOperator(OperatorIndex.NewLine, value); }
+        }
+        #endregion
 
-		public bool LoadDictionary(DictionaryId id, string file)
-		{
-			DictionaryId result = migemo_load(this.migemoObject, id, file);
-			return result == id;
-		}
+        public bool LoadDictionary(DictionaryId id, string file)
+        {
+            DictionaryId result = migemo_load(this.migemoObject, id, file);
+            return result == id;
+        }
 
-		public bool IsEnable()
-		{
-			return migemo_is_enable(this.migemoObject) != 0;
-		}
+        public bool IsEnable()
+        {
+            return migemo_is_enable(this.migemoObject) != 0;
+        }
 
-		public Regex GetRegex(string query)
-		{
-			return new Regex(Query(query));
-		}
+        public Regex GetRegex(string query)
+        {
+            return new Regex(Query(query));
+        }
 
-		public string Query(string query)
-		{
-			IntPtr result = migemo_query(this.migemoObject, query);
-			if (result != IntPtr.Zero)
-			{
-				string retval = Marshal.PtrToStringAnsi(result);
-				migemo_release(this.migemoObject, result);
-				return retval;
-			}
-			else
-				return "";
-		}
+        public string Query(string query)
+        {
+            IntPtr result = migemo_query(this.migemoObject, query);
+            if (result != IntPtr.Zero)
+            {
+                string retval = Marshal.PtrToStringAnsi(result);
+                migemo_release(this.migemoObject, result);
+                return retval;
+            }
+            else
+                return "";
+        }
 
-		public void Dispose()
-		{
-			//Console.WriteLine("HERE ("+this.migemoObject+")");
-			if (this.migemoObject != IntPtr.Zero)
-			{
-				//Console.WriteLine("migemo_close() is called");
-				migemo_close(this.migemoObject);
-				this.migemoObject = IntPtr.Zero;
-			}
-			GC.SuppressFinalize(this);
-		}
+        public void Dispose()
+        {
+            //Console.WriteLine("HERE ("+this.migemoObject+")");
+            if (this.migemoObject != IntPtr.Zero)
+            {
+                //Console.WriteLine("migemo_close() is called");
+                migemo_close(this.migemoObject);
+                this.migemoObject = IntPtr.Zero;
+            }
+            GC.SuppressFinalize(this);
+        }
 
-		public Migemo(string dictpath)
-		{
-			this.migemoObject = migemo_open(dictpath);
-			this.OperatorNestIn = "(?:";
-			//this.OperatorNewLine = "\\s*";
-		}
+        public Migemo(string dictpath)
+        {
+            this.migemoObject = migemo_open(dictpath);
+            this.OperatorNestIn = "(?:";
+            //this.OperatorNewLine = "\\s*";
+        }
 
-		public Migemo() : this(null)
-		{
-		}
+        public Migemo() : this(null)
+        {
+        }
 
-		~Migemo()
-		{
-			this.Dispose();
-		}
+        ~Migemo()
+        {
+            this.Dispose();
+        }
 
-#region Test entrypoint
+        #region Test entrypoint
 #if TEST_MIGEMO
 		// ÉeÉXÉgä÷êî
 		public static int Main(string[] args)
@@ -198,7 +204,7 @@ namespace KaoriYa.Migemo
 			return 0;
 		}
 #endif
-#endregion
+        #endregion
 
-	}
+    }
 }
