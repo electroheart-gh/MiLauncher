@@ -77,7 +77,7 @@ namespace MiLauncher
             var searchPaths = Program.appSettings.TargetFolders;
             // Test Code: var searchPaths = new List<string>{ @"C:\Users\JUNJI\Desktop\", @"E:\Documents\RocksmithTabs\" };
 
-            fileList = await Task.Run(() => fileList.SearchFiles(searchPaths));
+            fileList = await Task.Run(() => FileList.SearchFiles(searchPaths));
             //Debug.WriteLine("fileList.count after search: " + fileList.Items.Count);
             SettingManager.SaveSettings(fileList, fileListDataPath);
         }
@@ -178,10 +178,7 @@ namespace MiLauncher
             // backward char
             if (e.KeyCode == Keys.B && e.Control)
             {
-                if (cmdBox.SelectionStart > 0)
-                {
-                    cmdBox.SelectionStart--;
-                }
+                cmdBox.SelectionStart = Math.Max(0, cmdBox.SelectionStart - 1);
             }
             // backspace
             if (e.KeyCode == Keys.H && e.Control)

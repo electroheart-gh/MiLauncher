@@ -193,7 +193,7 @@ namespace MiLauncher
             }
         }
 
-        internal FileList SearchFiles(IEnumerable<string> searchPaths)
+        internal static FileList SearchFiles(IEnumerable<string> searchPaths)
         {
             var fileList = new FileList();
 
@@ -207,7 +207,7 @@ namespace MiLauncher
             //}
 
             //fileList.Items.AddRange(
-            //    searchPaths.SelectMany(DirectorySearch.EnumerateAllFiles, 
+            //    searchPaths.SelectMany(DirectorySearch.EnumerateAllFiles,
             //                           (_, fn) => new FileListInfo(Path.GetFileName(fn), fn, 0)));
 
             fileList.Items.AddRange(
