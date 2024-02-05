@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 
@@ -7,18 +8,21 @@ namespace MiLauncher
     // Used to save AppSettings and FileList object in the specified files
     internal class SettingManager
     {
+        private static readonly JsonSerializerOptions s_writeOptions = new()
+        {
+            WriteIndented = true
+        };
+
         public static void SaveSettings<T>(T settingsObject, string path)
         {
-            string json = JsonSerializer.Serialize(settingsObject, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(path, json);
+            File.WriteAllText(path, JsonSerializer.Serialize(settingsObject, s_writeOptions));
         }
 
         public static T LoadSettings<T>(string path)
         {
             try
             {
-                string json = File.ReadAllText(path);
-                return JsonSerializer.Deserialize<T>(json);
+                return JsonSerializer.Deserialize<T>(File.ReadAllText(path));
             }
             catch (Exception ex)
             {
