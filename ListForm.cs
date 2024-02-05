@@ -33,10 +33,6 @@ namespace MiLauncher
 
             if (listItems.Any())
             {
-                //foreach (string item in list)
-                //{
-                //    listView.Items.Add(item);
-                //}
                 listView.Items.AddRange(listItems.Select(item => new ListViewItem(item)).ToArray());
 
                 listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);

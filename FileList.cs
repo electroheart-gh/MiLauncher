@@ -15,30 +15,35 @@ namespace MiLauncher
 
         // Variables and Properties
         // JsonSerializer requires properties instead of fields
-        private List<FileListInfo> items = [];
-        public List<FileListInfo> Items { get => items; set => items = value; }
+        private List<FileInfo> items = [];
+        public List<FileInfo> Items { get => items; set => items = value; }
 
         public FileList()
         {
             // Debug.WriteLine("blank file list");
         }
 
-        public class FileListInfo
+        public class FileInfo
         {
-            public string FileName { get; set; }
-            public string FullPathName { get; set; }
+            public string FullPathName { get; }
+            public string FileName { get; }
+            public int ExecCount { get; set; }
             public int Priority { get; set; }
 
-            public FileListInfo()
+
+
+            public FileInfo()
             {
-                FileName = "";
-                FullPathName = "";
-                Priority = 0;
+                //FullPathName = "";
+                //FileName = "";
+                //ExecCount = 0;
+                //Priority = 0;
             }
-            public FileListInfo(string fileName, string pathName, int priority)
+            public FileInfo(string pathName, int execCount = 0, int priority = 0)
             {
-                FileName = fileName;
                 FullPathName = pathName;
+                FileName = Path.GetFileName(pathName);
+                ExecCount = execCount;
                 Priority = priority;
             }
         }
@@ -208,7 +213,7 @@ namespace MiLauncher
 
             fileList.Items.AddRange(
                 searchPaths.SelectMany(searchPath => DirectorySearch.EnumerateAllFiles(searchPath)
-                .Select(fn => new FileListInfo(Path.GetFileName(fn), fn, 0))));
+                .Select(fn => new FileInfo(fn))));
 
             return fileList;
         }
@@ -222,7 +227,7 @@ namespace MiLauncher
             foreach (string file in files)
             {
                 // Debug.WriteLine(Path.GetFileName(file));
-                fileListTest.Items.Add(new FileListInfo(Path.GetFileName(file), file, 0));
+                fileListTest.Items.Add(new FileInfo(file));
             }
             //Debug.WriteLine("FileListForTest count: " + fileListTest.Items.Count);
             return fileListTest;
