@@ -17,11 +17,10 @@ namespace MiLauncher
         private CancellationTokenSource tokenSource;
 
         // Constant
-        // Consider to make FileList.dat configurable
+        // TODO: Consider to make FileList.dat configurable
         private const string fileListDataPath = "FileList.dat";
         private const char wordSeparator = ' ';
         private const int CS_DROPSHADOW = 0x00020000;
-
 
         //
         // Constructor
@@ -43,24 +42,6 @@ namespace MiLauncher
         //
         // Event handler
         //
-        private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
-        {
-            // Move MainForm by left button dragging
-            if (e.Button == MouseButtons.Left)
-            {
-                dragStart = e.Location;
-            }
-        }
-
-        private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
-        {
-            // Move MainForm by left button dragging
-            if (e.Button == MouseButtons.Left)
-            {
-                Location = new Point(Location.X + e.Location.X - dragStart.X, Location.Y + e.Location.Y - dragStart.Y);
-            }
-        }
-
         private async void MainForm_Load(object sender, EventArgs e)
         {
             // Global Hot Key
@@ -155,7 +136,7 @@ namespace MiLauncher
             if (e.KeyCode == Keys.Enter || (e.KeyCode == Keys.M && e.Control))
             {
                 var fullPathName = listForm.ExecFile();
-                // priorityFileList.Entry(fullPathName);
+                recentFileList.Executed(fullPathName);
                 cmdBox.Text = string.Empty;
                 Visible = false;
 
@@ -290,11 +271,32 @@ namespace MiLauncher
             }
         }
 
+        private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
+        {
+            // Move MainForm by left button dragging
+            if (e.Button == MouseButtons.Left)
+            {
+                dragStart = e.Location;
+            }
+        }
+
+        private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
+        {
+            // Move MainForm by left button dragging
+            if (e.Button == MouseButtons.Left)
+            {
+                Location = new Point(Location.X + e.Location.X - dragStart.X, Location.Y + e.Location.Y - dragStart.Y);
+            }
+        }
+
         [GeneratedRegex(@"\w*\W*")]
         private static partial Regex NextWordRegex();
 
         // Using Non-backtracking and negative lookahead assertion of Regex
         [GeneratedRegex(@"(?>\w*\W*)(?!\w)")]
         private static partial Regex PreviousWordRegex();
+
+
     }
+
 }

@@ -30,8 +30,6 @@ namespace MiLauncher
             public int ExecCount { get; set; }
             public int Priority { get; set; }
 
-
-
             public FileInfo()
             {
                 //FullPathName = "";
