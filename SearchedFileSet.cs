@@ -8,19 +8,19 @@ using System.Threading;
 
 namespace MiLauncher
 {
-    internal class SearchedFiles : FileList
+    internal class SearchedFileSet : FileSet
     {
         // TODO: Update FileList in async as per config
         // TODO: Implement some ways to update FileList manually
 
-        public SearchedFiles()
+        public SearchedFileSet()
         {
             // Debug.WriteLine("blank file list");
         }
 
-        internal static SearchedFiles SearchFiles(IEnumerable<string> searchPaths)
+        internal static SearchedFileSet SearchFiles(IEnumerable<string> searchPaths)
         {
-            var fileList = new SearchedFiles();
+            var fileSet = new SearchedFileSet();
 
             //foreach (var searchPath in searchPaths)
             //{
@@ -35,15 +35,15 @@ namespace MiLauncher
             //    searchPaths.SelectMany(DirectorySearch.EnumerateAllFiles,
             //                           (_, fn) => new FileListInfo(Path.GetFileName(fn), fn, 0)));
 
-            fileList.Items.AddRange(
+            fileSet.Items.UnionWith(
                 searchPaths.SelectMany(searchPath => DirectorySearch.EnumerateAllFiles(searchPath)
                 .Select(fn => new FileInfo(fn))));
 
-            return fileList;
+            return fileSet;
         }
-        public static SearchedFiles FileListForTest()
+        public static SearchedFileSet FileListForTest()
         {
-            var fileListTest = new SearchedFiles();
+            var fileListTest = new SearchedFileSet();
 
             string folderPath = @"C:\Users\JUNJI\Desktop\tools";
             string[] files = Directory.GetFiles(folderPath, "*", SearchOption.AllDirectories);

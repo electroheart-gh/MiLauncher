@@ -13,8 +13,8 @@ namespace MiLauncher
         private Point dragStart;
         private HotKey hotKey;
         private ListForm listForm;
-        private SearchedFiles searchedFileList;
-        private SearchedFiles recentFileList;
+        private SearchedFileSet searchedFileList;
+        private SearchedFileSet recentFileList;
         private CancellationTokenSource tokenSource;
 
         // Constant
@@ -54,14 +54,14 @@ namespace MiLauncher
             listForm = new ListForm();
 
             // File List
-            searchedFileList = SettingManager.LoadSettings<SearchedFiles>(searchedFileListDataFile) ?? new SearchedFiles();
+            searchedFileList = SettingManager.LoadSettings<SearchedFileSet>(searchedFileListDataFile) ?? new SearchedFileSet();
             // Test Code: fileList = FileList.FileListForTest();
-            recentFileList = SettingManager.LoadSettings<SearchedFiles>(recentFileListDataFile) ?? new SearchedFiles();
+            recentFileList = SettingManager.LoadSettings<SearchedFileSet>(recentFileListDataFile) ?? new SearchedFileSet();
 
             var searchPaths = Program.appSettings.TargetFolders;
             // Test Code: var searchPaths = new List<string>{ @"C:\Users\JUNJI\Desktop\", @"E:\Documents\RocksmithTabs\" };
 
-            searchedFileList = await Task.Run(() => SearchedFiles.SearchFiles(searchPaths));
+            searchedFileList = await Task.Run(() => SearchedFileSet.SearchFiles(searchPaths));
             //Debug.WriteLine("fileList.count after search: " + fileList.Items.Count);
             SettingManager.SaveSettings(searchedFileList, searchedFileListDataFile);
         }

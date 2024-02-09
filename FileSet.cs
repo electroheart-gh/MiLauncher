@@ -7,14 +7,14 @@ using System.Threading;
 
 namespace MiLauncher
 {
-    internal class FileList
+    internal class FileSet
     {
         // Variables and Properties
         // JsonSerializer requires properties instead of fields
-        private List<FileInfo> items = [];
-        public List<FileInfo> Items { get => items; set => items = value; }
+        private HashSet<FileInfo> items = [];
+        public HashSet<FileInfo> Items { get => items; set => items = value; }
 
-        public FileList()
+        public FileSet()
         {
             // Debug.WriteLine("blank file list");
         }
