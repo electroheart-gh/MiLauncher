@@ -13,12 +13,14 @@ namespace MiLauncher
         private Point dragStart;
         private HotKey hotKey;
         private ListForm listForm;
-        private FileList fileList;
+        private SearchedFiles searchedFileList;
+        private SearchedFiles recentFileList;
         private CancellationTokenSource tokenSource;
 
         // Constant
         // TODO: Consider to make FileList.dat configurable
-        private const string fileListDataPath = "FileList.dat";
+        private const string searchedFileListDataFile = "SearchedFileList.dat";
+        private const string recentFileListDataFile = "RecentFileList.dat";
         private const char wordSeparator = ' ';
         private const int CS_DROPSHADOW = 0x00020000;
 
@@ -52,15 +54,16 @@ namespace MiLauncher
             listForm = new ListForm();
 
             // File List
-            fileList = SettingManager.LoadSettings<FileList>(fileListDataPath) ?? new FileList();
+            searchedFileList = SettingManager.LoadSettings<SearchedFiles>(searchedFileListDataFile) ?? new SearchedFiles();
             // Test Code: fileList = FileList.FileListForTest();
+            recentFileList = SettingManager.LoadSettings<SearchedFiles>(recentFileListDataFile) ?? new SearchedFiles();
 
             var searchPaths = Program.appSettings.TargetFolders;
             // Test Code: var searchPaths = new List<string>{ @"C:\Users\JUNJI\Desktop\", @"E:\Documents\RocksmithTabs\" };
 
-            fileList = await Task.Run(() => FileList.SearchFiles(searchPaths));
+            searchedFileList = await Task.Run(() => SearchedFiles.SearchFiles(searchPaths));
             //Debug.WriteLine("fileList.count after search: " + fileList.Items.Count);
-            SettingManager.SaveSettings(fileList, fileListDataPath);
+            SettingManager.SaveSettings(searchedFileList, searchedFileListDataFile);
         }
         void hotKey_HotKeyPush(object sender, EventArgs e)
         {
@@ -104,7 +107,7 @@ namespace MiLauncher
             CancellationToken token = tokenSource.Token;
 
             var words = cmdBox.Text.Split(wordSeparator, StringSplitOptions.RemoveEmptyEntries);
-            var selectedList = await Task.Run(() => fileList.Select(words, token), token);
+            var selectedList = await Task.Run(() => searchedFileList.Select(words, token), token);
 
             if (!token.IsCancellationRequested)
             {
@@ -136,7 +139,7 @@ namespace MiLauncher
             if (e.KeyCode == Keys.Enter || (e.KeyCode == Keys.M && e.Control))
             {
                 var fullPathName = listForm.ExecFile();
-                recentFileList.Executed(fullPathName);
+                recentFileList.UpdateHistory(fullPathName);
                 cmdBox.Text = string.Empty;
                 Visible = false;
 
@@ -253,7 +256,7 @@ namespace MiLauncher
             }
 
             // TODO: implement crawl folder mode like zii launcher, which requires another ListView class
-            // TODO: implement sorting list by timestamp, priority and alphabetic, which should update ListForm and FileList classes as well
+            // TODO: implement sorting list by timestamp, priority and alphabetic, which should update ListForm and  classes as well
             // TODO: implement search history using M-p, M-n
         }
 

@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 
@@ -10,9 +9,6 @@ namespace MiLauncher
 {
     internal class FileList
     {
-        // TODO: Update FileList in async as per config
-        // TODO: Implement some ways to update FileList manually
-
         // Variables and Properties
         // JsonSerializer requires properties instead of fields
         private List<FileInfo> items = [];
@@ -23,28 +19,6 @@ namespace MiLauncher
             // Debug.WriteLine("blank file list");
         }
 
-        public class FileInfo
-        {
-            public string FullPathName { get; }
-            public string FileName { get; }
-            public int ExecCount { get; set; }
-            public int Priority { get; set; }
-
-            public FileInfo()
-            {
-                //FullPathName = "";
-                //FileName = "";
-                //ExecCount = 0;
-                //Priority = 0;
-            }
-            public FileInfo(string pathName, int execCount = 0, int priority = 0)
-            {
-                FullPathName = pathName;
-                FileName = Path.GetFileName(pathName);
-                ExecCount = execCount;
-                Priority = priority;
-            }
-        }
 
         internal List<string> Select(string[] words, CancellationToken token)
         {
@@ -192,44 +166,6 @@ namespace MiLauncher
             }
         }
 
-        internal static FileList SearchFiles(IEnumerable<string> searchPaths)
-        {
-            var fileList = new FileList();
-
-            //foreach (var searchPath in searchPaths)
-            //{
-            //    foreach (var fn in DirectorySearch.EnumerateAllFiles(searchPath))
-            //    {
-            //        // Debug.WriteLine(Path.GetFileName(file));
-            //        fileList.Items.Add(new FileListInfo(Path.GetFileName(fn), fn, 0));
-            //    }
-            //}
-
-            //fileList.Items.AddRange(
-            //    searchPaths.SelectMany(DirectorySearch.EnumerateAllFiles,
-            //                           (_, fn) => new FileListInfo(Path.GetFileName(fn), fn, 0)));
-
-            fileList.Items.AddRange(
-                searchPaths.SelectMany(searchPath => DirectorySearch.EnumerateAllFiles(searchPath)
-                .Select(fn => new FileInfo(fn))));
-
-            return fileList;
-        }
-        public static FileList FileListForTest()
-        {
-            var fileListTest = new FileList();
-
-            string folderPath = @"C:\Users\JUNJI\Desktop\tools";
-            string[] files = Directory.GetFiles(folderPath, "*", SearchOption.AllDirectories);
-
-            foreach (string file in files)
-            {
-                // Debug.WriteLine(Path.GetFileName(file));
-                fileListTest.Items.Add(new FileInfo(file));
-            }
-            //Debug.WriteLine("FileListForTest count: " + fileListTest.Items.Count);
-            return fileListTest;
-        }
-
     }
+
 }
