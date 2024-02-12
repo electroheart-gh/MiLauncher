@@ -18,9 +18,36 @@ namespace MiLauncher
         {
             // Debug.WriteLine("blank file list");
         }
+        internal List<string> SelectWithCancellation(IEnumerable<string> patterns, CancellationToken token)
+        {
+            // Variables
+            var selectedList = new List<string>();
 
+            try
+            {
+                foreach (var fileInfo in Items)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if(fileInfo.IsMatchAllPatterns(patterns))
+                    {
+                        selectedList.Add(fileInfo.FullPathName);
+                        if (selectedList.Count > Program.appSettings.MaxListLine)
+                        {
+                            break;
+                        }
+                    }
+                }
+                return selectedList;
+            }
+            catch (OperationCanceledException)
+            {
+                // Debug.WriteLine("cancel occurs Select");
+                selectedList.Clear();
+                return selectedList;
+            }
+        }
 
-        internal List<string> Select(string[] words, CancellationToken token)
+        internal List<string> SelectOld(string[] words, CancellationToken token)
         {
             // Variables
             var selectedList = new List<string>();

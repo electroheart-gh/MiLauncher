@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace MiLauncher
 {
     internal class FileInfo
     {
-        public string FullPathName { get; }
-        public string FileName { get; }
+        // If no 'set', JsonSerializer not working
+        public string FullPathName { get; set; }
+        public string FileName { get; set; }
 
         public FileInfo()
         {
@@ -20,6 +19,61 @@ namespace MiLauncher
             FullPathName = pathName;
             FileName = Path.GetFileName(pathName);
         }
+
+
+        public bool IsMatchAllPatterns(IEnumerable<string> patterns)
+        {
+            bool IsMatchPattern(string name, string pattern)
+            {
+                // Simple search
+                if (pattern.Length < Program.appSettings.MigemoMinLength)
+                {
+                    if (name.Contains(pattern, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
+                }
+                // Migemo search
+                else
+                {
+                    try
+                    {
+                        var regex = Program.migemo.GetRegex(pattern);
+                        // Debug.WriteLine("\"" + regex.ToString() + "\"");  //生成された正規表現をコンソールに出力
+                        if (Regex.IsMatch(name, regex.ToString(), RegexOptions.IgnoreCase))
+                        {
+                            return true;
+                        }
+                    }
+                    catch (ArgumentException)
+                    {
+                        if (name.IndexOf(pattern, StringComparison.OrdinalIgnoreCase) > 0)
+                        {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+
+            // TODO: consider to use linq
+            foreach (var pattern in patterns)
+
+            {
+                if (!(pattern[..1] switch
+                {
+                    "-" => !IsMatchPattern(FullPathName, pattern[1..]),
+                    "!" => !IsMatchPattern(FileName, pattern[1..]),
+                    "\\" => IsMatchPattern(FullPathName, pattern[1..]),
+                    _ => IsMatchPattern(FileName, pattern),
+                }))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
     }
 
 }

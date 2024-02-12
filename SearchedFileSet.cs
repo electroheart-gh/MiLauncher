@@ -1,10 +1,7 @@
-﻿using KaoriYa.Migemo;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading;
 
 namespace MiLauncher
 {
@@ -13,10 +10,10 @@ namespace MiLauncher
         // TODO: Update FileList in async as per config
         // TODO: Implement some ways to update FileList manually
 
-        public SearchedFileSet()
-        {
-            // Debug.WriteLine("blank file list");
-        }
+        //public SearchedFileSet()
+        //{
+        //    // Debug.WriteLine("blank file list");
+        //}
 
         internal static SearchedFileSet SearchFiles(IEnumerable<string> searchPaths)
         {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KaoriYa.Migemo;
+using System;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -13,9 +14,10 @@ namespace MiLauncher
         private Point dragStart;
         private HotKey hotKey;
         private ListForm listForm;
-        private SearchedFileSet searchedFileList;
+        private SearchedFileSet searchedFileSet;
         private SearchedFileSet recentFileList;
         private CancellationTokenSource tokenSource;
+
 
         // Constant
         // TODO: Consider to make FileList.dat configurable
@@ -54,16 +56,17 @@ namespace MiLauncher
             listForm = new ListForm();
 
             // File List
-            searchedFileList = SettingManager.LoadSettings<SearchedFileSet>(searchedFileListDataFile) ?? new SearchedFileSet();
+            searchedFileSet = SettingManager.LoadSettings<SearchedFileSet>(searchedFileListDataFile) ?? new SearchedFileSet();
             // Test Code: fileList = FileList.FileListForTest();
-            recentFileList = SettingManager.LoadSettings<SearchedFileSet>(recentFileListDataFile) ?? new SearchedFileSet();
+            //recentFileList = SettingManager.LoadSettings<SearchedFileSet>(recentFileListDataFile) ?? new SearchedFileSet();
 
             var searchPaths = Program.appSettings.TargetFolders;
+            searchedFileSet = await Task.Run(() => SearchedFileSet.SearchFiles(searchPaths));
             // Test Code: var searchPaths = new List<string>{ @"C:\Users\JUNJI\Desktop\", @"E:\Documents\RocksmithTabs\" };
 
-            searchedFileList = await Task.Run(() => SearchedFileSet.SearchFiles(searchPaths));
             //Debug.WriteLine("fileList.count after search: " + fileList.Items.Count);
-            SettingManager.SaveSettings(searchedFileList, searchedFileListDataFile);
+
+            SettingManager.SaveSettings(searchedFileSet, searchedFileListDataFile);
         }
         void hotKey_HotKeyPush(object sender, EventArgs e)
         {
@@ -107,7 +110,7 @@ namespace MiLauncher
             CancellationToken token = tokenSource.Token;
 
             var words = cmdBox.Text.Split(wordSeparator, StringSplitOptions.RemoveEmptyEntries);
-            var selectedList = await Task.Run(() => searchedFileList.Select(words, token), token);
+            var selectedList = await Task.Run(() => searchedFileSet.SelectWithCancellation(words, token), token);
 
             if (!token.IsCancellationRequested)
             {
