@@ -23,14 +23,15 @@ namespace MiLauncher
             // Variables
             var selectedList = new List<string>();
 
-            Migemo migemo = new("./Dict/migemo-dict");
+            //Migemo migemo = new("./Dict/migemo-dict");
 
             try
             {
                 foreach (var fileInfo in Items)
                 {
                     token.ThrowIfCancellationRequested();
-                    if(fileInfo.IsMatchAllPatterns(patterns, migemo))
+                    //if (fileInfo.IsMatchAllPatterns(patterns, migemo))
+                    if (fileInfo.IsMatchAllPatterns(patterns))
                     {
                         selectedList.Add(fileInfo.FullPathName);
                         if (selectedList.Count > Program.appSettings.MaxListLine)

@@ -22,41 +22,8 @@ namespace MiLauncher
         }
 
 
-        public bool IsMatchAllPatterns(IEnumerable<string> patterns, Migemo migemo)
+        public bool IsMatchAllPatterns(IEnumerable<string> patterns)
         {
-            bool IsMatchPattern(string name, string pattern)
-            {
-
-                // Simple search
-                if (pattern.Length < Program.appSettings.MigemoMinLength)
-                {
-                    if (name.Contains(pattern, StringComparison.OrdinalIgnoreCase))
-                    {
-                        return true;
-                    }
-                }
-                // Migemo search
-                else
-                {
-                    try
-                    {
-                        var regex = migemo.GetRegex(pattern);
-                        // Debug.WriteLine("\"" + regex.ToString() + "\"");  //生成された正規表現をコンソールに出力
-                        if (Regex.IsMatch(name, regex.ToString(), RegexOptions.IgnoreCase))
-                        {
-                            return true;
-                        }
-                    }
-                    catch (ArgumentException)
-                    {
-                        if (name.IndexOf(pattern, StringComparison.OrdinalIgnoreCase) > 0)
-                        {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
 
             // TODO: consider to use linq
             foreach (var pattern in patterns)
@@ -74,6 +41,48 @@ namespace MiLauncher
                 }
             }
             return true;
+
+            bool IsMatchPattern(string name, string pattern)
+            {
+
+                // Simple search
+                if (pattern.Length < Program.appSettings.MigemoMinLength)
+                {
+                    if (name.Contains(pattern, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
+                }
+                // Migemo search
+                else
+                {
+                    Migemo migemo = new("./Dict/migemo-dict");
+                    var regex = migemo.GetRegex(pattern);
+                    try
+                    {
+                        //var regex = new Migemo("./Dict/migemo-dict").GetRegex(pattern);
+
+                        // Debug.WriteLine("\"" + regex.ToString() + "\"");  //生成された正規表現をコンソールに出力
+                        if (Regex.IsMatch(name, regex.ToString(), RegexOptions.IgnoreCase))
+                        {
+                            return true;
+                        }
+                    }
+                    catch (ArgumentException)
+                    {
+                        //if (name.IndexOf(pattern, StringComparison.OrdinalIgnoreCase) > 0)
+                        if (name.Contains(pattern, StringComparison.OrdinalIgnoreCase))
+                        {
+                            return true;
+                        }
+                    }
+                    finally
+                    {
+                        migemo.Dispose();
+                    }
+                }
+                return false;
+            }
         }
 
     }

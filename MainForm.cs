@@ -61,7 +61,7 @@ namespace MiLauncher
             //recentFileList = SettingManager.LoadSettings<SearchedFileSet>(recentFileListDataFile) ?? new SearchedFileSet();
 
             var searchPaths = Program.appSettings.TargetFolders;
-            searchedFileSet = await Task.Run(() => SearchedFileSet.SearchFiles(searchPaths));
+            // searchedFileSet = await Task.Run(() => SearchedFileSet.SearchFiles(searchPaths));
             // Test Code: var searchPaths = new List<string>{ @"C:\Users\JUNJI\Desktop\", @"E:\Documents\RocksmithTabs\" };
 
             //Debug.WriteLine("fileList.count after search: " + fileList.Items.Count);
