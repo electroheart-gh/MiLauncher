@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KaoriYa.Migemo;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -21,10 +22,11 @@ namespace MiLauncher
         }
 
 
-        public bool IsMatchAllPatterns(IEnumerable<string> patterns)
+        public bool IsMatchAllPatterns(IEnumerable<string> patterns, Migemo migemo)
         {
             bool IsMatchPattern(string name, string pattern)
             {
+
                 // Simple search
                 if (pattern.Length < Program.appSettings.MigemoMinLength)
                 {
@@ -38,7 +40,7 @@ namespace MiLauncher
                 {
                     try
                     {
-                        var regex = Program.migemo.GetRegex(pattern);
+                        var regex = migemo.GetRegex(pattern);
                         // Debug.WriteLine("\"" + regex.ToString() + "\"");  //生成された正規表現をコンソールに出力
                         if (Regex.IsMatch(name, regex.ToString(), RegexOptions.IgnoreCase))
                         {
