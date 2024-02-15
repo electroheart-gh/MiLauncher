@@ -12,6 +12,9 @@ namespace MiLauncher
         public string FullPathName { get; set; }
         public string FileName { get; set; }
 
+        //static readonly Migemo migemo = new("./Dict/migemo-dict");
+
+
         public FileInfo()
         {
         }
@@ -24,10 +27,8 @@ namespace MiLauncher
 
         public bool IsMatchAllPatterns(IEnumerable<string> patterns)
         {
-
             // TODO: consider to use linq
             foreach (var pattern in patterns)
-
             {
                 if (!(pattern[..1] switch
                 {
@@ -56,14 +57,14 @@ namespace MiLauncher
                 // Migemo search
                 else
                 {
-                    Migemo migemo = new("./Dict/migemo-dict");
-                    var regex = migemo.GetRegex(pattern);
+                    // Migemo migemo = new("./Dict/migemo-dict");
+                    // var regex = migemo.GetRegex(pattern);
                     try
                     {
                         //var regex = new Migemo("./Dict/migemo-dict").GetRegex(pattern);
 
                         // Debug.WriteLine("\"" + regex.ToString() + "\"");  //生成された正規表現をコンソールに出力
-                        if (Regex.IsMatch(name, regex.ToString(), RegexOptions.IgnoreCase))
+                        if (Regex.IsMatch(name, pattern.ToString(), RegexOptions.IgnoreCase))
                         {
                             return true;
                         }
@@ -75,10 +76,6 @@ namespace MiLauncher
                         {
                             return true;
                         }
-                    }
-                    finally
-                    {
-                        migemo.Dispose();
                     }
                 }
                 return false;

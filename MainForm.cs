@@ -1,6 +1,7 @@
 ﻿using KaoriYa.Migemo;
 using System;
 using System.Drawing;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -61,7 +62,7 @@ namespace MiLauncher
             //recentFileList = SettingManager.LoadSettings<SearchedFileSet>(recentFileListDataFile) ?? new SearchedFileSet();
 
             var searchPaths = Program.appSettings.TargetFolders;
-            // searchedFileSet = await Task.Run(() => SearchedFileSet.SearchFiles(searchPaths));
+            searchedFileSet = await Task.Run(() => SearchedFileSet.SearchFiles(searchPaths));
             // Test Code: var searchPaths = new List<string>{ @"C:\Users\JUNJI\Desktop\", @"E:\Documents\RocksmithTabs\" };
 
             //Debug.WriteLine("fileList.count after search: " + fileList.Items.Count);
@@ -109,8 +110,12 @@ namespace MiLauncher
             tokenSource = new CancellationTokenSource();
             CancellationToken token = tokenSource.Token;
 
-            var words = cmdBox.Text.Split(wordSeparator, StringSplitOptions.RemoveEmptyEntries);
-            var selectedList = await Task.Run(() => searchedFileSet.SelectWithCancellation(words, token), token);
+            var patterns = cmdBox.Text.Split(wordSeparator, StringSplitOptions.RemoveEmptyEntries);
+
+            // TODO: LINQ regex by migemo
+            // patterns.Select(transformForMigemo);
+
+            var selectedList = await Task.Run(() => searchedFileSet.SelectWithCancellation(patterns.Select(transformForMigemo).ToArray(), token), token);
 
             if (!token.IsCancellationRequested)
             {
@@ -120,7 +125,32 @@ namespace MiLauncher
                 listForm.Visible = true;
                 Activate();
             }
+
+            static string transformForMigemo(string pattern)
+            {
+                using (Migemo migemo = new("./Dict/migemo-dict"))
+                {
+                    var prefix = "";
+                    // TODO: make it config or const
+                    if ("-!\\".Contains(pattern[..1]))
+                    {
+                        prefix = pattern[..1];
+                        pattern = pattern[1..];
+                    }
+
+                    if (pattern.Length < Program.appSettings.MigemoMinLength)
+                    {
+                        return prefix + pattern;
+                    }
+                    else
+                    {
+                        return prefix + migemo.GetRegex(pattern);
+                    }
+                };
+            }
         }
+
+
 
         // Implement Ctrl- and Alt- commands in KeyDown event
         // It is because e.KeyChar of KeyPress returns a value depending on modifiers input,
@@ -142,7 +172,7 @@ namespace MiLauncher
             if (e.KeyCode == Keys.Enter || (e.KeyCode == Keys.M && e.Control))
             {
                 var fullPathName = listForm.ExecFile();
-                recentFileList.UpdateHistory(fullPathName);
+                //recentFileList.UpdateHistory(fullPathName);
                 cmdBox.Text = string.Empty;
                 Visible = false;
 
