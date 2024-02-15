@@ -76,6 +76,7 @@ namespace MiLauncher
             BringToFront();
         }
 
+
         // Implement Ctrl- and Alt- commands in KeyDown event
         // It is because e.KeyChar of KeyPress returns a value depending on modifiers input,
         // which requires to check KeyChar of Ctrl-(char) in advance of coding
@@ -112,10 +113,8 @@ namespace MiLauncher
 
             var patterns = cmdBox.Text.Split(wordSeparator, StringSplitOptions.RemoveEmptyEntries);
 
-            // TODO: LINQ regex by migemo
-            // patterns.Select(transformForMigemo);
-
-            var selectedList = await Task.Run(() => searchedFileSet.SelectWithCancellation(patterns.Select(transformForMigemo).ToArray(), token), token);
+            // Added ToArray() to apply eager evaluation because lazy evaluation makes it too slow 
+            var selectedList = await Task.Run(() => searchedFileSet.SelectWithCancellation(patterns.Select(transformByMigemo).ToArray(), token), token);
 
             if (!token.IsCancellationRequested)
             {
@@ -126,31 +125,67 @@ namespace MiLauncher
                 Activate();
             }
 
-            static string transformForMigemo(string pattern)
+            static string transformByMigemo(string pattern)
             {
                 using (Migemo migemo = new("./Dict/migemo-dict"))
                 {
-                    var prefix = "";
-                    // TODO: make it config or const
-                    if ("-!\\".Contains(pattern[..1]))
+                    //// TODO: make it config or const
+                    var prefix = "-!\\".Contains(pattern[..1]) ? pattern[..1] : "";
+                    if (pattern.Length - prefix.Length < Program.appSettings.MigemoMinLength)
                     {
-                        prefix = pattern[..1];
-                        pattern = pattern[1..];
-                    }
-
-                    if (pattern.Length < Program.appSettings.MigemoMinLength)
-                    {
-                        return prefix + pattern;
+                        return pattern;
                     }
                     else
                     {
-                        return prefix + migemo.GetRegex(pattern);
+                        return prefix + migemo.GetRegex(pattern[prefix.Length..]);
                     }
+
+                    //var prefix = "";
+                    //// TODO: make it config or const
+                    //if ("-!\\".Contains(pattern[..1]))
+                    //{
+                    //    prefix = pattern[..1];
+                    //    pattern = pattern[1..];
+                    //}
+
+                    //if (pattern.Length < Program.appSettings.MigemoMinLength)
+                    //{
+                    //    return prefix + pattern;
+                    //}
+                    //else
+                    //{
+                    //    return prefix + migemo.GetRegex(pattern);
+                    //}
+                    //return ("-!\\".Contains(pattern[..1]), pattern.Length - Program.appSettings.MigemoMinLength) switch
+                    //{
+                    //    (true, ) => 
+                    //}
+
+                    //if ("-!\\".Contains(pattern[..1]))
+                    //{
+                    //    if (pattern.Length - 1 < Program.appSettings.MigemoMinLength)
+                    //    {
+                    //        return pattern;
+                    //    }
+                    //    else
+                    //    {
+                    //        return pattern[..1] + migemo.GetRegex(pattern[1..]);
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    if (pattern.Length < Program.appSettings.MigemoMinLength)
+                    //    {
+                    //        return pattern;
+                    //    }
+                    //    else
+                    //    {
+                    //        return migemo.GetRegex(pattern).ToString();
+                    //    }
+                    //}
                 };
             }
         }
-
-
 
         // Implement Ctrl- and Alt- commands in KeyDown event
         // It is because e.KeyChar of KeyPress returns a value depending on modifiers input,

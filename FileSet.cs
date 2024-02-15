@@ -23,100 +23,15 @@ namespace MiLauncher
             // Variables
             var selectedList = new List<string>();
 
-            //Migemo migemo = new("./Dict/migemo-dict");
-
             try
             {
                 foreach (var fileInfo in Items)
                 {
                     token.ThrowIfCancellationRequested();
-                    //if (fileInfo.IsMatchAllPatterns(patterns, migemo))
+
                     if (fileInfo.IsMatchAllPatterns(patterns))
                     {
                         selectedList.Add(fileInfo.FullPathName);
-                        if (selectedList.Count > Program.appSettings.MaxListLine)
-                        {
-                            break;
-                        }
-                    }
-                }
-                return selectedList;
-            }
-            catch (OperationCanceledException)
-            {
-                // Debug.WriteLine("cancel occurs Select");
-                selectedList.Clear();
-                return selectedList;
-            }
-        }
-
-        internal List<string> SelectOld(string[] words, CancellationToken token)
-        {
-            // Variables
-            var selectedList = new List<string>();
-            var migemo = new Migemo("./Dict/migemo-dict");
-            Regex regex;
-
-            // Local function
-            bool IsPatternMatch(string name, string pattern)
-            {
-                // Simple search
-                if (pattern.Length < Program.appSettings.MigemoMinLength)
-                {
-                    if (name.Contains(pattern, StringComparison.OrdinalIgnoreCase))
-                    {
-                        return true;
-                    }
-                }
-                // Migemo search
-                else
-                {
-                    try
-                    {
-                        regex = migemo.GetRegex(pattern);
-                        // Debug.WriteLine("\"" + regex.ToString() + "\"");  //生成された正規表現をコンソールに出力
-                        if (Regex.IsMatch(name, regex.ToString(), RegexOptions.IgnoreCase))
-                        {
-                            return true;
-                        }
-                    }
-                    catch (ArgumentException)
-                    {
-                        if (name.IndexOf(pattern, StringComparison.OrdinalIgnoreCase) > 0)
-                        {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
-            // Main Logic
-            try
-            {
-                foreach (var fn in Items)
-                {
-                    var patternMatched = true;
-
-                    foreach (var pattern in words)
-                    {
-                        token.ThrowIfCancellationRequested();
-
-                        patternMatched = pattern[..1] switch
-                        {
-                            "-" => !IsPatternMatch(fn.FullPathName, pattern[1..]),
-                            "!" => !IsPatternMatch(fn.FileName, pattern[1..]),
-                            "\\" => IsPatternMatch(fn.FullPathName, pattern[1..]),
-                            _ => IsPatternMatch(fn.FileName, pattern),
-                        };
-                        if (!patternMatched)
-                        {
-                            break;
-                        }
-                    }
-                    if (patternMatched)
-                    {
-                        selectedList.Add(fn.FullPathName);
-
                         if (selectedList.Count > Program.appSettings.MaxListLine)
                         {
                             break;
@@ -195,7 +110,5 @@ namespace MiLauncher
                 return selectedList;
             }
         }
-
     }
-
 }
