@@ -23,7 +23,7 @@ namespace MiLauncher
 
         public bool IsMatchAllPatterns(IEnumerable<string> patterns)
         {
-            // TODO: consider to use linq
+            // TODO: consider to use LINQ with MatchCondition class
             foreach (var pattern in patterns)
             {
                 if (!(pattern[..1] switch
@@ -42,7 +42,7 @@ namespace MiLauncher
             bool IsMatchPattern(string name, string pattern)
             {
                 // Simple search
-                if (pattern.Length < Program.appSettings.MigemoMinLength)
+                if (pattern.Length < Program.appSettings.MinMigemoLength)
                 {
                     if (name.Contains(pattern, StringComparison.OrdinalIgnoreCase))
                     {

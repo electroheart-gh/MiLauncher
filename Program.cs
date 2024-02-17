@@ -13,9 +13,6 @@ namespace MiLauncher
         // Constant for configuration
         private const string configFilePath = "myConfig.json";
 
-        //static public Migemo migemo = new("./Dict/migemo-dict");
-        //static public Regex regex;
-
         /// <summary>
         /// The main entry point for the application.
         /// </summary>

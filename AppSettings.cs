@@ -7,7 +7,7 @@ namespace MiLauncher
     {
         // TODO: Consider to use <Record> Type
         public List<string> TargetFolders { get; set; }
-        public int MigemoMinLength { get; set; }
+        public int MinMigemoLength { get; set; }
         public int MaxListLine { get; set; }
 
         public AppSettings()
@@ -16,7 +16,7 @@ namespace MiLauncher
             //TargetFolders = new List<string>();
             TargetFolders = [Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)];
 
-            MigemoMinLength = 3;
+            MinMigemoLength = 3;
             MaxListLine = 50;
 
             // TODO: configuration for Keymap 

@@ -19,7 +19,6 @@ namespace MiLauncher
         private SearchedFileSet recentFileList;
         private CancellationTokenSource tokenSource;
 
-
         // Constant
         // TODO: Consider to make FileList.dat configurable
         private const string searchedFileListDataFile = "SearchedFileList.dat";
@@ -59,7 +58,7 @@ namespace MiLauncher
             // File List
             searchedFileSet = SettingManager.LoadSettings<SearchedFileSet>(searchedFileListDataFile) ?? new SearchedFileSet();
             // Test Code: fileList = FileList.FileListForTest();
-            //recentFileList = SettingManager.LoadSettings<SearchedFileSet>(recentFileListDataFile) ?? new SearchedFileSet();
+            // recentFileList = SettingManager.LoadSettings<recentFileList>(recentFileListDataFile) ?? new recentFileList();
 
             var searchPaths = Program.appSettings.TargetFolders;
             searchedFileSet = await Task.Run(() => SearchedFileSet.SearchFiles(searchPaths));
@@ -69,6 +68,7 @@ namespace MiLauncher
 
             SettingManager.SaveSettings(searchedFileSet, searchedFileListDataFile);
         }
+
         void hotKey_HotKeyPush(object sender, EventArgs e)
         {
             Visible = true;
@@ -76,6 +76,57 @@ namespace MiLauncher
             BringToFront();
         }
 
+        private async void cmdBox_TextChanged(object sender, EventArgs e)
+        {
+            listForm.Visible = false;
+
+            if (tokenSource != null)
+            {
+                tokenSource.Cancel();
+                tokenSource = null;
+            }
+
+            if (cmdBox.Text.Length == 0)
+            {
+                return;
+            }
+
+            tokenSource = new CancellationTokenSource();
+            CancellationToken token = tokenSource.Token;
+
+            // Added ToArray() to apply eager evaluation because lazy evaluation makes it too slow 
+            var patternsInCmdBox = cmdBox.Text.Split(wordSeparator, StringSplitOptions.RemoveEmptyEntries);
+            var patternsTransformed = patternsInCmdBox.Select(transformByMigemo).ToArray();
+            var selectedList = await Task.Run(() => searchedFileSet.SelectWithCancellation(patternsTransformed, token), token);
+            //var selectedList = await Task.Run(() => searchedFileSet.SelectWithCancellation(cmdBox.Text.Split(wordSeparator, StringSplitOptions.RemoveEmptyEntries).Select(transformByMigemo).ToArray(), token), token);
+
+            if (!token.IsCancellationRequested)
+            {
+                listForm.SetList(selectedList);
+                listForm.Location = new Point(Location.X - 10, Location.Y + Height);
+
+                listForm.Visible = true;
+                Activate();
+            }
+
+            static string transformByMigemo(string pattern)
+            {
+                using (Migemo migemo = new("./Dict/migemo-dict"))
+                {
+                    // TODO: make it config or const
+                    // TODO: Consider to make MatchCondition class, which should have a method to parse string to select condition
+                    var prefix = "-!\\".Contains(pattern[..1]) ? pattern[..1] : "";
+                    if (pattern.Length - prefix.Length < Program.appSettings.MinMigemoLength)
+                    {
+                        return pattern;
+                    }
+                    else
+                    {
+                        return prefix + migemo.GetRegex(pattern[prefix.Length..]);
+                    }
+                };
+            }
+        }
 
         // Implement Ctrl- and Alt- commands in KeyDown event
         // It is because e.KeyChar of KeyPress returns a value depending on modifiers input,
@@ -91,99 +142,6 @@ namespace MiLauncher
             if (e.KeyChar == (char)Keys.Enter || e.KeyChar == (char)Keys.Escape)
             {
                 e.Handled = true;
-            }
-        }
-
-        private async void cmdBox_TextChanged(object sender, EventArgs e)
-        {
-            listForm.Visible = false;
-
-            if (tokenSource != null)
-            {
-                tokenSource.Cancel();
-                tokenSource = null;
-            }
-            if (cmdBox.Text.Length == 0)
-            {
-                return;
-            }
-
-            tokenSource = new CancellationTokenSource();
-            CancellationToken token = tokenSource.Token;
-
-            var patterns = cmdBox.Text.Split(wordSeparator, StringSplitOptions.RemoveEmptyEntries);
-
-            // Added ToArray() to apply eager evaluation because lazy evaluation makes it too slow 
-            var selectedList = await Task.Run(() => searchedFileSet.SelectWithCancellation(patterns.Select(transformByMigemo).ToArray(), token), token);
-
-            if (!token.IsCancellationRequested)
-            {
-                listForm.SetList(selectedList);
-                listForm.Location = new Point(Location.X - 10, Location.Y + Height);
-
-                listForm.Visible = true;
-                Activate();
-            }
-
-            static string transformByMigemo(string pattern)
-            {
-                using (Migemo migemo = new("./Dict/migemo-dict"))
-                {
-                    //// TODO: make it config or const
-                    var prefix = "-!\\".Contains(pattern[..1]) ? pattern[..1] : "";
-                    if (pattern.Length - prefix.Length < Program.appSettings.MigemoMinLength)
-                    {
-                        return pattern;
-                    }
-                    else
-                    {
-                        return prefix + migemo.GetRegex(pattern[prefix.Length..]);
-                    }
-
-                    //var prefix = "";
-                    //// TODO: make it config or const
-                    //if ("-!\\".Contains(pattern[..1]))
-                    //{
-                    //    prefix = pattern[..1];
-                    //    pattern = pattern[1..];
-                    //}
-
-                    //if (pattern.Length < Program.appSettings.MigemoMinLength)
-                    //{
-                    //    return prefix + pattern;
-                    //}
-                    //else
-                    //{
-                    //    return prefix + migemo.GetRegex(pattern);
-                    //}
-                    //return ("-!\\".Contains(pattern[..1]), pattern.Length - Program.appSettings.MigemoMinLength) switch
-                    //{
-                    //    (true, ) => 
-                    //}
-
-                    //if ("-!\\".Contains(pattern[..1]))
-                    //{
-                    //    if (pattern.Length - 1 < Program.appSettings.MigemoMinLength)
-                    //    {
-                    //        return pattern;
-                    //    }
-                    //    else
-                    //    {
-                    //        return pattern[..1] + migemo.GetRegex(pattern[1..]);
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    if (pattern.Length < Program.appSettings.MigemoMinLength)
-                    //    {
-                    //        return pattern;
-                    //    }
-                    //    else
-                    //    {
-                    //        return migemo.GetRegex(pattern).ToString();
-                    //    }
-                    //}
-                };
             }
         }
 

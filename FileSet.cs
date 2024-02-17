@@ -65,7 +65,7 @@ namespace MiLauncher
                     {
                         token.ThrowIfCancellationRequested();
                         // Simple string search
-                        if (pattern.Length < Program.appSettings.MigemoMinLength)
+                        if (pattern.Length < Program.appSettings.MinMigemoLength)
                         {
                             if (!Path.GetFileName(fn).Contains(pattern))
                             {
