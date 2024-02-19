@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 
@@ -16,8 +17,12 @@ namespace MiLauncher
 
         public FileSet()
         {
-            // Debug.WriteLine("blank file list");
         }
+        public FileSet(IEnumerable<FileInfo> fileInfoSet)
+        {
+            Items.UnionWith(fileInfoSet);
+        }
+
         internal List<string> SelectWithCancellation(IEnumerable<string> patterns, CancellationToken token)
         {
             // Variables
@@ -46,6 +51,12 @@ namespace MiLauncher
                 selectedList.Clear();
                 return selectedList;
             }
+        }
+
+        internal static FileSet SearchFiles(IEnumerable<string> searchPaths)
+        {
+            return new FileSet(
+                searchPaths.SelectMany(x => DirectorySearch.EnumerateAllFiles(x).Select(fn => new FileInfo(fn))));
         }
 
         internal List<string> SelectRealtimeSearch(string searchPath, string[] words, CancellationToken token)
@@ -109,6 +120,11 @@ namespace MiLauncher
                 selectedList.Clear();
                 return selectedList;
             }
+        }
+
+        internal void AddPriority(string fullPathName, int value)
+        {
+            Items.FirstOrDefault(x => x.FullPathName == fullPathName)?.AddPriority(value);
         }
     }
 }

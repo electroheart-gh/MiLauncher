@@ -15,9 +15,15 @@ namespace MiLauncher
         //    // Debug.WriteLine("blank file list");
         //}
 
-        internal static SearchedFileSet SearchFiles(IEnumerable<string> searchPaths)
+        internal static SearchedFileSet SearchFilesNew(IEnumerable<string> searchPaths)
         {
             var fileSet = new SearchedFileSet();
+
+            fileSet.Items.UnionWith(
+                searchPaths.SelectMany(x => DirectorySearch.EnumerateAllFiles(x).Select(fn => new FileInfo(fn)))
+                );
+
+            return fileSet;
 
             //foreach (var searchPath in searchPaths)
             //{
@@ -31,32 +37,27 @@ namespace MiLauncher
             //fileList.Items.AddRange(
             //    searchPaths.SelectMany(DirectorySearch.EnumerateAllFiles,
             //                           (_, fn) => new FileListInfo(Path.GetFileName(fn), fn, 0)));
-
-            fileSet.Items.UnionWith(
-                searchPaths.SelectMany(searchPath => DirectorySearch.EnumerateAllFiles(searchPath)
-                .Select(fn => new FileInfo(fn))));
-
-            return fileSet;
-        }
-        public static SearchedFileSet FileListForTest()
-        {
-            var fileListTest = new SearchedFileSet();
-
-            string folderPath = @"C:\Users\JUNJI\Desktop\tools";
-            string[] files = Directory.GetFiles(folderPath, "*", SearchOption.AllDirectories);
-
-            foreach (string file in files)
-            {
-                // Debug.WriteLine(Path.GetFileName(file));
-                fileListTest.Items.Add(new FileInfo(file));
-            }
-            //Debug.WriteLine("FileListForTest count: " + fileListTest.Items.Count);
-            return fileListTest;
         }
 
-        internal void UpdateHistory(string fullPathName)
-        {
-            throw new NotImplementedException();
-        }
+        //public static SearchedFileSet FileListForTest()
+        //{
+        //    var fileListTest = new SearchedFileSet();
+
+        //    string folderPath = @"C:\Users\JUNJI\Desktop\tools";
+        //    string[] files = Directory.GetFiles(folderPath, "*", SearchOption.AllDirectories);
+
+        //    foreach (string file in files)
+        //    {
+        //        // Debug.WriteLine(Path.GetFileName(file));
+        //        fileListTest.Items.Add(new FileInfo(file));
+        //    }
+        //    //Debug.WriteLine("FileListForTest count: " + fileListTest.Items.Count);
+        //    return fileListTest;
+        //}
+
+        //internal void AddPriority(string fullPathName, int value)
+        //{
+        //    Items.FirstOrDefault(x => x.FullPathName == fullPathName)?.AddPriority(value);
+        //}
     }
 }

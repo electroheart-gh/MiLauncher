@@ -15,14 +15,15 @@ namespace MiLauncher
         private Point dragStart;
         private HotKey hotKey;
         private ListForm listForm;
-        private SearchedFileSet searchedFileSet;
-        private SearchedFileSet recentFileList;
+        //private SearchedFileSet searchedFileSet;
+        private FileSet searchedFileSet;
+        // private SearchedFileSet recentFileList;
         private CancellationTokenSource tokenSource;
 
         // Constant
         // TODO: Consider to make FileList.dat configurable
         private const string searchedFileListDataFile = "SearchedFileList.dat";
-        private const string recentFileListDataFile = "RecentFileList.dat";
+        // private const string recentFileListDataFile = "RecentFileList.dat";
         private const char wordSeparator = ' ';
         private const int CS_DROPSHADOW = 0x00020000;
 
@@ -56,12 +57,13 @@ namespace MiLauncher
             listForm = new ListForm();
 
             // File List
-            searchedFileSet = SettingManager.LoadSettings<SearchedFileSet>(searchedFileListDataFile) ?? new SearchedFileSet();
+            searchedFileSet = SettingManager.LoadSettings<FileSet>(searchedFileListDataFile) ?? new FileSet();
             // Test Code: fileList = FileList.FileListForTest();
             // recentFileList = SettingManager.LoadSettings<recentFileList>(recentFileListDataFile) ?? new recentFileList();
 
             var searchPaths = Program.appSettings.TargetFolders;
-            searchedFileSet = await Task.Run(() => SearchedFileSet.SearchFiles(searchPaths));
+            // searchedFileSet = await Task.Run(() => SearchedFileSet.SearchFiles(searchPaths));
+            var updatedSearchedFileSet = await Task.Run(() => FileSet.SearchFiles(searchPaths));
             // Test Code: var searchPaths = new List<string>{ @"C:\Users\JUNJI\Desktop\", @"E:\Documents\RocksmithTabs\" };
 
             //Debug.WriteLine("fileList.count after search: " + fileList.Items.Count);
@@ -120,10 +122,7 @@ namespace MiLauncher
                     {
                         return pattern;
                     }
-                    else
-                    {
-                        return prefix + migemo.GetRegex(pattern[prefix.Length..]);
-                    }
+                    return prefix + migemo.GetRegex(pattern[prefix.Length..]);
                 };
             }
         }
@@ -165,6 +164,10 @@ namespace MiLauncher
             if (e.KeyCode == Keys.Enter || (e.KeyCode == Keys.M && e.Control))
             {
                 var fullPathName = listForm.ExecFile();
+                // TODO: Consider to make the value to adjust the priority '1' configurable
+                searchedFileSet.AddPriority(fullPathName, 1);
+                SettingManager.SaveSettings(searchedFileSet, searchedFileListDataFile);
+
                 //recentFileList.UpdateHistory(fullPathName);
                 cmdBox.Text = string.Empty;
                 Visible = false;
@@ -216,6 +219,7 @@ namespace MiLauncher
                 // TODO: Try MultiSelect false
                 // TODO: Make it method of listForm
                 // Assuming number of selected items should be one
+
                 if (listForm.listView.SelectedIndices.Count > 0)
                 {
                     var selectedIndex = listForm.listView.SelectedIndices[0];

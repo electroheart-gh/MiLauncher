@@ -2,15 +2,22 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace MiLauncher
 {
     internal class FileInfo
     {
-        // If no 'set', JsonSerializer not working
-        public string FullPathName { get; set; }
-        public string FileName { get; set; }
+        // JsonSerializer requires 'set' or 'private set' with [JsonInclude] 
+        [JsonInclude]
+        public string FullPathName { get; private set; }
+
+        [JsonInclude]
+        public string FileName { get; private set; }
+
+        [JsonInclude]
+        public int Priority { get; private set; }
 
         public FileInfo()
         {
@@ -19,6 +26,12 @@ namespace MiLauncher
         {
             FullPathName = pathName;
             FileName = Path.GetFileName(pathName);
+        }
+        public FileInfo(string pathName, int priority)
+        {
+            FullPathName = pathName;
+            FileName = Path.GetFileName(pathName);
+            Priority = priority;
         }
 
         public bool IsMatchAllPatterns(IEnumerable<string> patterns)
@@ -69,6 +82,11 @@ namespace MiLauncher
                 }
                 return false;
             }
+        }
+
+        internal void AddPriority(int value)
+        {
+            Priority += value;
         }
     }
 }

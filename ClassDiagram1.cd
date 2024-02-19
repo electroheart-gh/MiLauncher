@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Access">
+  <Class Name="MiLauncher.AppSettings">
+    <Position X="11.5" Y="2.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAEAAAAAAAAEAAABAAAAAAAAAAAA=</HashCode>
+      <FileName>AppSettings.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MiLauncher.DirectorySearch">
+    <Position X="11.5" Y="5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DirectorySearch.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MiLauncher.FileInfo">
+    <Position X="8" Y="5.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAACAAAAAAEAAAAAgAAAAAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>FileInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MiLauncher.FileSet">
+    <Position X="5" Y="5.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAACAAAAAgAAgAAAIAAAAAAEAAAABAAAAA=</HashCode>
+      <FileName>FileSet.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Items" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="MiLauncher.HotKey" BaseTypeListCollapsed="true">
+    <Position X="17.5" Y="0.5" Width="2" />
+    <NestedTypes>
+      <Class Name="MiLauncher.HotKey.HotKeyForm" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>HotKey.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AQAAAAEAACAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>HotKey.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MiLauncher.ListForm">
+    <Position X="5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAICAAAAAAAACAAAACAgAAAAAAIAAAAIAAAAA=</HashCode>
+      <FileName>ListForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MiLauncher.MainForm">
+    <Position X="1.5" Y="0.5" Width="2" />
+    <AssociationLine Name="listForm" Type="MiLauncher.ListForm">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.192" Y="0.051" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AgAACAGIACAAQIAAAACEECAjAACQAAAAAAAACABAEpA=</HashCode>
+      <FileName>MainForm.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="listForm" />
+      <Field Name="searchedFileSet" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="MiLauncher.Program">
+    <Position X="17.75" Y="7" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAABABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MiLauncher.SearchedFileSet" Collapsed="true">
+    <Position X="5" Y="8.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SearchedFileSet.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MiLauncher.SettingManager">
+    <Position X="11.5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAIAgAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SettingManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KaoriYa.Migemo.Migemo" BaseTypeListCollapsed="true">
+    <Position X="14.5" Y="0.5" Width="2" />
+    <NestedTypes>
+      <Enum Name="KaoriYa.Migemo.Migemo.DictionaryId" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Migemo.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="KaoriYa.Migemo.Migemo.OperatorIndex" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Migemo.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>CAAAAAIQCCAAACBAABEAAgAAQAAAIMiAAJAAJgEABAA=</HashCode>
+      <FileName>Migemo.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Enum Name="MiLauncher.MOD_KEY">
+    <Position X="17.5" Y="3.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAAAAAAAAAAAgAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>HotKey.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Yu Gothic UI" Size="9" />
+</ClassDiagram>

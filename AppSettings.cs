@@ -14,7 +14,9 @@ namespace MiLauncher
         {
             //var userProfilePath = Environment.GetEnvironmentVariable("UserProfile");
             //TargetFolders = new List<string>();
-            TargetFolders = [Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)];
+            TargetFolders = [
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)                ];
 
             MinMigemoLength = 3;
             MaxListLine = 50;
