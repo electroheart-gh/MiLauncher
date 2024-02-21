@@ -17,7 +17,7 @@ namespace MiLauncher
         public string FileName { get; private set; }
 
         [JsonInclude]
-        public int Priority { get; private set; }
+        public int Priority { get; set; }
 
         public FileInfo()
         {

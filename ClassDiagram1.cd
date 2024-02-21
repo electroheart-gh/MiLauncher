@@ -24,7 +24,7 @@
   <Class Name="MiLauncher.FileSet">
     <Position X="5" Y="5.25" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAACAAAAAgAAgAAAIAAAAAAEAAAABAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAACAAAAAgAAgCAAIAAAAAAEAAAABAAAAA=</HashCode>
       <FileName>FileSet.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>

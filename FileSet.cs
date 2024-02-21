@@ -58,6 +58,22 @@ namespace MiLauncher
             return new FileSet(
                 searchPaths.SelectMany(x => DirectorySearch.EnumerateAllFiles(x).Select(fn => new FileInfo(fn))));
         }
+        internal FileSet CopyPriority(FileSet sourceFileSet)
+        {
+            return new FileSet (
+                Items.GroupJoin(sourceFileSet.Items,
+                                x => x.FullPathName,
+                                y => y.FullPathName,
+                                (x, y) => new FileInfo(x.FullPathName, y.First().Priority)));
+
+            //var importedFileSet = Items.Join(sourceFileSet.Items, x => x.FullPathName, y => y.FullPathName, (x, y) => new FileInfo(x.FullPathName, y.Priority));
+            //Items = new HashSet<FileInfo>(
+            //    Items.GroupJoin(sourceFileSet.Items,
+            //                    x => x.FullPathName,
+            //                    y => y.FullPathName,
+            //                    (x, y) => new FileInfo(x.FullPathName, y.First().Priority)));
+        }
+
 
         internal List<string> SelectRealtimeSearch(string searchPath, string[] words, CancellationToken token)
         {

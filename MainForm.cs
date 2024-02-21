@@ -1,5 +1,6 @@
 ﻿using KaoriYa.Migemo;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -58,12 +59,15 @@ namespace MiLauncher
 
             // File List
             searchedFileSet = SettingManager.LoadSettings<FileSet>(searchedFileListDataFile) ?? new FileSet();
-            // Test Code: fileList = FileList.FileListForTest();
-            // recentFileList = SettingManager.LoadSettings<recentFileList>(recentFileListDataFile) ?? new recentFileList();
+            //Test Code: fileList = FileList.FileListForTest();
+            //recentFileList = SettingManager.LoadSettings<recentFileList>(recentFileListDataFile) ?? new recentFileList();
 
-            var searchPaths = Program.appSettings.TargetFolders;
-            // searchedFileSet = await Task.Run(() => SearchedFileSet.SearchFiles(searchPaths));
-            var updatedSearchedFileSet = await Task.Run(() => FileSet.SearchFiles(searchPaths));
+            //var searchPaths = Program.appSettings.TargetFolders;
+            //searchedFileSet = await Task.Run(() => SearchedFileSet.SearchFiles(searchPaths));
+            var newSearchedFileSet = 
+                await Task.Run(() => FileSet.SearchFiles(Program.appSettings.TargetFolders));
+            searchedFileSet = newSearchedFileSet.CopyPriority(searchedFileSet);
+
             // Test Code: var searchPaths = new List<string>{ @"C:\Users\JUNJI\Desktop\", @"E:\Documents\RocksmithTabs\" };
 
             //Debug.WriteLine("fileList.count after search: " + fileList.Items.Count);
@@ -165,7 +169,9 @@ namespace MiLauncher
             {
                 var fullPathName = listForm.ExecFile();
                 // TODO: Consider to make the value to adjust the priority '1' configurable
-                searchedFileSet.AddPriority(fullPathName, 1);
+                // searchedFileSet.AddPriority(fullPathName, 1);
+                searchedFileSet.Items.First(x => x.FullPathName == fullPathName).Priority += 1;
+
                 SettingManager.SaveSettings(searchedFileSet, searchedFileListDataFile);
 
                 //recentFileList.UpdateHistory(fullPathName);
