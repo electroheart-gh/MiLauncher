@@ -1,6 +1,7 @@
 ﻿using KaoriYa.Migemo;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -37,10 +38,10 @@ namespace MiLauncher
                     if (fileInfo.IsMatchAllPatterns(patterns))
                     {
                         selectedList.Add(fileInfo.FullPathName);
-                        if (selectedList.Count > Program.appSettings.MaxListLine)
-                        {
-                            break;
-                        }
+                        //if (selectedList.Count > Program.appSettings.MaxListLine)
+                        //{
+                        //    break;
+                        //}
                     }
                 }
                 return selectedList;
@@ -64,7 +65,7 @@ namespace MiLauncher
                 Items.GroupJoin(sourceFileSet.Items,
                                 x => x.FullPathName,
                                 y => y.FullPathName,
-                                (x, y) => new FileInfo(x.FullPathName, y.First().Priority)));
+                                (x, y) => new FileInfo(x.FullPathName, y.FirstOrDefault()?.Priority ?? 0)));
 
             //var importedFileSet = Items.Join(sourceFileSet.Items, x => x.FullPathName, y => y.FullPathName, (x, y) => new FileInfo(x.FullPathName, y.Priority));
             //Items = new HashSet<FileInfo>(
