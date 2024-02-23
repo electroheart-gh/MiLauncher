@@ -64,13 +64,16 @@ namespace MiLauncher
 
             //var searchPaths = Program.appSettings.TargetFolders;
             //searchedFileSet = await Task.Run(() => SearchedFileSet.SearchFiles(searchPaths));
-            var newSearchedFileSet = 
+            var newSearchedFileSet =
                 await Task.Run(() => FileSet.SearchFiles(Program.appSettings.TargetFolders));
             searchedFileSet = newSearchedFileSet.CopyPriority(searchedFileSet);
+            
+            //Debug.WriteLine("start");
+            ////var prioritizedFileList = searchedFileSet.OrderByPriority();
+            ////var prioritizedFileList = searchedFileSet.Items.OrderByDescending(x => x.Priority).ToList();
+            //Debug.WriteLine("end");
 
             // Test Code: var searchPaths = new List<string>{ @"C:\Users\JUNJI\Desktop\", @"E:\Documents\RocksmithTabs\" };
-
-            //Debug.WriteLine("fileList.count after search: " + fileList.Items.Count);
 
             SettingManager.SaveSettings(searchedFileSet, searchedFileListDataFile);
         }
@@ -104,16 +107,19 @@ namespace MiLauncher
             var patternsInCmdBox = cmdBox.Text.Split(wordSeparator, StringSplitOptions.RemoveEmptyEntries);
             var patternsTransformed = patternsInCmdBox.Select(transformByMigemo).ToArray();
             var selectedList = await Task.Run(() => searchedFileSet.SelectWithCancellation(patternsTransformed, token), token);
-            //var selectedList = await Task.Run(() => searchedFileSet.SelectWithCancellation(cmdBox.Text.Split(wordSeparator, StringSplitOptions.RemoveEmptyEntries).Select(transformByMigemo).ToArray(), token), token);
 
-            if (!token.IsCancellationRequested)
+            if (token.IsCancellationRequested)
             {
-                listForm.SetList(selectedList);
-                listForm.Location = new Point(Location.X - 10, Location.Y + Height);
-
-                listForm.Visible = true;
-                Activate();
+                Debug.WriteLine("canceled");
+                return;
             }
+
+            listForm.SetList(selectedList);
+            listForm.Location = new Point(Location.X - 10, Location.Y + Height);
+
+            listForm.Visible = true;
+            Activate();
+            return;
 
             static string transformByMigemo(string pattern)
             {
