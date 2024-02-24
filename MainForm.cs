@@ -67,7 +67,7 @@ namespace MiLauncher
             var newSearchedFileSet =
                 await Task.Run(() => FileSet.SearchFiles(Program.appSettings.TargetFolders));
             searchedFileSet = newSearchedFileSet.CopyPriority(searchedFileSet);
-            
+
             //Debug.WriteLine("start");
             ////var prioritizedFileList = searchedFileSet.OrderByPriority();
             ////var prioritizedFileList = searchedFileSet.Items.OrderByDescending(x => x.Priority).ToList();
@@ -110,15 +110,19 @@ namespace MiLauncher
 
             if (token.IsCancellationRequested)
             {
-                Debug.WriteLine("canceled");
+                // Debug.WriteLine("canceled");
                 return;
             }
 
-            listForm.SetList(selectedList);
-            listForm.Location = new Point(Location.X - 10, Location.Y + Height);
+            listForm.SetVirtualList(selectedList);
 
-            listForm.Visible = true;
+            // TODO: CMIC
+            listForm.ShowAt(Location.X - 6, Location.Y + Height - 5);
+            //listForm.Location = new Point(Location.X - 6, Location.Y + Height - 5);
+            //listForm.Visible = true;
+
             Activate();
+
             return;
 
             static string transformByMigemo(string pattern)
@@ -225,45 +229,43 @@ namespace MiLauncher
                     cmdBox.SelectionStart = pos;
                 }
             }
-            // select next file
+            // select next item
             if (e.KeyCode == Keys.N && e.Control)
             {
-                // TODO: Try MultiSelect false
-                // TODO: Make it method of listForm
-                // Assuming number of selected items should be one
+                listForm.SelectNextItem();
 
-                if (listForm.listView.SelectedIndices.Count > 0)
-                {
-                    var selectedIndex = listForm.listView.SelectedIndices[0];
-                    listForm.listView.Items[selectedIndex].Selected = false;
-                    if (selectedIndex == listForm.listView.Items.Count - 1)
-                    {
-                        listForm.listView.Items[0].Selected = true;
-                    }
-                    else
-                    {
-                        listForm.listView.Items[selectedIndex + 1].Selected = true;
-                    }
-                }
+                //if (listForm.listView.SelectedIndices.Count > 0)
+                //{
+                //    var selectedIndex = listForm.listView.SelectedIndices[0];
+                //    listForm.listView.Items[selectedIndex].Selected = false;
+                //    if (selectedIndex == listForm.listView.Items.Count - 1)
+                //    {
+                //        listForm.listView.Items[0].Selected = true;
+                //    }
+                //    else
+                //    {
+                //        listForm.listView.Items[selectedIndex + 1].Selected = true;
+                //    }
+                //}
             }
-            // select previous file
+            // select previous item
             if (e.KeyCode == Keys.P && e.Control)
             {
-                // TODO: Make it method of listForm
-                // Assuming number of selected items should be one
-                if (listForm.listView.SelectedIndices.Count > 0)
-                {
-                    var selectedIndex = listForm.listView.SelectedIndices[0];
-                    listForm.listView.Items[selectedIndex].Selected = false;
-                    if (selectedIndex == 0)
-                    {
-                        listForm.listView.Items[^1].Selected = true;
-                    }
-                    else
-                    {
-                        listForm.listView.Items[selectedIndex - 1].Selected = true;
-                    }
-                }
+                listForm.SelectPreviousItem();
+
+                //if (listForm.listView.SelectedIndices.Count > 0)
+                //{
+                //    var selectedIndex = listForm.listView.SelectedIndices[0];
+                //    listForm.listView.Items[selectedIndex].Selected = false;
+                //    if (selectedIndex == 0)
+                //    {
+                //        listForm.listView.Items[^1].Selected = true;
+                //    }
+                //    else
+                //    {
+                //        listForm.listView.Items[selectedIndex - 1].Selected = true;
+                //    }
+                //}
             }
             // forward word
             if (e.KeyCode == Keys.F && e.Alt)
