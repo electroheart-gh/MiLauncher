@@ -24,10 +24,10 @@ namespace MiLauncher
             Items.UnionWith(fileInfoSet);
         }
 
-        internal List<string> SelectWithCancellation(IEnumerable<string> patterns, CancellationToken token)
+        internal List<FileInfo> SelectWithCancellation(IEnumerable<string> patterns, CancellationToken token)
         {
             // Variables
-            var selectedList = new List<string>();
+            var selectedList = new List<FileInfo>();
 
             try
             {
@@ -37,11 +37,7 @@ namespace MiLauncher
 
                     if (fileInfo.IsMatchAllPatterns(patterns))
                     {
-                        selectedList.Add(fileInfo.FullPathName);
-                        //if (selectedList.Count > Program.appSettings.MaxListLine)
-                        //{
-                        //    break;
-                        //}
+                        selectedList.Add(fileInfo);
                     }
                 }
                 return selectedList;

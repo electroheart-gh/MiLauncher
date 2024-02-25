@@ -11,7 +11,7 @@ namespace MiLauncher
 {
     public partial class ListForm : Form
     {
-        public IEnumerable<string> ListViewSource { get; set; }
+        internal IEnumerable<FileInfo> ListViewSource { get; set; }
 
         // TODO: CMIC
         const int maxLineListView = 30;
@@ -43,7 +43,7 @@ namespace MiLauncher
         //    e.DrawText();
         //}
 
-        internal void SetVirtualList(IEnumerable<string> sourceItems)
+        internal void SetVirtualList(IEnumerable<FileInfo> sourceItems)
         {
             ListViewSource = sourceItems;
             listView.VirtualListSize = ListViewSource.Count();
@@ -102,10 +102,10 @@ namespace MiLauncher
             {
                 try
                 {
-                    var selectedFilePath = ListViewSource.Skip(listView.SelectedIndices[0]).First();
-                    Process.Start("explorer.exe", selectedFilePath);
+                    var selectedFileInfo = ListViewSource.Skip(listView.SelectedIndices[0]).First();
+                    Process.Start("explorer.exe", selectedFileInfo.FullPathName);
                     Visible = false;
-                    return selectedFilePath;
+                    return selectedFileInfo.FullPathName;
                 }
                 catch (FileNotFoundException)
                 {
@@ -117,7 +117,7 @@ namespace MiLauncher
 
         private void listView_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
-            e.Item = new ListViewItem(ListViewSource.Skip(e.ItemIndex).First());
+            e.Item = new ListViewItem(ListViewSource.Skip(e.ItemIndex).First().FullPathName);
         }
 
         internal void SelectNextItem()

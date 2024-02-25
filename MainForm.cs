@@ -57,7 +57,7 @@ namespace MiLauncher
             // List Form
             listForm = new ListForm();
 
-            // File List
+            // File Set
             searchedFileSet = SettingManager.LoadSettings<FileSet>(searchedFileListDataFile) ?? new FileSet();
             //Test Code: fileList = FileList.FileListForTest();
             //recentFileList = SettingManager.LoadSettings<recentFileList>(recentFileListDataFile) ?? new recentFileList();
@@ -107,6 +107,7 @@ namespace MiLauncher
             var patternsInCmdBox = cmdBox.Text.Split(wordSeparator, StringSplitOptions.RemoveEmptyEntries);
             var patternsTransformed = patternsInCmdBox.Select(transformByMigemo).ToArray();
             var selectedList = await Task.Run(() => searchedFileSet.SelectWithCancellation(patternsTransformed, token), token);
+
 
             if (token.IsCancellationRequested)
             {
