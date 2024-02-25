@@ -108,6 +108,8 @@ namespace MiLauncher
             var patternsTransformed = patternsInCmdBox.Select(transformByMigemo).ToArray();
             var selectedList = await Task.Run(() => searchedFileSet.SelectWithCancellation(patternsTransformed, token), token);
 
+            // TODO: Change Sort key by command
+            selectedList = selectedList.OrderByDescending(x => x.Priority).ToList();
 
             if (token.IsCancellationRequested)
             {
