@@ -102,9 +102,10 @@ namespace MiLauncher
             {
                 try
                 {
-                    Process.Start("explorer.exe", listView.SelectedItems[0].Text);
+                    var selectedFilePath = ListViewSource.Skip(listView.SelectedIndices[0]).First();
+                    Process.Start("explorer.exe", selectedFilePath);
                     Visible = false;
-                    return listView.SelectedItems[0].Text;
+                    return selectedFilePath;
                 }
                 catch (FileNotFoundException)
                 {
