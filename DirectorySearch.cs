@@ -1,15 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace MiLauncher
 {
     public class DirectorySearch
     {
-        public static IEnumerable<string> EnumerateAllFiles(string path)
+        public static IEnumerable<string> EnumerateAllFileSystemEntries(string path)
         {
-            return EnumerateAllFiles(path, "*");
+            return EnumerateAllFileSystemEntries(path, "*");
         }
-        public static IEnumerable<string> EnumerateAllFiles(string path, string searchPattern)
+        public static IEnumerable<string> EnumerateAllFileSystemEntries(string path, string searchPattern)
         {
             var files = Enumerable.Empty<string>();
             try
@@ -23,12 +25,40 @@ namespace MiLauncher
             try
             {
                 files = System.IO.Directory.EnumerateDirectories(path)
-                    .Aggregate(files, (a, v) => a.Union(EnumerateAllFiles(v, searchPattern)));
+                    .Aggregate(files, (a, v) => a.Union(EnumerateAllFileSystemEntries(v, searchPattern)));
             }
             catch (System.UnauthorizedAccessException)
             {
             }
             return files;
+        }
+
+
+        // EnumerateAllFileSystemInfos created temporarily, which is not tested
+        public static IEnumerable<FileSystemInfo> EnumerateAllFileSystemInfos(string path)
+        {
+            return EnumerateAllFileSystemInfos(path, "*");
+        }
+        private static IEnumerable<FileSystemInfo> EnumerateAllFileSystemInfos(string path, string searchPattern)
+        {
+            var files = Enumerable.Empty<FileSystemInfo>();
+            try
+            {
+                files = new DirectoryInfo(path).EnumerateFileSystemInfos(searchPattern);
+            }
+            catch (UnauthorizedAccessException)
+            {
+            }
+            try
+            {
+                files = Directory.EnumerateDirectories(path)
+                    .Aggregate(files, (a, v) => a.Union(EnumerateAllFileSystemInfos(v)));
+            }
+            catch (UnauthorizedAccessException)
+            {
+            }
+            return files;
+
         }
     }
 }

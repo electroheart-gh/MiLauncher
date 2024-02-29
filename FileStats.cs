@@ -7,31 +7,30 @@ using System.Text.RegularExpressions;
 
 namespace MiLauncher
 {
-    internal class FileInfo
+    internal class FileStats
     {
         // JsonSerializer requires 'set' or 'private set' with [JsonInclude] 
         [JsonInclude]
         public string FullPathName { get; private set; }
-
         [JsonInclude]
         public string FileName { get; private set; }
-
+        [JsonInclude]
+        public DateTime UpdateTime { get; private set; }
         [JsonInclude]
         public int Priority { get; set; }
+        [JsonInclude]
+        public DateTime ExecTime { get; set; }
 
-        public FileInfo()
+        public FileStats()
         {
         }
-        public FileInfo(string pathName)
+        public FileStats(string pathName, DateTime? updateTime = null, int priority = 0, DateTime? execTime = null)
         {
             FullPathName = pathName;
             FileName = Path.GetFileName(pathName);
-        }
-        public FileInfo(string pathName, int priority)
-        {
-            FullPathName = pathName;
-            FileName = Path.GetFileName(pathName);
+            UpdateTime = updateTime ?? File.GetLastWriteTime(pathName);
             Priority = priority;
+            ExecTime = execTime ?? default;
         }
 
         public bool IsMatchAllPatterns(IEnumerable<string> patterns)

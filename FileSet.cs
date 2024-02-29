@@ -13,21 +13,21 @@ namespace MiLauncher
     {
         // Variables and Properties
         // JsonSerializer requires properties instead of fields
-        private HashSet<FileInfo> items = [];
-        public HashSet<FileInfo> Items { get => items; set => items = value; }
+        private HashSet<FileStats> items = [];
+        public HashSet<FileStats> Items { get => items; set => items = value; }
 
         public FileSet()
         {
         }
-        public FileSet(IEnumerable<FileInfo> fileInfoSet)
+        public FileSet(IEnumerable<FileStats> fileInfoSet)
         {
             Items.UnionWith(fileInfoSet);
         }
 
-        internal List<FileInfo> SelectWithCancellation(IEnumerable<string> patterns, CancellationToken token)
+        internal List<FileStats> SelectWithCancellation(IEnumerable<string> patterns, CancellationToken token)
         {
             // Variables
-            var selectedList = new List<FileInfo>();
+            var selectedList = new List<FileStats>();
 
             try
             {
@@ -49,11 +49,11 @@ namespace MiLauncher
                 return selectedList;
             }
         }
-
         internal static FileSet SearchFiles(IEnumerable<string> searchPaths)
         {
             return new FileSet(
-                searchPaths.SelectMany(x => DirectorySearch.EnumerateAllFiles(x).Select(fn => new FileInfo(fn))));
+                searchPaths.SelectMany(
+                    x => DirectorySearch.EnumerateAllFileSystemEntries(x).Select(fn => new FileStats(fn))));
         }
         internal FileSet CopyPriority(FileSet sourceFileSet)
         {
@@ -61,16 +61,8 @@ namespace MiLauncher
                 Items.GroupJoin(sourceFileSet.Items,
                                 x => x.FullPathName,
                                 y => y.FullPathName,
-                                (x, y) => new FileInfo(x.FullPathName, y.FirstOrDefault()?.Priority ?? 0)));
-
-            //var importedFileSet = Items.Join(sourceFileSet.Items, x => x.FullPathName, y => y.FullPathName, (x, y) => new FileInfo(x.FullPathName, y.Priority));
-            //Items = new HashSet<FileInfo>(
-            //    Items.GroupJoin(sourceFileSet.Items,
-            //                    x => x.FullPathName,
-            //                    y => y.FullPathName,
-            //                    (x, y) => new FileInfo(x.FullPathName, y.First().Priority)));
+                                (x, y) => new FileStats(x.FullPathName, x.UpdateTime, y.FirstOrDefault()?.Priority ?? 0)));
         }
-
 
         internal List<string> SelectRealtimeSearch(string searchPath, string[] words, CancellationToken token)
         {
@@ -81,7 +73,7 @@ namespace MiLauncher
             try
             {
                 //foreach (var fn in DirectorySearch.EnumerateAllFiles(@"C:\Users\JUNJI\Desktop\"))
-                foreach (var fn in DirectorySearch.EnumerateAllFiles(searchPath))
+                foreach (var fn in DirectorySearch.EnumerateAllFileSystemEntries(searchPath))
                 {
                     var patternMatched = true;
 

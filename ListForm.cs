@@ -11,7 +11,7 @@ namespace MiLauncher
 {
     public partial class ListForm : Form
     {
-        internal IEnumerable<FileInfo> ListViewSource { get; set; }
+        internal IEnumerable<FileStats> ListViewSource { get; set; }
 
         // TODO: CMIC
         const int maxLineListView = 30;
@@ -43,7 +43,7 @@ namespace MiLauncher
         //    e.DrawText();
         //}
 
-        internal void SetVirtualList(IEnumerable<FileInfo> sourceItems)
+        internal void SetVirtualList(IEnumerable<FileStats> sourceItems)
         {
             ListViewSource = sourceItems;
             listView.VirtualListSize = ListViewSource.Count();

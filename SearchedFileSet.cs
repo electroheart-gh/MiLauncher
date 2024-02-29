@@ -20,7 +20,7 @@ namespace MiLauncher
             var fileSet = new SearchedFileSet();
 
             fileSet.Items.UnionWith(
-                searchPaths.SelectMany(x => DirectorySearch.EnumerateAllFiles(x).Select(fn => new FileInfo(fn)))
+                searchPaths.SelectMany(x => DirectorySearch.EnumerateAllFileSystemEntries(x).Select(fn => new FileStats(fn)))
                 );
 
             return fileSet;
