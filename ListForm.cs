@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -43,9 +44,12 @@ namespace MiLauncher
         //    e.DrawText();
         //}
 
-        internal void SetVirtualList(IEnumerable<FileStats> sourceItems)
+        internal void SetVirtualList(IEnumerable<FileStats> sourceItems,
+                                     SortKeyOption sortKey = SortKeyOption.Priority)
         {
-            ListViewSource = sourceItems;
+            ListViewSource = sourceItems.OrderByDescending(x => x.SortValue(sortKey)).ToList();
+            //ListViewSource = sourceItems;
+
             listView.VirtualListSize = ListViewSource.Count();
 
             if (ListViewSource.Any())
@@ -69,6 +73,7 @@ namespace MiLauncher
                 listView.Columns[0].Width = 0;
                 Width = 100;
             }
+            listView.Refresh();
         }
 
         //internal void SetList(IEnumerable<string> listItems)
@@ -95,6 +100,11 @@ namespace MiLauncher
         //        Width = 100;
         //    }
         //}
+
+        internal void SortVirtualList(SortKeyOption sortKey)
+        {
+            SetVirtualList(ListViewSource, sortKey);
+        }
 
         internal string ExecFile()
         {
@@ -132,7 +142,6 @@ namespace MiLauncher
                 // TODO: Create another method to adjust listForm size including Height, which tends to be too big
                 listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
                 Width = listView.GetItemRect(0).Width + 40;
-
             }
         }
 
@@ -156,6 +165,8 @@ namespace MiLauncher
             Location = new Point(x, y);
             Visible = true;
 
+            if (!ListViewSource.Any()) return;
+
             listView.EnsureVisible(listView.SelectedIndices[0]);
 
             // TODO: CMIC
@@ -166,10 +177,8 @@ namespace MiLauncher
 
             // TODO: If not using AutoReseize, check max size in all items
             Width = listView.GetItemRect(0).Width + 40;
-
         }
 
         // TODO: implement key down event to focus on MainForm
-
     }
 }

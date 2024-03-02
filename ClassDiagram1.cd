@@ -10,21 +10,21 @@
   <Class Name="MiLauncher.DirectorySearch">
     <Position X="11.5" Y="5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
       <FileName>DirectorySearch.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="MiLauncher.FileInfo">
+  <Class Name="MiLauncher.FileStats">
     <Position X="8" Y="5.25" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAEAAACAAAAAAEAAAAAgAAAAAAAAAAAAAAAABAAAA=</HashCode>
-      <FileName>FileInfo.cs</FileName>
+      <HashCode>AABAEAAACAAAAQAEAAAAAgAAAAAAAAAAAAAAACBAAAA=</HashCode>
+      <FileName>FileStats.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MiLauncher.FileSet">
     <Position X="5" Y="5.25" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAACAAAAAgAAgCAAIAAAAAAEAAAABAAAAA=</HashCode>
+      <HashCode>AAAAAAAAABAACAAAAAgAAgAAAIAAAAAAEAAAABAAAAA=</HashCode>
       <FileName>FileSet.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -33,6 +33,9 @@
   </Class>
   <Class Name="MiLauncher.HotKey" BaseTypeListCollapsed="true">
     <Position X="17.5" Y="0.5" Width="2" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
     <NestedTypes>
       <Class Name="MiLauncher.HotKey.HotKeyForm" Collapsed="true">
         <TypeIdentifier>
@@ -44,12 +47,12 @@
       <HashCode>AQAAAAEAACAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAA=</HashCode>
       <FileName>HotKey.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="MiLauncher.ListForm">
     <Position X="5" Y="0.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>IAAAAAAAICAAAAAAAACAAAACAgAAAAAAIAAAAIAAAAA=</HashCode>
+      <HashCode>AAgAAAAAICgAAGAEAgCAAAACAggAAAAAIAAAAIgAAAA=</HashCode>
       <FileName>ListForm.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -61,7 +64,7 @@
       </MemberNameLabel>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AgAACAGIACAAQIAAAACEECAjAACQAAAAAAAACABAEpA=</HashCode>
+      <HashCode>EgAACAGIACAAQIAAQACEECAjAACQAAAAIAAACABAEpA=</HashCode>
       <FileName>MainForm.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -91,7 +94,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="KaoriYa.Migemo.Migemo" BaseTypeListCollapsed="true">
-    <Position X="14.5" Y="0.5" Width="2" />
+    <Position X="14.5" Y="0.75" Width="2" />
     <NestedTypes>
       <Enum Name="KaoriYa.Migemo.Migemo.DictionaryId" Collapsed="true">
         <TypeIdentifier>
@@ -108,13 +111,20 @@
       <HashCode>CAAAAAIQCCAAACBAABEAAgAAQAAAIMiAAJAAJgEABAA=</HashCode>
       <FileName>Migemo.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.221" />
   </Class>
   <Enum Name="MiLauncher.MOD_KEY">
-    <Position X="17.5" Y="3.25" Width="2" />
+    <Position X="17.5" Y="4.25" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAACAAAAAAAAAAAAAAAAgAAAAAAAAAABAAAAAAAA=</HashCode>
       <FileName>HotKey.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="MiLauncher.SortKeyOption">
+    <Position X="8" Y="8.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAEAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>FileStats.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Font Name="Yu Gothic UI" Size="9" />

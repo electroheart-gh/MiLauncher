@@ -17,10 +17,9 @@ namespace MiLauncher
         private Point dragStart;
         private HotKey hotKey;
         private ListForm listForm;
-        //private SearchedFileSet searchedFileSet;
         private FileSet searchedFileSet;
-        // private SearchedFileSet recentFileList;
         private CancellationTokenSource tokenSource;
+        private SortKeyOption sortKeyOption = SortKeyOption.Priority;
 
         // Constant
         // TODO: Consider to make FileList.dat configurable
@@ -96,10 +95,7 @@ namespace MiLauncher
                 tokenSource = null;
             }
 
-            if (cmdBox.Text.Length == 0)
-            {
-                return;
-            }
+            if (cmdBox.Text.Length == 0) return;
 
             tokenSource = new CancellationTokenSource();
             CancellationToken token = tokenSource.Token;
@@ -109,24 +105,17 @@ namespace MiLauncher
             var patternsTransformed = patternsInCmdBox.Select(transformByMigemo).ToArray();
             var selectedList = await Task.Run(() => searchedFileSet.SelectWithCancellation(patternsTransformed, token), token);
 
-            // TODO: Change Sort key by command
-            selectedList = selectedList.OrderByDescending(x => x.Priority).ToList();
-
             if (token.IsCancellationRequested)
             {
-                // Debug.WriteLine("canceled");
                 return;
             }
 
-            listForm.SetVirtualList(selectedList);
+            listForm.SetVirtualList(selectedList, sortKeyOption);
 
             // TODO: CMIC
             listForm.ShowAt(Location.X - 6, Location.Y + Height - 5);
-            //listForm.Location = new Point(Location.X - 6, Location.Y + Height - 5);
-            //listForm.Visible = true;
 
             Activate();
-
             return;
 
             static string transformByMigemo(string pattern)
@@ -237,39 +226,11 @@ namespace MiLauncher
             if (e.KeyCode == Keys.N && e.Control)
             {
                 listForm.SelectNextItem();
-
-                //if (listForm.listView.SelectedIndices.Count > 0)
-                //{
-                //    var selectedIndex = listForm.listView.SelectedIndices[0];
-                //    listForm.listView.Items[selectedIndex].Selected = false;
-                //    if (selectedIndex == listForm.listView.Items.Count - 1)
-                //    {
-                //        listForm.listView.Items[0].Selected = true;
-                //    }
-                //    else
-                //    {
-                //        listForm.listView.Items[selectedIndex + 1].Selected = true;
-                //    }
-                //}
             }
             // select previous item
             if (e.KeyCode == Keys.P && e.Control)
             {
                 listForm.SelectPreviousItem();
-
-                //if (listForm.listView.SelectedIndices.Count > 0)
-                //{
-                //    var selectedIndex = listForm.listView.SelectedIndices[0];
-                //    listForm.listView.Items[selectedIndex].Selected = false;
-                //    if (selectedIndex == 0)
-                //    {
-                //        listForm.listView.Items[^1].Selected = true;
-                //    }
-                //    else
-                //    {
-                //        listForm.listView.Items[selectedIndex - 1].Selected = true;
-                //    }
-                //}
             }
             // forward word
             if (e.KeyCode == Keys.F && e.Alt)
@@ -301,6 +262,19 @@ namespace MiLauncher
                 var firstHalf = pattern.Replace(cmdBox.Text[..cmdBox.SelectionStart], "");
                 cmdBox.Text = firstHalf + cmdBox.Text[cmdBox.SelectionStart..];
                 cmdBox.SelectionStart = firstHalf.Length;
+            }
+            // Change ListView order
+            // Keys.Oemtilde indicates @ (at mark)
+            if (e.KeyCode == Keys.Oemtilde && e.Control)
+            {
+                sortKeyOption = sortKeyOption switch
+                {
+                    SortKeyOption.Priority => SortKeyOption.FullPathName,
+                    SortKeyOption.FullPathName => SortKeyOption.UpdateTime,
+                    SortKeyOption.UpdateTime => SortKeyOption.Priority,
+                    _ => SortKeyOption.Priority,
+                };
+                listForm.SortVirtualList(sortKeyOption);
             }
 
             // TODO: implement crawl folder mode like zii launcher, which requires another ListView class
