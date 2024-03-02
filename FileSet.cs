@@ -1,7 +1,6 @@
 ﻿using KaoriYa.Migemo;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -57,7 +56,7 @@ namespace MiLauncher
         }
         internal FileSet CopyPriority(FileSet sourceFileSet)
         {
-            return new FileSet (
+            return new FileSet(
                 Items.GroupJoin(sourceFileSet.Items,
                                 x => x.FullPathName,
                                 y => y.FullPathName,

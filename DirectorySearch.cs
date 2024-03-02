@@ -17,22 +17,21 @@ namespace MiLauncher
             try
             {
                 //files = System.IO.Directory.EnumerateFiles(path, searchPattern);
-                files = System.IO.Directory.EnumerateFileSystemEntries(path, searchPattern);
+                files = Directory.EnumerateFileSystemEntries(path, searchPattern);
             }
-            catch (System.UnauthorizedAccessException)
+            catch (UnauthorizedAccessException)
             {
             }
             try
             {
-                files = System.IO.Directory.EnumerateDirectories(path)
+                files = Directory.EnumerateDirectories(path)
                     .Aggregate(files, (a, v) => a.Union(EnumerateAllFileSystemEntries(v, searchPattern)));
             }
-            catch (System.UnauthorizedAccessException)
+            catch (UnauthorizedAccessException)
             {
             }
             return files;
         }
-
 
         // EnumerateAllFileSystemInfos created temporarily, which is not tested
         public static IEnumerable<FileSystemInfo> EnumerateAllFileSystemInfos(string path)
