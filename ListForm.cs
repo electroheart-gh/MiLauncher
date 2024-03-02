@@ -23,8 +23,7 @@ namespace MiLauncher
 
         private void listView_DrawItem(object sender, DrawListViewItemEventArgs e)
         {
-            if (listView.SelectedIndices.Contains(e.Item.Index))
-            {
+            if (listView.SelectedIndices.Contains(e.Item.Index)) {
                 // TODO: CMIC
                 e.Graphics.FillRectangle(Brushes.LightGray, e.Bounds);
             }
@@ -51,8 +50,7 @@ namespace MiLauncher
 
             listView.VirtualListSize = ListViewSource.Count();
 
-            if (ListViewSource.Any())
-            {
+            if (ListViewSource.Any()) {
                 // TODO: CMIC
                 Height = listView.GetItemRect(0).Height * Math.Min(maxLineListView, listView.VirtualListSize) + 30;
 
@@ -63,8 +61,7 @@ namespace MiLauncher
                 listView.SelectedIndices.Clear();
                 listView.SelectedIndices.Add(0);
             }
-            else
-            {
+            else {
                 // TODO: test what if removing this if-else branch
                 Height = 0;
                 listView.Columns[0].Width = 0;
@@ -105,17 +102,14 @@ namespace MiLauncher
 
         internal string ExecFile()
         {
-            if (Visible & listView.VirtualListSize > 0)
-            {
-                try
-                {
+            if (Visible & listView.VirtualListSize > 0) {
+                try {
                     var selectedFileInfo = ListViewSource.Skip(listView.SelectedIndices[0]).First();
                     Process.Start("explorer.exe", selectedFileInfo.FullPathName);
                     Visible = false;
                     return selectedFileInfo.FullPathName;
                 }
-                catch (FileNotFoundException)
-                {
+                catch (FileNotFoundException) {
                     Debug.WriteLine("File Not Found");
                 }
             }
@@ -129,8 +123,7 @@ namespace MiLauncher
 
         internal void SelectNextItem()
         {
-            if (listView.VirtualListSize > 0)
-            {
+            if (listView.VirtualListSize > 0) {
                 var newSelectedIndex = (listView.SelectedIndices[0] + 1) % listView.VirtualListSize;
                 listView.SelectedIndices.Clear();
                 listView.SelectedIndices.Add(newSelectedIndex);
@@ -144,8 +137,7 @@ namespace MiLauncher
 
         internal void SelectPreviousItem()
         {
-            if (listView.VirtualListSize > 0)
-            {
+            if (listView.VirtualListSize > 0) {
                 var newSelectedIndex = (listView.SelectedIndices[0] > 0) ? listView.SelectedIndices[0] - 1 : listView.VirtualListSize - 1;
                 listView.SelectedIndices.Clear();
                 listView.SelectedIndices.Add(newSelectedIndex);

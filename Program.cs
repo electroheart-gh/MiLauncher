@@ -19,8 +19,8 @@ namespace MiLauncher
         {
             // Read configuration
             appSettings = SettingManager.LoadSettings<AppSettings>(configFilePath);
-            if (appSettings == null)
-            {
+
+            if (appSettings == null) {
                 appSettings = new AppSettings();
                 SettingManager.SaveSettings(appSettings, configFilePath);
             }

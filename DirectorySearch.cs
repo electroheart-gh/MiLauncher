@@ -11,24 +11,20 @@ namespace MiLauncher
         {
             return EnumerateAllFileSystemEntries(path, "*");
         }
-        public static IEnumerable<string> EnumerateAllFileSystemEntries(string path, string searchPattern)
+        private static IEnumerable<string> EnumerateAllFileSystemEntries(string path, string searchPattern)
         {
             var files = Enumerable.Empty<string>();
-            try
-            {
+            try {
                 //files = System.IO.Directory.EnumerateFiles(path, searchPattern);
                 files = Directory.EnumerateFileSystemEntries(path, searchPattern);
             }
-            catch (UnauthorizedAccessException)
-            {
+            catch (UnauthorizedAccessException) {
             }
-            try
-            {
+            try {
                 files = Directory.EnumerateDirectories(path)
                     .Aggregate(files, (a, v) => a.Union(EnumerateAllFileSystemEntries(v, searchPattern)));
             }
-            catch (UnauthorizedAccessException)
-            {
+            catch (UnauthorizedAccessException) {
             }
             return files;
         }
@@ -41,20 +37,16 @@ namespace MiLauncher
         private static IEnumerable<FileSystemInfo> EnumerateAllFileSystemInfos(string path, string searchPattern)
         {
             var files = Enumerable.Empty<FileSystemInfo>();
-            try
-            {
+            try {
                 files = new DirectoryInfo(path).EnumerateFileSystemInfos(searchPattern);
             }
-            catch (UnauthorizedAccessException)
-            {
+            catch (UnauthorizedAccessException) {
             }
-            try
-            {
+            try {
                 files = Directory.EnumerateDirectories(path)
                     .Aggregate(files, (a, v) => a.Union(EnumerateAllFileSystemInfos(v)));
             }
-            catch (UnauthorizedAccessException)
-            {
+            catch (UnauthorizedAccessException) {
             }
             return files;
 

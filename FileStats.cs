@@ -35,16 +35,13 @@ namespace MiLauncher
         public bool IsMatchAllPatterns(IEnumerable<string> patterns)
         {
             // TODO: consider to use LINQ with MatchCondition class
-            foreach (var pattern in patterns)
-            {
-                if (!(pattern[..1] switch
-                {
+            foreach (var pattern in patterns) {
+                if (!(pattern[..1] switch {
                     "-" => !IsMatchPattern(FullPathName, pattern[1..]),
                     "!" => !IsMatchPattern(FileName, pattern[1..]),
                     "\\" => IsMatchPattern(FullPathName, pattern[1..]),
                     _ => IsMatchPattern(FileName, pattern),
-                }))
-                {
+                })) {
                     return false;
                 }
             }
@@ -53,27 +50,20 @@ namespace MiLauncher
             bool IsMatchPattern(string name, string pattern)
             {
                 // Simple search
-                if (pattern.Length < Program.appSettings.MinMigemoLength)
-                {
-                    if (name.Contains(pattern, StringComparison.OrdinalIgnoreCase))
-                    {
+                if (pattern.Length < Program.appSettings.MinMigemoLength) {
+                    if (name.Contains(pattern, StringComparison.OrdinalIgnoreCase)) {
                         return true;
                     }
                 }
                 // Migemo search
-                else
-                {
-                    try
-                    {
-                        if (Regex.IsMatch(name, pattern.ToString(), RegexOptions.IgnoreCase))
-                        {
+                else {
+                    try {
+                        if (Regex.IsMatch(name, pattern.ToString(), RegexOptions.IgnoreCase)) {
                             return true;
                         }
                     }
-                    catch (ArgumentException)
-                    {
-                        if (name.Contains(pattern, StringComparison.OrdinalIgnoreCase))
-                        {
+                    catch (ArgumentException) {
+                        if (name.Contains(pattern, StringComparison.OrdinalIgnoreCase)) {
                             return true;
                         }
                     }
@@ -89,8 +79,7 @@ namespace MiLauncher
 
         internal object SortValue(SortKeyOption key)
         {
-            return key switch
-            {
+            return key switch {
                 SortKeyOption.Priority => Priority,
                 SortKeyOption.FullPathName => FullPathName,
                 SortKeyOption.UpdateTime => UpdateTime,

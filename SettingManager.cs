@@ -7,8 +7,7 @@ namespace MiLauncher
     // Used to save AppSettings and FileList object in the specified files
     internal class SettingManager
     {
-        private static readonly JsonSerializerOptions s_writeOptions = new()
-        {
+        private static readonly JsonSerializerOptions s_writeOptions = new() {
             WriteIndented = true
         };
 
@@ -19,12 +18,10 @@ namespace MiLauncher
 
         public static T LoadSettings<T>(string path)
         {
-            try
-            {
+            try {
                 return JsonSerializer.Deserialize<T>(File.ReadAllText(path));
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Console.WriteLine($"Error loading settings: {ex.Message}");
                 return default;
             }

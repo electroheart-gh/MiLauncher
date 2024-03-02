@@ -35,8 +35,7 @@ namespace MiLauncher
         }
         protected override CreateParams CreateParams
         {
-            get
-            {
+            get {
                 CreateParams cp = base.CreateParams;
                 cp.ClassStyle |= CS_DROPSHADOW;
                 return cp;
@@ -87,8 +86,7 @@ namespace MiLauncher
         {
             listForm.Visible = false;
 
-            if (tokenSource != null)
-            {
+            if (tokenSource != null) {
                 tokenSource.Cancel();
                 tokenSource = null;
             }
@@ -103,8 +101,7 @@ namespace MiLauncher
             var patternsTransformed = patternsInCmdBox.Select(transformByMigemo).ToArray();
             var selectedList = await Task.Run(() => searchedFileSet.SelectWithCancellation(patternsTransformed, token), token);
 
-            if (token.IsCancellationRequested)
-            {
+            if (token.IsCancellationRequested) {
                 return;
             }
 
@@ -118,13 +115,11 @@ namespace MiLauncher
 
             static string transformByMigemo(string pattern)
             {
-                using (Migemo migemo = new("./Dict/migemo-dict"))
-                {
+                using (Migemo migemo = new("./Dict/migemo-dict")) {
                     // TODO: make it config or const
                     // TODO: Consider to make MatchCondition class, which should have a method to parse string to select condition
                     var prefix = "-!\\".Contains(pattern[..1]) ? pattern[..1] : "";
-                    if (pattern.Length - prefix.Length < Program.appSettings.MinMigemoLength)
-                    {
+                    if (pattern.Length - prefix.Length < Program.appSettings.MinMigemoLength) {
                         return pattern;
                     }
                     return prefix + migemo.GetRegex(pattern[prefix.Length..]);
@@ -138,13 +133,11 @@ namespace MiLauncher
         private void cmdBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             // Disable default behavior for modifier keys, including beep sound
-            if ((ModifierKeys & (Keys.Control | Keys.Alt)) > 0)
-            {
+            if ((ModifierKeys & (Keys.Control | Keys.Alt)) > 0) {
                 e.Handled = true;
             }
             // Disable default behavior for Enter and ESC including beep sound
-            if (e.KeyChar == (char)Keys.Enter || e.KeyChar == (char)Keys.Escape)
-            {
+            if (e.KeyChar == (char)Keys.Enter || e.KeyChar == (char)Keys.Escape) {
                 e.Handled = true;
             }
         }
@@ -157,8 +150,7 @@ namespace MiLauncher
             // TODO: implement keymap class to make keymap configurable
 
             // Close MainForm
-            if (e.KeyCode == Keys.Escape)
-            {
+            if (e.KeyCode == Keys.Escape) {
                 cmdBox.Text = string.Empty;
                 Visible = false;
 
@@ -166,8 +158,7 @@ namespace MiLauncher
                 listForm.Visible = false;
             }
             // Exec file with associated app
-            if (e.KeyCode == Keys.Enter || (e.KeyCode == Keys.M && e.Control))
-            {
+            if (e.KeyCode == Keys.Enter || (e.KeyCode == Keys.M && e.Control)) {
                 var fullPathName = listForm.ExecFile();
                 // TODO: Consider to make the value to adjust the priority '1' configurable
                 // searchedFileSet.AddPriority(fullPathName, 1);
@@ -181,80 +172,66 @@ namespace MiLauncher
 
             }
             // beginning of line
-            if (e.KeyCode == Keys.A && e.Control)
-            {
+            if (e.KeyCode == Keys.A && e.Control) {
                 cmdBox.SelectionStart = 0;
             }
             // end of line
-            if (e.KeyCode == Keys.E && e.Control)
-            {
+            if (e.KeyCode == Keys.E && e.Control) {
                 cmdBox.SelectionStart = cmdBox.Text.Length;
             }
             // forward char
-            if (e.KeyCode == Keys.F && e.Control)
-            {
+            if (e.KeyCode == Keys.F && e.Control) {
                 cmdBox.SelectionStart++;
             }
             // backward char
-            if (e.KeyCode == Keys.B && e.Control)
-            {
+            if (e.KeyCode == Keys.B && e.Control) {
                 cmdBox.SelectionStart = Math.Max(0, cmdBox.SelectionStart - 1);
             }
             // backspace
-            if (e.KeyCode == Keys.H && e.Control)
-            {
+            if (e.KeyCode == Keys.H && e.Control) {
                 var pos = cmdBox.SelectionStart;
-                if (pos > 0)
-                {
+                if (pos > 0) {
                     cmdBox.Text = cmdBox.Text.Remove(pos - 1, 1);
                     cmdBox.SelectionStart = pos - 1;
                 }
             }
             // delete char
-            if (e.KeyCode == Keys.D && e.Control)
-            {
+            if (e.KeyCode == Keys.D && e.Control) {
                 var pos = cmdBox.SelectionStart;
-                if (pos < cmdBox.Text.Length)
-                {
+                if (pos < cmdBox.Text.Length) {
                     cmdBox.Text = cmdBox.Text.Remove(pos, 1);
                     cmdBox.SelectionStart = pos;
                 }
             }
             // select next item
-            if (e.KeyCode == Keys.N && e.Control)
-            {
+            if (e.KeyCode == Keys.N && e.Control) {
                 listForm.SelectNextItem();
             }
             // select previous item
-            if (e.KeyCode == Keys.P && e.Control)
-            {
+            if (e.KeyCode == Keys.P && e.Control) {
                 listForm.SelectPreviousItem();
             }
             // forward word
-            if (e.KeyCode == Keys.F && e.Alt)
-            {
+            if (e.KeyCode == Keys.F && e.Alt) {
                 var pattern = NextWordRegex();
                 var m = pattern.Match(cmdBox.Text, cmdBox.SelectionStart);
                 cmdBox.SelectionStart = Math.Max(m.Index + m.Length, cmdBox.SelectionStart);
             }
             // backward word
-            if (e.KeyCode == Keys.B && e.Alt)
-            {
+            if (e.KeyCode == Keys.B && e.Alt) {
                 var pattern = PreviousWordRegex();
                 var m = pattern.Match(cmdBox.Text[..cmdBox.SelectionStart]);
                 cmdBox.SelectionStart = m.Index;
             }
             // delete word
-            if (e.KeyCode == Keys.D && e.Alt)
-            {
+            if (e.KeyCode == Keys.D && e.Alt) {
                 var cursorPosition = cmdBox.SelectionStart;
                 var pattern = NextWordRegex();
                 cmdBox.Text = pattern.Replace(cmdBox.Text, "", 1, cursorPosition);
                 cmdBox.SelectionStart = cursorPosition;
             }
             // backward delete word
-            if (e.KeyCode == Keys.H && e.Alt)
-            {
+            if (e.KeyCode == Keys.H && e.Alt) {
                 // Using Non-backtracking and negative lookahead assertion of Regex
                 var pattern = PreviousWordRegex();
                 var firstHalf = pattern.Replace(cmdBox.Text[..cmdBox.SelectionStart], "");
@@ -263,10 +240,8 @@ namespace MiLauncher
             }
             // Change ListView order
             // Keys.Oemtilde indicates @ (at mark)
-            if (e.KeyCode == Keys.Oemtilde && e.Control)
-            {
-                sortKeyOption = sortKeyOption switch
-                {
+            if (e.KeyCode == Keys.Oemtilde && e.Control) {
+                sortKeyOption = sortKeyOption switch {
                     SortKeyOption.Priority => SortKeyOption.FullPathName,
                     SortKeyOption.FullPathName => SortKeyOption.UpdateTime,
                     SortKeyOption.UpdateTime => SortKeyOption.Priority,
@@ -288,8 +263,7 @@ namespace MiLauncher
 
         private void cmdBox_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
-            if (e.KeyCode == Keys.A && e.Control)
-            {
+            if (e.KeyCode == Keys.A && e.Control) {
                 e.IsInputKey = true;
             }
         }
@@ -297,8 +271,7 @@ namespace MiLauncher
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
             // Move MainForm by left button dragging
-            if (e.Button == MouseButtons.Left)
-            {
+            if (e.Button == MouseButtons.Left) {
                 dragStart = e.Location;
             }
         }
@@ -306,8 +279,7 @@ namespace MiLauncher
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
             // Move MainForm by left button dragging
-            if (e.Button == MouseButtons.Left)
-            {
+            if (e.Button == MouseButtons.Left) {
                 Location = new Point(Location.X + e.Location.X - dragStart.X, Location.Y + e.Location.Y - dragStart.Y);
             }
         }

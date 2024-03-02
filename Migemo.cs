@@ -61,8 +61,7 @@ namespace KaoriYa.Migemo
 
         public IntPtr MigemoObject
         {
-            get
-            {
+            get {
                 return this.migemoObject;
             }
         }
@@ -132,8 +131,7 @@ namespace KaoriYa.Migemo
         public string Query(string query)
         {
             IntPtr result = migemo_query(this.migemoObject, query);
-            if (result != IntPtr.Zero)
-            {
+            if (result != IntPtr.Zero) {
                 string retval = Marshal.PtrToStringAnsi(result);
                 migemo_release(this.migemoObject, result);
                 return retval;
@@ -145,8 +143,7 @@ namespace KaoriYa.Migemo
         public void Dispose()
         {
             //Console.WriteLine("HERE ("+this.migemoObject+")");
-            if (this.migemoObject != IntPtr.Zero)
-            {
+            if (this.migemoObject != IntPtr.Zero) {
                 //Console.WriteLine("migemo_close() is called");
                 migemo_close(this.migemoObject);
                 this.migemoObject = IntPtr.Zero;

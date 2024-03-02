@@ -28,21 +28,17 @@ namespace MiLauncher
             // Variables
             var selectedList = new List<FileStats>();
 
-            try
-            {
-                foreach (var fileInfo in Items)
-                {
+            try {
+                foreach (var fileInfo in Items) {
                     token.ThrowIfCancellationRequested();
 
-                    if (fileInfo.IsMatchAllPatterns(patterns))
-                    {
+                    if (fileInfo.IsMatchAllPatterns(patterns)) {
                         selectedList.Add(fileInfo);
                     }
                 }
                 return selectedList;
             }
-            catch (OperationCanceledException)
-            {
+            catch (OperationCanceledException) {
                 // Debug.WriteLine("cancel occurs Select");
                 selectedList.Clear();
                 return selectedList;
@@ -69,58 +65,46 @@ namespace MiLauncher
             var migemo = new Migemo("./Dict/migemo-dict");
             Regex regex;
 
-            try
-            {
+            try {
                 //foreach (var fn in DirectorySearch.EnumerateAllFiles(@"C:\Users\JUNJI\Desktop\"))
-                foreach (var fn in DirectorySearch.EnumerateAllFileSystemEntries(searchPath))
-                {
+                foreach (var fn in DirectorySearch.EnumerateAllFileSystemEntries(searchPath)) {
                     var patternMatched = true;
 
-                    foreach (var pattern in words)
-                    {
+                    foreach (var pattern in words) {
                         token.ThrowIfCancellationRequested();
                         // Simple string search
-                        if (pattern.Length < Program.appSettings.MinMigemoLength)
-                        {
-                            if (!Path.GetFileName(fn).Contains(pattern))
-                            {
+                        if (pattern.Length < Program.appSettings.MinMigemoLength) {
+                            if (!Path.GetFileName(fn).Contains(pattern)) {
                                 patternMatched = false;
                                 break;
                             }
                         }
                         // Migemo search
-                        else
-                        {
-                            try
-                            {
+                        else {
+                            try {
                                 regex = migemo.GetRegex(pattern);
                             }
-                            catch (ArgumentException)
-                            {
+                            catch (ArgumentException) {
                                 regex = new Regex(pattern);
                             }
                             // Debug.WriteLine("\"" + regex.ToString() + "\"");  //生成された正規表現をデバッグコンソールに出力
-                            if (!Regex.IsMatch(Path.GetFileName(fn), regex.ToString(), RegexOptions.IgnoreCase))
-                            {
+                            if (!Regex.IsMatch(Path.GetFileName(fn), regex.ToString(), RegexOptions.IgnoreCase)) {
                                 patternMatched = false;
                                 break;
                             }
                         }
                     }
-                    if (patternMatched)
-                    {
+                    if (patternMatched) {
                         selectedList.Add(fn);
 
-                        if (selectedList.Count > Program.appSettings.MaxListLine)
-                        {
+                        if (selectedList.Count > Program.appSettings.MaxListLine) {
                             break;
                         }
                     }
                 }
                 return selectedList;
             }
-            catch (OperationCanceledException)
-            {
+            catch (OperationCanceledException) {
                 selectedList.Clear();
                 return selectedList;
             }
