@@ -54,12 +54,10 @@ namespace MiLauncher
             if (ListViewSource.Any())
             {
                 // TODO: CMIC
-                Height = listView.GetItemRect(0).Height * Math.Max(maxLineListView, listView.VirtualListSize) + 30;
+                Height = listView.GetItemRect(0).Height * Math.Min(maxLineListView, listView.VirtualListSize) + 30;
 
                 // TODO: Check max size in all items
                 Width = listView.GetItemRect(0).Width + 40;
-
-                // TODO: Resize Column here?
 
                 // Select the first item, which makes its color change automatically?
                 listView.SelectedIndices.Clear();
