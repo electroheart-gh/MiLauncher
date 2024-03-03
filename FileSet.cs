@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading;
 
@@ -12,8 +13,8 @@ namespace MiLauncher
     {
         // Variables and Properties
         // JsonSerializer requires properties instead of fields
-        private HashSet<FileStats> items = [];
-        public HashSet<FileStats> Items { get => items; set => items = value; }
+        [JsonInclude]
+        public HashSet<FileStats> Items { get; set; } = [];
 
         public FileSet()
         {
@@ -29,11 +30,11 @@ namespace MiLauncher
             var selectedList = new List<FileStats>();
 
             try {
-                foreach (var fileInfo in Items) {
+                foreach (var fileStats in Items) {
                     token.ThrowIfCancellationRequested();
 
-                    if (fileInfo.IsMatchAllPatterns(patterns)) {
-                        selectedList.Add(fileInfo);
+                    if (fileStats.IsMatchAllPatterns(patterns)) {
+                        selectedList.Add(fileStats);
                     }
                 }
                 return selectedList;

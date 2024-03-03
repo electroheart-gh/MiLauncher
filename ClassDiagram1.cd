@@ -24,12 +24,9 @@
   <Class Name="MiLauncher.FileSet">
     <Position X="5" Y="5.25" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAABAACAAAAAgAAgAAAIAAAAAAEAAAABAAAAA=</HashCode>
+      <HashCode>AAAAAAAAABAACAAAAAAAAgAAAIAAAAAAEAAAABAAAAA=</HashCode>
       <FileName>FileSet.cs</FileName>
     </TypeIdentifier>
-    <ShowAsCollectionAssociation>
-      <Property Name="Items" />
-    </ShowAsCollectionAssociation>
   </Class>
   <Class Name="MiLauncher.HotKey" BaseTypeListCollapsed="true">
     <Position X="17.5" Y="0.5" Width="2" />
@@ -64,7 +61,7 @@
       </MemberNameLabel>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>EgAACAGIACAAQIAAQACEECAjAACQAAAAIAAACABAEpA=</HashCode>
+      <HashCode>EgAACAGIACAAQIAAAACEECAjAACQAAAAAAAACABAEpA=</HashCode>
       <FileName>MainForm.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -123,7 +120,7 @@
   <Enum Name="MiLauncher.SortKeyOption">
     <Position X="8" Y="8.25" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAQAEAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAACAAAAQAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>FileStats.cs</FileName>
     </TypeIdentifier>
   </Enum>

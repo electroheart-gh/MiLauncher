@@ -104,7 +104,7 @@ namespace MiLauncher
         {
             if (Visible & listView.VirtualListSize > 0) {
                 try {
-                    var selectedFileInfo = ListViewSource.Skip(listView.SelectedIndices[0]).First();
+                    FileStats selectedFileInfo = ListViewSource.Skip(listView.SelectedIndices[0]).First();
                     Process.Start("explorer.exe", selectedFileInfo.FullPathName);
                     Visible = false;
                     return selectedFileInfo.FullPathName;

@@ -47,7 +47,7 @@ namespace MiLauncher
             }
             return true;
 
-            bool IsMatchPattern(string name, string pattern)
+            static bool IsMatchPattern(string name, string pattern)
             {
                 // Simple search
                 if (pattern.Length < Program.appSettings.MinMigemoLength) {

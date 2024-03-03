@@ -61,7 +61,7 @@ namespace MiLauncher
 
             //var searchPaths = Program.appSettings.TargetFolders;
             //searchedFileSet = await Task.Run(() => SearchedFileSet.SearchFiles(searchPaths));
-            var newSearchedFileSet =
+            FileSet newSearchedFileSet =
                 await Task.Run(() => FileSet.SearchFiles(Program.appSettings.TargetFolders));
             searchedFileSet = newSearchedFileSet.CopyPriority(searchedFileSet);
 
@@ -213,27 +213,27 @@ namespace MiLauncher
             }
             // forward word
             if (e.KeyCode == Keys.F && e.Alt) {
-                var pattern = NextWordRegex();
-                var m = pattern.Match(cmdBox.Text, cmdBox.SelectionStart);
+                Regex pattern = NextWordRegex();
+                Match m = pattern.Match(cmdBox.Text, cmdBox.SelectionStart);
                 cmdBox.SelectionStart = Math.Max(m.Index + m.Length, cmdBox.SelectionStart);
             }
             // backward word
             if (e.KeyCode == Keys.B && e.Alt) {
-                var pattern = PreviousWordRegex();
-                var m = pattern.Match(cmdBox.Text[..cmdBox.SelectionStart]);
+                Regex pattern = PreviousWordRegex();
+                Match m = pattern.Match(cmdBox.Text[..cmdBox.SelectionStart]);
                 cmdBox.SelectionStart = m.Index;
             }
             // delete word
             if (e.KeyCode == Keys.D && e.Alt) {
                 var cursorPosition = cmdBox.SelectionStart;
-                var pattern = NextWordRegex();
+                Regex pattern = NextWordRegex();
                 cmdBox.Text = pattern.Replace(cmdBox.Text, "", 1, cursorPosition);
                 cmdBox.SelectionStart = cursorPosition;
             }
             // backward delete word
             if (e.KeyCode == Keys.H && e.Alt) {
                 // Using Non-backtracking and negative lookahead assertion of Regex
-                var pattern = PreviousWordRegex();
+                Regex pattern = PreviousWordRegex();
                 var firstHalf = pattern.Replace(cmdBox.Text[..cmdBox.SelectionStart], "");
                 cmdBox.Text = firstHalf + cmdBox.Text[cmdBox.SelectionStart..];
                 cmdBox.SelectionStart = firstHalf.Length;
