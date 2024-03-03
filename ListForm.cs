@@ -11,7 +11,7 @@ namespace MiLauncher
 {
     public partial class ListForm : Form
     {
-        internal IEnumerable<FileStats> ListViewSource { get; set; }
+        private IEnumerable<FileStats> ListViewSource { get; set; }
 
         // TODO: CMIC
         const int maxLineListView = 30;

@@ -60,56 +60,56 @@ namespace MiLauncher
                                 (x, y) => new FileStats(x.FullPathName, x.UpdateTime, y.FirstOrDefault()?.Priority ?? 0)));
         }
 
-        internal List<string> SelectRealtimeSearch(string searchPath, string[] words, CancellationToken token)
-        {
-            var selectedList = new List<string>();
-            var migemo = new Migemo("./Dict/migemo-dict");
-            Regex regex;
+        //internal List<string> SelectRealtimeSearch(string searchPath, string[] words, CancellationToken token)
+        //{
+        //    var selectedList = new List<string>();
+        //    var migemo = new Migemo("./Dict/migemo-dict");
+        //    Regex regex;
 
-            try {
-                //foreach (var fn in DirectorySearch.EnumerateAllFiles(@"C:\Users\JUNJI\Desktop\"))
-                foreach (var fn in DirectorySearch.EnumerateAllFileSystemEntries(searchPath)) {
-                    var patternMatched = true;
+        //    try {
+        //        //foreach (var fn in DirectorySearch.EnumerateAllFiles(@"C:\Users\JUNJI\Desktop\"))
+        //        foreach (var fn in DirectorySearch.EnumerateAllFileSystemEntries(searchPath)) {
+        //            var patternMatched = true;
 
-                    foreach (var pattern in words) {
-                        token.ThrowIfCancellationRequested();
-                        // Simple string search
-                        if (pattern.Length < Program.appSettings.MinMigemoLength) {
-                            if (!Path.GetFileName(fn).Contains(pattern)) {
-                                patternMatched = false;
-                                break;
-                            }
-                        }
-                        // Migemo search
-                        else {
-                            try {
-                                regex = migemo.GetRegex(pattern);
-                            }
-                            catch (ArgumentException) {
-                                regex = new Regex(pattern);
-                            }
-                            // Debug.WriteLine("\"" + regex.ToString() + "\"");  //生成された正規表現をデバッグコンソールに出力
-                            if (!Regex.IsMatch(Path.GetFileName(fn), regex.ToString(), RegexOptions.IgnoreCase)) {
-                                patternMatched = false;
-                                break;
-                            }
-                        }
-                    }
-                    if (patternMatched) {
-                        selectedList.Add(fn);
+        //            foreach (var pattern in words) {
+        //                token.ThrowIfCancellationRequested();
+        //                // Simple string search
+        //                if (pattern.Length < Program.appSettings.MinMigemoLength) {
+        //                    if (!Path.GetFileName(fn).Contains(pattern)) {
+        //                        patternMatched = false;
+        //                        break;
+        //                    }
+        //                }
+        //                // Migemo search
+        //                else {
+        //                    try {
+        //                        regex = migemo.GetRegex(pattern);
+        //                    }
+        //                    catch (ArgumentException) {
+        //                        regex = new Regex(pattern);
+        //                    }
+        //                    // Debug.WriteLine("\"" + regex.ToString() + "\"");  //生成された正規表現をデバッグコンソールに出力
+        //                    if (!Regex.IsMatch(Path.GetFileName(fn), regex.ToString(), RegexOptions.IgnoreCase)) {
+        //                        patternMatched = false;
+        //                        break;
+        //                    }
+        //                }
+        //            }
+        //            if (patternMatched) {
+        //                selectedList.Add(fn);
 
-                        if (selectedList.Count > Program.appSettings.MaxListLine) {
-                            break;
-                        }
-                    }
-                }
-                return selectedList;
-            }
-            catch (OperationCanceledException) {
-                selectedList.Clear();
-                return selectedList;
-            }
-        }
+        //                if (selectedList.Count > Program.appSettings.MaxListLine) {
+        //                    break;
+        //                }
+        //            }
+        //        }
+        //        return selectedList;
+        //    }
+        //    catch (OperationCanceledException) {
+        //        selectedList.Clear();
+        //        return selectedList;
+        //    }
+        //}
 
         internal void AddPriority(string fullPathName, int value)
         {

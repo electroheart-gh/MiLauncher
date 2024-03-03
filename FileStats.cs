@@ -80,7 +80,6 @@ namespace MiLauncher
         internal object SortValue(SortKeyOption key)
         {
             return key switch {
-                SortKeyOption.Priority => Priority,
                 SortKeyOption.FullPathName => FullPathName,
                 SortKeyOption.UpdateTime => UpdateTime,
                 _ => Priority,
