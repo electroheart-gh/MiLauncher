@@ -9,31 +9,55 @@ using System.Threading;
 
 namespace MiLauncher
 {
-    internal class FileSet
+    internal static class FileSet
     {
         // Variables and Properties
         // JsonSerializer requires properties instead of fields
-        [JsonInclude]
-        public HashSet<FileStats> Items { get; set; } = [];
+        //[JsonInclude]
+        //public HashSet<FileStats> Items { get; set; } = [];
 
-        public FileSet()
-        {
-        }
-        public FileSet(IEnumerable<FileStats> fileInfoSet)
-        {
-            Items.UnionWith(fileInfoSet);
-        }
+        //public FileSet()
+        //{
+        //}
+        //public FileSet(IEnumerable<FileStats> fileInfoSet)
+        //{
+        //    Items.UnionWith(fileInfoSet);
+        //}
 
-        internal List<FileStats> SelectWithCancellation(IEnumerable<string> patterns, CancellationToken token)
+        //internal List<FileStats> SelectWithCancellation(IEnumerable<string> patterns, CancellationToken token)
+        //{
+        //    // Variables
+        //    var selectedList = new List<FileStats>();
+
+        //    try {
+        //        foreach (var fileStats in Items) {
+        //            token.ThrowIfCancellationRequested();
+
+        //            if (fileStats.IsMatchAllPatterns(patterns)) {
+        //                selectedList.Add(fileStats);
+        //            }
+        //        }
+        //        return selectedList;
+        //    }
+        //    catch (OperationCanceledException) {
+        //        // Debug.WriteLine("cancel occurs Select");
+        //        selectedList.Clear();
+        //        return selectedList;
+        //    }
+        //}
+
+        internal static List<FileStats> SelectWithCancellation(IEnumerable<FileStats> sourceFiles,
+                                                               IEnumerable<string> patterns, 
+                                                               CancellationToken token)
         {
             // Variables
             var selectedList = new List<FileStats>();
 
             try {
-                foreach (var fileStats in Items) {
+                foreach (var fileStats in sourceFiles) {
                     token.ThrowIfCancellationRequested();
 
-                    if (fileStats.IsMatchAllPatterns(patterns)) {
+                    if (IsMatchAllPatterns(fileStats, patterns)) {
                         selectedList.Add(fileStats);
                     }
                 }
@@ -45,19 +69,78 @@ namespace MiLauncher
                 return selectedList;
             }
         }
-        internal static FileSet SearchFiles(IEnumerable<string> searchPaths)
+
+        private static bool IsMatchAllPatterns(FileStats fileStats, IEnumerable<string> patterns)
         {
-            return new FileSet(
-                searchPaths.SelectMany(
-                    x => DirectorySearch.EnumerateAllFileSystemEntries(x).Select(fn => new FileStats(fn))));
+            // TODO: consider to use LINQ with MatchCondition class
+            foreach (var pattern in patterns) {
+                if (!(pattern[..1] switch {
+                    "-" => !IsMatchPattern(fileStats.FullPathName, pattern[1..]),
+                    "!" => !IsMatchPattern(fileStats.FileName, pattern[1..]),
+                    "\\" => IsMatchPattern(fileStats.FullPathName, pattern[1..]),
+                    _ => IsMatchPattern(fileStats.FileName, pattern),
+                })) {
+                    return false;
+                }
+            }
+            return true;
+
+            static bool IsMatchPattern(string name, string pattern)
+            {
+                // Simple search
+                if (pattern.Length < Program.appSettings.MinMigemoLength) {
+                    if (name.Contains(pattern, StringComparison.OrdinalIgnoreCase)) {
+                        return true;
+                    }
+                }
+                // Migemo search
+                else {
+                    try {
+                        if (Regex.IsMatch(name, pattern.ToString(), RegexOptions.IgnoreCase)) {
+                            return true;
+                        }
+                    }
+                    catch (ArgumentException) {
+                        if (name.Contains(pattern, StringComparison.OrdinalIgnoreCase)) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
         }
-        internal FileSet CopyPriority(FileSet sourceFileSet)
+
+        //internal static FileSet SearchFiles(IEnumerable<string> searchPaths)
+        //{
+        //    return new FileSet(
+        //        searchPaths.SelectMany(
+        //            x => DirectorySearch.EnumerateAllFileSystemEntries(x).Select(fn => new FileStats(fn))));
+        //}
+
+        internal static IEnumerable<FileStats> SearchFiles()
         {
-            return new FileSet(
-                Items.GroupJoin(sourceFileSet.Items,
+            List<string> searchPaths = Program.appSettings.TargetFolders;
+            return searchPaths.SelectMany(
+                    x => DirectorySearch.EnumerateAllFileSystemEntries(x).Select(fn => new FileStats(fn)));
+        }
+
+
+
+        //internal FileSet CopyPriority(FileSet sourceFileSet)
+        //{
+        //    return new FileSet(
+        //        Items.GroupJoin(sourceFileSet.Items,
+        //                        x => x.FullPathName,
+        //                        y => y.FullPathName,
+        //                        (x, y) => new FileStats(x.FullPathName, x.UpdateTime, y.FirstOrDefault()?.Priority ?? 0)));
+        //}
+
+        internal static IEnumerable<FileStats> CopyPriority(IEnumerable<FileStats> targetFiles, IEnumerable<FileStats> sourceFiles)
+        {
+            return targetFiles.GroupJoin(sourceFiles,
                                 x => x.FullPathName,
                                 y => y.FullPathName,
-                                (x, y) => new FileStats(x.FullPathName, x.UpdateTime, y.FirstOrDefault()?.Priority ?? 0)));
+                                (x, y) => new FileStats(x.FullPathName, x.UpdateTime, y.FirstOrDefault()?.Priority ?? 0));
         }
 
         //internal List<string> SelectRealtimeSearch(string searchPath, string[] words, CancellationToken token)
@@ -111,9 +194,9 @@ namespace MiLauncher
         //    }
         //}
 
-        internal void AddPriority(string fullPathName, int value)
-        {
-            Items.FirstOrDefault(x => x.FullPathName == fullPathName)?.AddPriority(value);
-        }
+        //internal void AddPriority(string fullPathName, int value)
+        //{
+        //    Items.FirstOrDefault(x => x.FullPathName == fullPathName)?.AddPriority(value);
+        //}
     }
 }

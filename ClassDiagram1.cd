@@ -15,21 +15,18 @@
     </TypeIdentifier>
   </Class>
   <Class Name="MiLauncher.FileStats">
-    <Position X="7.75" Y="3.75" Width="2" />
+    <Position X="7.75" Y="0.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AABAEAAACAAAAQAEAAAAAgAAAAAAAAAAAAAAACBAAAA=</HashCode>
       <FileName>FileStats.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MiLauncher.FileSet">
-    <Position X="4.25" Y="5.75" Width="2" />
+    <Position X="4.25" Y="5.25" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAABAACAAAAAAAAgAAAIAAAAAAEAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAEAAAABAAAAAAAAAAAAAAAIAAAAAAEAAAAAAAAAA=</HashCode>
       <FileName>FileSet.cs</FileName>
     </TypeIdentifier>
-    <ShowAsCollectionAssociation>
-      <Property Name="Items" />
-    </ShowAsCollectionAssociation>
   </Class>
   <Class Name="MiLauncher.HotKey" BaseTypeListCollapsed="true">
     <Position X="17.5" Y="0.5" Width="2" />
@@ -72,7 +69,6 @@
     </TypeIdentifier>
     <ShowAsAssociation>
       <Field Name="listForm" />
-      <Field Name="searchedFileSet" />
     </ShowAsAssociation>
   </Class>
   <Class Name="MiLauncher.Program">
@@ -80,13 +76,6 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAABABAAAAAA=</HashCode>
       <FileName>Program.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="MiLauncher.SearchedFileSet">
-    <Position X="4.25" Y="8.75" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>SearchedFileSet.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MiLauncher.SettingManager">
@@ -97,7 +86,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="KaoriYa.Migemo.Migemo" BaseTypeListCollapsed="true">
-    <Position X="14.5" Y="0.75" Width="2" />
+    <Position X="14.5" Y="0.5" Width="2" />
     <NestedTypes>
       <Enum Name="KaoriYa.Migemo.Migemo.DictionaryId" Collapsed="true">
         <TypeIdentifier>

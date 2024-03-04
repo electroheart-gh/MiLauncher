@@ -1,5 +1,7 @@
 ﻿using KaoriYa.Migemo;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -15,7 +17,7 @@ namespace MiLauncher
         private Point dragStart;
         private HotKey hotKey;
         private ListForm listForm;
-        private FileSet searchedFileSet;
+        private HashSet<FileStats> searchedFileSet;
         private CancellationTokenSource tokenSource;
         private SortKeyOption sortKeyOption = SortKeyOption.Priority;
 
@@ -55,15 +57,14 @@ namespace MiLauncher
             listForm = new ListForm();
 
             // File Set
-            searchedFileSet = SettingManager.LoadSettings<FileSet>(searchedFileListDataFile) ?? new FileSet();
+            searchedFileSet = SettingManager.LoadSettings<HashSet<FileStats>>(searchedFileListDataFile) ?? [];
             //Test Code: fileList = FileList.FileListForTest();
             //recentFileList = SettingManager.LoadSettings<recentFileList>(recentFileListDataFile) ?? new recentFileList();
 
             //var searchPaths = Program.appSettings.TargetFolders;
             //searchedFileSet = await Task.Run(() => SearchedFileSet.SearchFiles(searchPaths));
-            FileSet newSearchedFileSet =
-                await Task.Run(() => FileSet.SearchFiles(Program.appSettings.TargetFolders));
-            searchedFileSet = newSearchedFileSet.CopyPriority(searchedFileSet);
+            IEnumerable<FileStats> newSearchedFileSet = await Task.Run(() => FileSet.SearchFiles());
+            searchedFileSet = FileSet.CopyPriority(newSearchedFileSet, searchedFileSet).ToHashSet();
 
             //Debug.WriteLine("start");
             ////var prioritizedFileList = searchedFileSet.OrderByPriority();
@@ -99,11 +100,9 @@ namespace MiLauncher
             // Added ToArray() to apply eager evaluation because lazy evaluation makes it too slow 
             var patternsInCmdBox = cmdBox.Text.Split(wordSeparator, StringSplitOptions.RemoveEmptyEntries);
             var patternsTransformed = patternsInCmdBox.Select(transformByMigemo).ToArray();
-            var selectedList = await Task.Run(() => searchedFileSet.SelectWithCancellation(patternsTransformed, token), token);
+            var selectedList = await Task.Run(() => FileSet.SelectWithCancellation(searchedFileSet, patternsTransformed, token), token);
 
-            if (token.IsCancellationRequested) {
-                return;
-            }
+            if (token.IsCancellationRequested) return;
 
             listForm.SetVirtualList(selectedList, sortKeyOption);
 
@@ -162,7 +161,7 @@ namespace MiLauncher
                 var fullPathName = listForm.ExecFile();
                 // TODO: Consider to make the value to adjust the priority '1' configurable
                 // searchedFileSet.AddPriority(fullPathName, 1);
-                searchedFileSet.Items.First(x => x.FullPathName == fullPathName).Priority += 1;
+                searchedFileSet.First(x => x.FullPathName == fullPathName).Priority += 1;
 
                 SettingManager.SaveSettings(searchedFileSet, searchedFileListDataFile);
 
