@@ -47,7 +47,7 @@ namespace MiLauncher
         //}
 
         internal static List<FileStats> SelectWithCancellation(IEnumerable<FileStats> sourceFiles,
-                                                               IEnumerable<string> patterns, 
+                                                               IEnumerable<string> patterns,
                                                                CancellationToken token)
         {
             // Variables
@@ -117,11 +117,12 @@ namespace MiLauncher
         //            x => DirectorySearch.EnumerateAllFileSystemEntries(x).Select(fn => new FileStats(fn))));
         //}
 
-        internal static IEnumerable<FileStats> SearchFiles()
+        internal static HashSet<FileStats> SearchFiles()
         {
             List<string> searchPaths = Program.appSettings.TargetFolders;
-            return searchPaths.SelectMany(
-                    x => DirectorySearch.EnumerateAllFileSystemEntries(x).Select(fn => new FileStats(fn)));
+            return new HashSet<FileStats>(
+                searchPaths.SelectMany(
+                    x => DirectorySearch.EnumerateAllFileSystemEntries(x).Select(fn => new FileStats(fn))));
         }
 
 

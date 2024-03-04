@@ -63,7 +63,7 @@ namespace MiLauncher
 
             //var searchPaths = Program.appSettings.TargetFolders;
             //searchedFileSet = await Task.Run(() => SearchedFileSet.SearchFiles(searchPaths));
-            IEnumerable<FileStats> newSearchedFileSet = await Task.Run(() => FileSet.SearchFiles());
+            HashSet<FileStats> newSearchedFileSet = await Task.Run(FileSet.SearchFiles);
             searchedFileSet = FileSet.CopyPriority(newSearchedFileSet, searchedFileSet).ToHashSet();
 
             //Debug.WriteLine("start");
