@@ -56,23 +56,12 @@ namespace MiLauncher
             // List Form
             listForm = new ListForm();
 
-            // File Set
+            // Load File Set (HashSet<FileStats>)
             searchedFileSet = SettingManager.LoadSettings<HashSet<FileStats>>(searchedFileListDataFile) ?? [];
-            //Test Code: fileList = FileList.FileListForTest();
-            //recentFileList = SettingManager.LoadSettings<recentFileList>(recentFileListDataFile) ?? new recentFileList();
 
-            //var searchPaths = Program.appSettings.TargetFolders;
-            //searchedFileSet = await Task.Run(() => SearchedFileSet.SearchFiles(searchPaths));
+            // Search Files Async
             HashSet<FileStats> newSearchedFileSet = await Task.Run(FileSet.SearchFiles);
             searchedFileSet = FileSet.CopyPriority(newSearchedFileSet, searchedFileSet).ToHashSet();
-
-            //Debug.WriteLine("start");
-            ////var prioritizedFileList = searchedFileSet.OrderByPriority();
-            ////var prioritizedFileList = searchedFileSet.Items.OrderByDescending(x => x.Priority).ToList();
-            //Debug.WriteLine("end");
-
-            // Test Code: var searchPaths = new List<string>{ @"C:\Users\JUNJI\Desktop\", @"E:\Documents\RocksmithTabs\" };
-
             SettingManager.SaveSettings(searchedFileSet, searchedFileListDataFile);
         }
 
@@ -158,17 +147,16 @@ namespace MiLauncher
             }
             // Exec file with associated app
             if (e.KeyCode == Keys.Enter || (e.KeyCode == Keys.M && e.Control)) {
-                var fullPathName = listForm.ExecFile();
-                // TODO: Consider to make the value to adjust the priority '1' configurable
-                // searchedFileSet.AddPriority(fullPathName, 1);
-                searchedFileSet.First(x => x.FullPathName == fullPathName).Priority += 1;
+                var fullPathName = listForm.ExecItem();
 
+                // TODO: Consider to make the value to adjust the priority '1' configurable
+                var fileStats = searchedFileSet.First(x => x.FullPathName == fullPathName);
+                fileStats.Priority += 1;
+                fileStats.ExecTime = DateTime.Now;
                 SettingManager.SaveSettings(searchedFileSet, searchedFileListDataFile);
 
-                //recentFileList.UpdateHistory(fullPathName);
                 cmdBox.Text = string.Empty;
                 Visible = false;
-
             }
             // beginning of line
             if (e.KeyCode == Keys.A && e.Control) {
@@ -243,7 +231,7 @@ namespace MiLauncher
                 sortKeyOption = sortKeyOption switch {
                     SortKeyOption.Priority => SortKeyOption.FullPathName,
                     SortKeyOption.FullPathName => SortKeyOption.UpdateTime,
-                    SortKeyOption.UpdateTime => SortKeyOption.Priority,
+                    SortKeyOption.UpdateTime => SortKeyOption.ExecTime,
                     _ => SortKeyOption.Priority,
                 };
                 listForm.SortVirtualList(sortKeyOption);

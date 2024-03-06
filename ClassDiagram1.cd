@@ -15,14 +15,14 @@
     </TypeIdentifier>
   </Class>
   <Class Name="MiLauncher.FileStats">
-    <Position X="7.75" Y="0.5" Width="2" />
+    <Position X="7.25" Y="0.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AABAEAAACAAAAQAEAAAAAgAAAAAAAAAAAAAAACBAAAA=</HashCode>
       <FileName>FileStats.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MiLauncher.FileSet">
-    <Position X="4.25" Y="5.25" Width="2" />
+    <Position X="4" Y="5.25" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAEAAAABAAAAAAAAAAAAAAAIAAAAAAEAAAAAAAAAA=</HashCode>
       <FileName>FileSet.cs</FileName>
@@ -47,7 +47,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="MiLauncher.ListForm">
-    <Position X="4.25" Y="0.5" Width="2" />
+    <Position X="4" Y="0.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAgAAAAAICgAAGAEAgCAAAACAggAAAAAIAAAAIgAAAA=</HashCode>
       <FileName>ListForm.cs</FileName>
@@ -113,7 +113,7 @@
     </TypeIdentifier>
   </Enum>
   <Enum Name="MiLauncher.SortKeyOption">
-    <Position X="0.75" Y="7.5" Width="2" />
+    <Position X="7.25" Y="4" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAACAAAAQAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>FileStats.cs</FileName>

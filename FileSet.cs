@@ -125,8 +125,6 @@ namespace MiLauncher
                     x => DirectorySearch.EnumerateAllFileSystemEntries(x).Select(fn => new FileStats(fn))));
         }
 
-
-
         //internal FileSet CopyPriority(FileSet sourceFileSet)
         //{
         //    return new FileSet(

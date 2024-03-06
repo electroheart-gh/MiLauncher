@@ -100,7 +100,7 @@ namespace MiLauncher
             SetVirtualList(ListViewSource, sortKey);
         }
 
-        internal string ExecFile()
+        internal string ExecItem()
         {
             if (Visible & listView.VirtualListSize > 0) {
                 try {

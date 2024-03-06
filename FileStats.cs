@@ -82,6 +82,7 @@ namespace MiLauncher
             return key switch {
                 SortKeyOption.FullPathName => FullPathName,
                 SortKeyOption.UpdateTime => UpdateTime,
+                SortKeyOption.ExecTime=> ExecTime,
                 _ => Priority,
             };
         }
@@ -92,5 +93,6 @@ namespace MiLauncher
         Priority,
         FullPathName,
         UpdateTime,
+        ExecTime,
     }
 }
