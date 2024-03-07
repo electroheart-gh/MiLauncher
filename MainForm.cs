@@ -61,7 +61,7 @@ namespace MiLauncher
 
             // Search Files Async
             HashSet<FileStats> newSearchedFileSet = await Task.Run(FileSet.SearchFiles);
-            searchedFileSet = FileSet.CopyPriority(newSearchedFileSet, searchedFileSet).ToHashSet();
+            searchedFileSet = FileSet.CopyPriorityAndExecTime(newSearchedFileSet, searchedFileSet).ToHashSet();
             SettingManager.SaveSettings(searchedFileSet, searchedFileListDataFile);
         }
 

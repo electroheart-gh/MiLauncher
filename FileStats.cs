@@ -23,12 +23,12 @@ namespace MiLauncher
         public FileStats()
         {
         }
-        public FileStats(string pathName, DateTime? updateTime = null, int priority = 0, DateTime? execTime = null)
+        public FileStats(string pathName, DateTime? updateTime = null, int? priority = null, DateTime? execTime = null)
         {
             FullPathName = pathName;
             FileName = Path.GetFileName(pathName);
             UpdateTime = updateTime ?? File.GetLastWriteTime(pathName);
-            Priority = priority;
+            Priority = priority ?? 0;
             ExecTime = execTime ?? default;
         }
 
