@@ -247,6 +247,7 @@ namespace MiLauncher
                     _ => SortKeyOption.Priority,
                 };
                 listForm.SortVirtualList(sortKeyOption);
+                listForm.ShowAt();
             }
 
             // TODO: implement crawl folder mode like zii launcher, which requires another ListView class

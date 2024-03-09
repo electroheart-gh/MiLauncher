@@ -35,28 +35,27 @@ namespace MiLauncher
                                      SortKeyOption sortKey = SortKeyOption.Priority)
         {
             ListViewSource = sourceItems.OrderByDescending(x => x.SortValue(sortKey)).ToList();
-            //ListViewSource = sourceItems;
-
             listView.VirtualListSize = ListViewSource.Count();
 
-            if (ListViewSource.Any()) {
-                // TODO: CMIC
-                Height = listView.GetItemRect(0).Height * Math.Min(maxLineListView, listView.VirtualListSize) + 30;
+            //if (ListViewSource.Any()) {
+            // TODO: CMIC
+            //Height = listView.GetItemRect(0).Height * Math.Min(maxLineListView, listView.VirtualListSize) + 30;
+            // TODO: CMIC
+            //Width = listView.GetItemRect(0).Width + 40;
 
-                // TODO: Check max size in all items
-                Width = listView.GetItemRect(0).Width + 40;
+            //listView.SelectedIndices.Clear();
 
-                // Select the first item, which makes its color change automatically?
-                listView.SelectedIndices.Clear();
-                listView.SelectedIndices.Add(0);
-            }
-            else {
-                // TODO: test what if removing this if-else branch
-                Height = 0;
-                listView.Columns[0].Width = 0;
-                Width = 100;
-            }
-            listView.Refresh();
+            // Select the first item, which makes its color change automatically
+            // To add() SelectedIndices, listView requires focus on, which is explained in MSDN
+            // listView.SelectedIndices.Add(0);
+            //}
+            //else {
+            //Height = 0;
+            //listView.Columns[0].Width = 0;
+            //// TODO: CMIC
+            //Width = 100;
+            //}
+            //listView.Refresh();
         }
 
         internal void SortVirtualList(SortKeyOption sortKey)
@@ -90,12 +89,12 @@ namespace MiLauncher
             if (listView.VirtualListSize == 0) return;
 
             var newSelectedIndex = (listView.SelectedIndices[0] + 1) % listView.VirtualListSize;
-            listView.SelectedIndices.Clear();
+            // With MultiSelect false, adding a new index automatically removes old one
             listView.SelectedIndices.Add(newSelectedIndex);
             listView.EnsureVisible(newSelectedIndex);
 
-            // TODO: Create another method to adjust listForm size including Height, which tends to be too big
             listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            // TODO: CMIC
             Width = listView.GetItemRect(0).Width + 40;
 
             //if (listView.SelectedIndices.Count == 0) {
@@ -119,7 +118,7 @@ namespace MiLauncher
             if (listView.VirtualListSize == 0) return;
 
             var newSelectedIndex = (listView.SelectedIndices[0] > 0) ? listView.SelectedIndices[0] - 1 : listView.VirtualListSize - 1;
-            listView.SelectedIndices.Clear();
+            // With MultiSelect false, adding a new index automatically removes old one
             listView.SelectedIndices.Add(newSelectedIndex);
             listView.EnsureVisible(newSelectedIndex);
 
@@ -143,23 +142,37 @@ namespace MiLauncher
             //Width = listView.GetItemRect(0).Width + 40;
         }
 
-        internal void ShowAt(int x, int y)
+        internal void ShowAt(int? x = null, int? y = null)
         {
-            Location = new Point(x, y);
+            Location = new Point(x ?? Location.X, y ?? Location.Y);
             Visible = true;
 
-            if (!ListViewSource.Any()) return;
+            if (ListViewSource.Any()) {
+                // TODO: CMIC
+                Height = listView.GetItemRect(0).Height * Math.Min(maxLineListView, listView.VirtualListSize) + 30;
+                listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+                Width = listView.GetItemRect(0).Width + 40;
 
-            listView.EnsureVisible(listView.SelectedIndices[0]);
+                listView.SelectedIndices.Clear();
+                // Select the first item, which makes its color change automatically
+                // To add() SelectedIndices, listView requires focus on, which is explained in MSDN
+                listView.SelectedIndices.Add(0);
+            }
+            else {
+                Height = 0;
+                listView.Columns[0].Width = 0;
+                // TODO: CMIC
+                Width = 100;
+            }
+            listView.Refresh();
 
-            // TODO: CMIC
-            Height = listView.GetItemRect(0).Height * Math.Min(maxLineListView, listView.VirtualListSize) + 30;
-
-            // TODO: Resize Column here?
-            listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-
-            // TODO: If not using AutoReseize, check max size in all items
-            Width = listView.GetItemRect(0).Width + 40;
+            //if (!ListViewSource.Any()) return;
+            //// TODO: CMIC
+            //Height = listView.GetItemRect(0).Height * Math.Min(maxLineListView, listView.VirtualListSize) + 30;
+            //listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            //// TODO: CMIC
+            //Width = listView.GetItemRect(0).Width + 40;
+            //listView.EnsureVisible(listView.SelectedIndices[0]);
         }
 
         // Key down event in listView makes focus on MainForm
