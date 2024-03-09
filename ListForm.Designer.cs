@@ -29,21 +29,24 @@
         private void InitializeComponent()
         {
             listView = new System.Windows.Forms.ListView();
-            columnHeader1 = new System.Windows.Forms.ColumnHeader();
+            Path = new System.Windows.Forms.ColumnHeader();
+            UpdateTime = new System.Windows.Forms.ColumnHeader();
+            ExecTime = new System.Windows.Forms.ColumnHeader();
+            Priority = new System.Windows.Forms.ColumnHeader();
             SuspendLayout();
             // 
             // listView
             // 
             listView.AutoArrange = false;
-            listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { columnHeader1 });
+            listView.BackColor = System.Drawing.SystemColors.Window;
+            listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { Path, UpdateTime, ExecTime, Priority });
             listView.Dock = System.Windows.Forms.DockStyle.Fill;
+            listView.ForeColor = System.Drawing.SystemColors.WindowText;
             listView.FullRowSelect = true;
-            listView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             listView.Location = new System.Drawing.Point(0, 0);
             listView.Margin = new System.Windows.Forms.Padding(4);
             listView.MultiSelect = false;
             listView.Name = "listView";
-            listView.OwnerDraw = true;
             listView.Size = new System.Drawing.Size(381, 537);
             listView.TabIndex = 0;
             listView.UseCompatibleStateImageBehavior = false;
@@ -52,6 +55,22 @@
             listView.DrawItem += listView_DrawItem;
             listView.RetrieveVirtualItem += listView_RetrieveVirtualItem;
             listView.KeyDown += listView_KeyDown;
+            // 
+            // Path
+            // 
+            Path.Text = "Path";
+            // 
+            // UpdateTime
+            // 
+            UpdateTime.Text = "UpdateTime";
+            // 
+            // ExecTime
+            // 
+            ExecTime.Text = "ExecTime";
+            // 
+            // Priority
+            // 
+            Priority.Text = "Priority";
             // 
             // ListForm
             // 
@@ -77,6 +96,9 @@
         #endregion
 
         public System.Windows.Forms.ListView listView;
-        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.ColumnHeader Path;
+        private System.Windows.Forms.ColumnHeader UpdateTime;
+        private System.Windows.Forms.ColumnHeader ExecTime;
+        private System.Windows.Forms.ColumnHeader Priority;
     }
 }

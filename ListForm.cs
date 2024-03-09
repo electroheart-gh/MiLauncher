@@ -36,26 +36,6 @@ namespace MiLauncher
         {
             ListViewSource = sourceItems.OrderByDescending(x => x.SortValue(sortKey)).ToList();
             listView.VirtualListSize = ListViewSource.Count();
-
-            //if (ListViewSource.Any()) {
-            // TODO: CMIC
-            //Height = listView.GetItemRect(0).Height * Math.Min(maxLineListView, listView.VirtualListSize) + 30;
-            // TODO: CMIC
-            //Width = listView.GetItemRect(0).Width + 40;
-
-            //listView.SelectedIndices.Clear();
-
-            // Select the first item, which makes its color change automatically
-            // To add() SelectedIndices, listView requires focus on, which is explained in MSDN
-            // listView.SelectedIndices.Add(0);
-            //}
-            //else {
-            //Height = 0;
-            //listView.Columns[0].Width = 0;
-            //// TODO: CMIC
-            //Width = 100;
-            //}
-            //listView.Refresh();
         }
 
         internal void SortVirtualList(SortKeyOption sortKey)
@@ -81,7 +61,15 @@ namespace MiLauncher
 
         private void listView_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
-            e.Item = new ListViewItem(ListViewSource.Skip(e.ItemIndex).First().FullPathName);
+            FileStats targetItem = ListViewSource.Skip(e.ItemIndex).First();
+            string[] itemValues = [targetItem.FullPathName,
+                                   targetItem.UpdateTime.ToString(),
+                                   targetItem.ExecTime.ToString(),
+                                   targetItem.Priority.ToString()];
+
+            e.Item = new ListViewItem(itemValues);
+
+            //e.Item = new ListViewItem(ListViewSource.Skip(e.ItemIndex).First().FullPathName);
         }
 
         internal void SelectNextItem()
@@ -96,21 +84,6 @@ namespace MiLauncher
             listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             // TODO: CMIC
             Width = listView.GetItemRect(0).Width + 40;
-
-            //if (listView.SelectedIndices.Count == 0) {
-            //    listView.SelectedIndices.Add(0);
-            //    listView.EnsureVisible(0);
-            //}
-            //else {
-            //    var newSelectedIndex = (listView.SelectedIndices[0] + 1) % listView.VirtualListSize;
-            //    listView.SelectedIndices.Clear();
-            //    listView.SelectedIndices.Add(newSelectedIndex);
-            //    listView.EnsureVisible(newSelectedIndex);
-            //}
-
-            //// TODO: Create another method to adjust listForm size including Height, which tends to be too big
-            //listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-            //Width = listView.GetItemRect(0).Width + 40;
         }
 
         internal void SelectPreviousItem()
@@ -125,21 +98,6 @@ namespace MiLauncher
             // TODO: Create another method to adjust listForm size including Height, which tends to be too big
             listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             Width = listView.GetItemRect(0).Width + 40;
-
-            //if (listView.SelectedIndices.Count == 0) {
-            //    listView.SelectedIndices.Add(0);
-            //    listView.EnsureVisible(0);
-            //}
-            //else {
-            //    var newSelectedIndex = (listView.SelectedIndices[0] > 0) ? listView.SelectedIndices[0] - 1 : listView.VirtualListSize - 1;
-            //    listView.SelectedIndices.Clear();
-            //    listView.SelectedIndices.Add(newSelectedIndex);
-            //    listView.EnsureVisible(newSelectedIndex);
-            //}
-
-            //// TODO: Create another method to adjust listForm size including Height, which tends to be too big
-            //listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-            //Width = listView.GetItemRect(0).Width + 40;
         }
 
         internal void ShowAt(int? x = null, int? y = null)
@@ -165,14 +123,6 @@ namespace MiLauncher
                 Width = 100;
             }
             listView.Refresh();
-
-            //if (!ListViewSource.Any()) return;
-            //// TODO: CMIC
-            //Height = listView.GetItemRect(0).Height * Math.Min(maxLineListView, listView.VirtualListSize) + 30;
-            //listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-            //// TODO: CMIC
-            //Width = listView.GetItemRect(0).Width + 40;
-            //listView.EnsureVisible(listView.SelectedIndices[0]);
         }
 
         // Key down event in listView makes focus on MainForm
