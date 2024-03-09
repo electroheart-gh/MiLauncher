@@ -37,6 +37,7 @@
             listView.AutoArrange = false;
             listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { columnHeader1 });
             listView.Dock = System.Windows.Forms.DockStyle.Fill;
+            listView.FullRowSelect = true;
             listView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             listView.Location = new System.Drawing.Point(0, 0);
             listView.Margin = new System.Windows.Forms.Padding(4);
@@ -50,6 +51,7 @@
             listView.VirtualMode = true;
             listView.DrawItem += listView_DrawItem;
             listView.RetrieveVirtualItem += listView_RetrieveVirtualItem;
+            listView.KeyDown += listView_KeyDown;
             // 
             // ListForm
             // 

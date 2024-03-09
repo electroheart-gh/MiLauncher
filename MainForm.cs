@@ -24,7 +24,6 @@ namespace MiLauncher
         // Constant
         // TODO: Consider to make FileList.dat configurable
         private const string searchedFileListDataFile = "SearchedFileList.dat";
-        // private const string recentFileListDataFile = "RecentFileList.dat";
         private const char wordSeparator = ' ';
         private const int CS_DROPSHADOW = 0x00020000;
 
@@ -35,6 +34,8 @@ namespace MiLauncher
         {
             InitializeComponent();
         }
+
+        
         protected override CreateParams CreateParams
         {
             get {
@@ -55,6 +56,7 @@ namespace MiLauncher
 
             // List Form
             listForm = new ListForm();
+            listForm.ListViewKeyDown = listView_KeyDown;
 
             // Load File Set (HashSet<FileStats>)
             searchedFileSet = SettingManager.LoadSettings<HashSet<FileStats>>(searchedFileListDataFile) ?? [];
@@ -65,7 +67,17 @@ namespace MiLauncher
             SettingManager.SaveSettings(searchedFileSet, searchedFileListDataFile);
         }
 
+        private void listView_KeyDown(KeyEventArgs args)
+        {
+            ActivateMainForm();
+        }
+
         void hotKey_HotKeyPush(object sender, EventArgs e)
+        {
+            ActivateMainForm();
+        }
+
+        private void ActivateMainForm()
         {
             Visible = true;
             Activate();
