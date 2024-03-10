@@ -3,17 +3,63 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
 namespace MiLauncher
 {
     public partial class ListForm : Form
     {
+        //
+        // Properties
+        //
         private IEnumerable<FileStats> ListViewSource { get; set; }
+        private SortKeyOption SortKey { get; set; } = SortKeyOption.Priority;
+
+        private int _virtualListIndex;
+        private int VirtualListIndex
+        {
+            get {
+                return _virtualListIndex;
+            }
+            set {
+                _virtualListIndex = PositiveModulo(value, listView.VirtualListSize);
+
+                // To add() SelectedIndices, listView requires focus on, which is mentioned by MSDN
+                //listView.Focus();
+                // With MultiSelect false, adding a new index automatically removes old one
+                listView.SelectedIndices.Add(_virtualListIndex);
+                listView.EnsureVisible(_virtualListIndex);
+
+                FileStats selectedFileInfo = ListViewSource.ElementAt(_virtualListIndex);
+                if (SortKey == SortKeyOption.FullPathName) {
+                    Path.Text = "Path";
+                }
+                else {
+                    Path.Text = string.Format("Path ({0}: {1})", (SortKey.ToString())[0], selectedFileInfo.SortValue(SortKey));
+                }
+                listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+                // TODO: CMIC
+                Width = listView.GetItemRect(0).Width + 40;
+            }
+        }
+        private static int PositiveModulo(int x, int y)
+        {
+            int z = x % y;
+            return (z >= 0) ? z : z + y;
+        }
+
+        //
+        // Delegate
+        //
         public Action<KeyEventArgs> ListViewKeyDown;
 
+        //
+        // Constants
+        //
         // TODO: CMIC
         const int maxLineListView = 30;
 
@@ -24,30 +70,32 @@ namespace MiLauncher
 
         private void listView_DrawItem(object sender, DrawListViewItemEventArgs e)
         {
-            if (listView.SelectedIndices.Contains(e.Item.Index)) {
+            // if (listView.SelectedIndices.Contains(e.Item.Index)) {
+            if (VirtualListIndex == e.Item.Index) {
                 // TODO: CMIC
                 e.Graphics.FillRectangle(Brushes.LightGray, e.Bounds);
             }
             e.DrawText();
         }
 
-        internal void SetVirtualList(IEnumerable<FileStats> sourceItems,
-                                     SortKeyOption sortKey = SortKeyOption.Priority)
+        internal void SetVirtualList(IEnumerable<FileStats> sourceItems = null)
         {
-            ListViewSource = sourceItems.OrderByDescending(x => x.SortValue(sortKey)).ToList();
+            sourceItems ??= ListViewSource;
+            ListViewSource = sourceItems.OrderByDescending(x => x.SortValue(SortKey)).ToList();
             listView.VirtualListSize = ListViewSource.Count();
         }
 
         internal void SortVirtualList(SortKeyOption sortKey)
         {
-            SetVirtualList(ListViewSource, sortKey);
+            SortKey = sortKey;
+            SetVirtualList();
         }
 
         internal string ExecItem()
         {
             if (Visible & listView.VirtualListSize > 0) {
                 try {
-                    FileStats selectedFileInfo = ListViewSource.Skip(listView.SelectedIndices[0]).First();
+                    FileStats selectedFileInfo = ListViewSource.ElementAt(VirtualListIndex);
                     Process.Start("explorer.exe", selectedFileInfo.FullPathName);
                     Visible = false;
                     return selectedFileInfo.FullPathName;
@@ -61,43 +109,19 @@ namespace MiLauncher
 
         private void listView_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
-            FileStats targetItem = ListViewSource.Skip(e.ItemIndex).First();
-            string[] itemValues = [targetItem.FullPathName,
-                                   targetItem.UpdateTime.ToString(),
-                                   targetItem.ExecTime.ToString(),
-                                   targetItem.Priority.ToString()];
-
-            e.Item = new ListViewItem(itemValues);
-
-            //e.Item = new ListViewItem(ListViewSource.Skip(e.ItemIndex).First().FullPathName);
+            e.Item = new ListViewItem(ListViewSource.Skip(e.ItemIndex).First().FullPathName);
         }
 
         internal void SelectNextItem()
         {
             if (listView.VirtualListSize == 0) return;
-
-            var newSelectedIndex = (listView.SelectedIndices[0] + 1) % listView.VirtualListSize;
-            // With MultiSelect false, adding a new index automatically removes old one
-            listView.SelectedIndices.Add(newSelectedIndex);
-            listView.EnsureVisible(newSelectedIndex);
-
-            listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-            // TODO: CMIC
-            Width = listView.GetItemRect(0).Width + 40;
+            VirtualListIndex++;
         }
 
         internal void SelectPreviousItem()
         {
             if (listView.VirtualListSize == 0) return;
-
-            var newSelectedIndex = (listView.SelectedIndices[0] > 0) ? listView.SelectedIndices[0] - 1 : listView.VirtualListSize - 1;
-            // With MultiSelect false, adding a new index automatically removes old one
-            listView.SelectedIndices.Add(newSelectedIndex);
-            listView.EnsureVisible(newSelectedIndex);
-
-            // TODO: Create another method to adjust listForm size including Height, which tends to be too big
-            listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-            Width = listView.GetItemRect(0).Width + 40;
+            VirtualListIndex--;
         }
 
         internal void ShowAt(int? x = null, int? y = null)
@@ -106,15 +130,12 @@ namespace MiLauncher
             Visible = true;
 
             if (ListViewSource.Any()) {
-                // TODO: CMIC
-                Height = listView.GetItemRect(0).Height * Math.Min(maxLineListView, listView.VirtualListSize) + 30;
-                listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-                Width = listView.GetItemRect(0).Width + 40;
-
-                listView.SelectedIndices.Clear();
+                // To add() SelectedIndices, listView requires focus on, which is mentioned by MSDN
                 // Select the first item, which makes its color change automatically
-                // To add() SelectedIndices, listView requires focus on, which is explained in MSDN
-                listView.SelectedIndices.Add(0);
+                // With MultiSelect false, adding a new index automatically removes old one
+                // TODO: CMIC
+                Height = listView.GetItemRect(0).Height * Math.Min(maxLineListView, listView.VirtualListSize + 1) + 30;
+                VirtualListIndex = 0;
             }
             else {
                 Height = 0;
@@ -130,5 +151,18 @@ namespace MiLauncher
         {
             ListViewKeyDown?.Invoke(e);
         }
+
+        internal void CycleSortKey()
+        {
+            SortKey = SortKey switch {
+                SortKeyOption.Priority => SortKeyOption.FullPathName,
+                SortKeyOption.FullPathName => SortKeyOption.UpdateTime,
+                SortKeyOption.UpdateTime => SortKeyOption.ExecTime,
+                _ => SortKeyOption.Priority,
+            };
+            SetVirtualList();
+
+        }
+
     }
 }

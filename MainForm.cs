@@ -19,7 +19,7 @@ namespace MiLauncher
         private ListForm listForm;
         private HashSet<FileStats> searchedFileSet;
         private CancellationTokenSource tokenSource;
-        private SortKeyOption sortKeyOption = SortKeyOption.Priority;
+        //private SortKeyOption sortKeyOption = SortKeyOption.Priority;
 
         // Constant
         // TODO: Consider to make FileList.dat configurable
@@ -63,7 +63,7 @@ namespace MiLauncher
 
             // Search Files Async
             HashSet<FileStats> newSearchedFileSet = await Task.Run(FileSet.SearchFiles);
-            searchedFileSet = FileSet.CopyPriorityAndExecTime(newSearchedFileSet, searchedFileSet).ToHashSet();
+            searchedFileSet = FileSet.CopyPriorityAndExecTime(searchedFileSet, newSearchedFileSet).ToHashSet();
             SettingManager.SaveSettings(searchedFileSet, searchedFileListDataFile);
         }
 
@@ -105,7 +105,7 @@ namespace MiLauncher
 
             if (token.IsCancellationRequested) return;
 
-            listForm.SetVirtualList(selectedList, sortKeyOption);
+            listForm.SetVirtualList(selectedList);
 
             // TODO: CMIC
             listForm.ShowAt(Location.X - 6, Location.Y + Height - 5);
@@ -237,16 +237,10 @@ namespace MiLauncher
                 cmdBox.Text = firstHalf + cmdBox.Text[cmdBox.SelectionStart..];
                 cmdBox.SelectionStart = firstHalf.Length;
             }
-            // Change ListView order
+            // Cycle ListView sort key
             // Keys.Oemtilde indicates @ (at mark)
             if (e.KeyCode == Keys.Oemtilde && e.Control) {
-                sortKeyOption = sortKeyOption switch {
-                    SortKeyOption.Priority => SortKeyOption.FullPathName,
-                    SortKeyOption.FullPathName => SortKeyOption.UpdateTime,
-                    SortKeyOption.UpdateTime => SortKeyOption.ExecTime,
-                    _ => SortKeyOption.Priority,
-                };
-                listForm.SortVirtualList(sortKeyOption);
+                listForm.CycleSortKey();
                 listForm.ShowAt();
             }
 

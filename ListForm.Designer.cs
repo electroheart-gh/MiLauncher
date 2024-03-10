@@ -30,16 +30,13 @@
         {
             listView = new System.Windows.Forms.ListView();
             Path = new System.Windows.Forms.ColumnHeader();
-            UpdateTime = new System.Windows.Forms.ColumnHeader();
-            ExecTime = new System.Windows.Forms.ColumnHeader();
-            Priority = new System.Windows.Forms.ColumnHeader();
             SuspendLayout();
             // 
             // listView
             // 
             listView.AutoArrange = false;
             listView.BackColor = System.Drawing.SystemColors.Window;
-            listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { Path, UpdateTime, ExecTime, Priority });
+            listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { Path });
             listView.Dock = System.Windows.Forms.DockStyle.Fill;
             listView.ForeColor = System.Drawing.SystemColors.WindowText;
             listView.FullRowSelect = true;
@@ -59,18 +56,6 @@
             // Path
             // 
             Path.Text = "Path";
-            // 
-            // UpdateTime
-            // 
-            UpdateTime.Text = "UpdateTime";
-            // 
-            // ExecTime
-            // 
-            ExecTime.Text = "ExecTime";
-            // 
-            // Priority
-            // 
-            Priority.Text = "Priority";
             // 
             // ListForm
             // 
@@ -97,8 +82,5 @@
 
         public System.Windows.Forms.ListView listView;
         private System.Windows.Forms.ColumnHeader Path;
-        private System.Windows.Forms.ColumnHeader UpdateTime;
-        private System.Windows.Forms.ColumnHeader ExecTime;
-        private System.Windows.Forms.ColumnHeader Priority;
     }
 }
