@@ -46,8 +46,8 @@ namespace MiLauncher
     public enum SortKeyOption
     {
         Priority,
-        FullPathName,
-        UpdateTime,
         ExecTime,
+        UpdateTime,
+        FullPathName,
     }
 }

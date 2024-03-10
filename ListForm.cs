@@ -155,9 +155,9 @@ namespace MiLauncher
         internal void CycleSortKey()
         {
             SortKey = SortKey switch {
-                SortKeyOption.Priority => SortKeyOption.FullPathName,
-                SortKeyOption.FullPathName => SortKeyOption.UpdateTime,
-                SortKeyOption.UpdateTime => SortKeyOption.ExecTime,
+                SortKeyOption.Priority => SortKeyOption.ExecTime,
+                SortKeyOption.ExecTime => SortKeyOption.UpdateTime,
+                SortKeyOption.UpdateTime => SortKeyOption.FullPathName,
                 _ => SortKeyOption.Priority,
             };
             SetVirtualList();

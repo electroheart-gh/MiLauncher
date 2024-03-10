@@ -17,14 +17,14 @@
   <Class Name="MiLauncher.FileStats">
     <Position X="7.25" Y="0.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AABAEAAACAAAAQAEAAAAAgAAAAAAAAAAAAAAACBAAAA=</HashCode>
+      <HashCode>AABAAAAACAAAAQAEAAAAAAAAAAAAAAAAAAAAACBAAAA=</HashCode>
       <FileName>FileStats.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MiLauncher.FileSet">
-    <Position X="4" Y="5.25" Width="2" />
+    <Position X="7.25" Y="5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAEAAAABAAAAAAAAAAAAAAAIAAAAAAEAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAEAAAAAAAAAAAAAAAAAAACIAAAAAAEAAAAAAAAAA=</HashCode>
       <FileName>FileSet.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -49,7 +49,7 @@
   <Class Name="MiLauncher.ListForm">
     <Position X="4" Y="0.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAgAAAAAICgAAGAEAgCAAAACAggAAAAAIAAAAIgAAAA=</HashCode>
+      <HashCode>EAgAAAgAICgAAGIEggCAAABCAAgAAACCABAAAIkAAAA=</HashCode>
       <FileName>ListForm.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -64,7 +64,7 @@
       </MemberNameLabel>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>EgAACAGIACAAQIAAAACEECAjAACQAAAAAAAACABAEpA=</HashCode>
+      <HashCode>EgAACAGIACAAQIAAAECEECAjAACQAAAAAAAACABAEpA=</HashCode>
       <FileName>MainForm.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -113,9 +113,9 @@
     </TypeIdentifier>
   </Enum>
   <Enum Name="MiLauncher.SortKeyOption">
-    <Position X="7.25" Y="4" Width="2" />
+    <Position X="7.25" Y="3.25" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAACAAAAQAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AABAAAAACAAAAQAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>FileStats.cs</FileName>
     </TypeIdentifier>
   </Enum>

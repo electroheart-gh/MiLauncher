@@ -240,6 +240,8 @@ namespace MiLauncher
             // Cycle ListView sort key
             // Keys.Oemtilde indicates @ (at mark)
             if (e.KeyCode == Keys.Oemtilde && e.Control) {
+                if(!listForm.Visible) return;
+                
                 listForm.CycleSortKey();
                 listForm.ShowAt();
             }
