@@ -34,8 +34,7 @@ namespace MiLauncher
         {
             InitializeComponent();
         }
-
-        
+                
         protected override CreateParams CreateParams
         {
             get {
@@ -101,11 +100,15 @@ namespace MiLauncher
             // Added ToArray() to apply eager evaluation because lazy evaluation makes it too slow 
             var patternsInCmdBox = cmdBox.Text.Split(wordSeparator, StringSplitOptions.RemoveEmptyEntries);
             var patternsTransformed = patternsInCmdBox.Select(transformByMigemo).ToArray();
+            
+            //Stopwatch sw = Stopwatch.StartNew();    
             var selectedList = await Task.Run(() => FileSet.SelectWithCancellation(searchedFileSet, patternsTransformed, token), token);
-
             if (token.IsCancellationRequested) return;
 
             listForm.SetVirtualList(selectedList);
+
+            //sw.Stop();
+            //Debug.WriteLine(sw.Elapsed);
 
             // TODO: CMIC
             listForm.ShowAt(Location.X - 6, Location.Y + Height - 5);
@@ -153,9 +156,8 @@ namespace MiLauncher
             if (e.KeyCode == Keys.Escape) {
                 cmdBox.Text = string.Empty;
                 Visible = false;
-
-                // Debug.WriteLine("visible false by ESC");
                 listForm.Visible = false;
+                SettingManager.SaveSettings(searchedFileSet, searchedFileListDataFile);
             }
             // Exec file with associated app
             if (e.KeyCode == Keys.Enter || (e.KeyCode == Keys.M && e.Control)) {

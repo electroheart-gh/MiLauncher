@@ -16,7 +16,7 @@ namespace MiLauncher
         //
         // Properties
         //
-        private IEnumerable<FileStats> ListViewSource { get; set; }
+        private List<FileStats> ListViewSource { get; set; }
         private SortKeyOption SortKey { get; set; } = SortKeyOption.Priority;
 
         private int _virtualListIndex;
@@ -34,7 +34,7 @@ namespace MiLauncher
                 listView.SelectedIndices.Add(_virtualListIndex);
                 listView.EnsureVisible(_virtualListIndex);
 
-                FileStats selectedFileInfo = ListViewSource.ElementAt(_virtualListIndex);
+                FileStats selectedFileInfo = ListViewSource[_virtualListIndex];
                 if (SortKey == SortKeyOption.FullPathName) {
                     Path.Text = "Path";
                 }
@@ -78,11 +78,11 @@ namespace MiLauncher
             e.DrawText();
         }
 
-        internal void SetVirtualList(IEnumerable<FileStats> sourceItems = null)
+        internal void SetVirtualList(List<FileStats> sourceItems = null)
         {
             sourceItems ??= ListViewSource;
             ListViewSource = sourceItems.OrderByDescending(x => x.SortValue(SortKey)).ToList();
-            listView.VirtualListSize = ListViewSource.Count();
+            listView.VirtualListSize = ListViewSource.Count;
         }
 
         internal void SortVirtualList(SortKeyOption sortKey)
@@ -95,7 +95,8 @@ namespace MiLauncher
         {
             if (Visible & listView.VirtualListSize > 0) {
                 try {
-                    FileStats selectedFileInfo = ListViewSource.ElementAt(VirtualListIndex);
+                    //FileStats selectedFileInfo = ListViewSource.ElementAt(VirtualListIndex);
+                    FileStats selectedFileInfo = ListViewSource[VirtualListIndex];
                     Process.Start("explorer.exe", selectedFileInfo.FullPathName);
                     Visible = false;
                     return selectedFileInfo.FullPathName;
@@ -109,7 +110,7 @@ namespace MiLauncher
 
         private void listView_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
-            e.Item = new ListViewItem(ListViewSource.Skip(e.ItemIndex).First().FullPathName);
+            e.Item = new ListViewItem(ListViewSource[e.ItemIndex].FullPathName);
         }
 
         internal void SelectNextItem()
