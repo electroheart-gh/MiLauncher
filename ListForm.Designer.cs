@@ -44,11 +44,13 @@
             listView.Margin = new System.Windows.Forms.Padding(4);
             listView.MultiSelect = false;
             listView.Name = "listView";
+            listView.OwnerDraw = true;
             listView.Size = new System.Drawing.Size(381, 537);
             listView.TabIndex = 0;
             listView.UseCompatibleStateImageBehavior = false;
             listView.View = System.Windows.Forms.View.Details;
             listView.VirtualMode = true;
+            listView.DrawColumnHeader += listView_DrawColumnHeader;
             listView.DrawItem += listView_DrawItem;
             listView.RetrieveVirtualItem += listView_RetrieveVirtualItem;
             listView.KeyDown += listView_KeyDown;

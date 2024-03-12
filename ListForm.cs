@@ -28,22 +28,25 @@ namespace MiLauncher
             set {
                 _virtualListIndex = PositiveModulo(value, listView.VirtualListSize);
 
-                // To add() SelectedIndices, listView requires focus on, which is mentioned by MSDN
-                //listView.Focus();
                 // With MultiSelect false, adding a new index automatically removes old one
                 listView.SelectedIndices.Add(_virtualListIndex);
+
+                // Resize column at first
+                // And if GetItemRect(0).Y changed, list view scrolls, then resize column
+                var originalScrollPosition = listView.GetItemRect(0).Y;
                 listView.EnsureVisible(_virtualListIndex);
+                if (_virtualListIndex == 0 || originalScrollPosition != listView.GetItemRect(0).Y)
+                    listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+                // TODO: CMIC
+                Width = listView.GetItemRect(0).Width + 40;
 
                 FileStats selectedFileInfo = ListViewSource[_virtualListIndex];
                 if (SortKey == SortKeyOption.FullPathName) {
                     Path.Text = "Path";
                 }
                 else {
-                    Path.Text = string.Format("Path ({0}: {1})", (SortKey.ToString())[0], selectedFileInfo.SortValue(SortKey));
+                    Path.Text = string.Format("{0}: {1}", SortKey.ToString(), selectedFileInfo.SortValue(SortKey));
                 }
-                listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-                // TODO: CMIC
-                Width = listView.GetItemRect(0).Width + 40;
             }
         }
         private static int PositiveModulo(int x, int y)
@@ -70,7 +73,6 @@ namespace MiLauncher
 
         private void listView_DrawItem(object sender, DrawListViewItemEventArgs e)
         {
-            // if (listView.SelectedIndices.Contains(e.Item.Index)) {
             if (VirtualListIndex == e.Item.Index) {
                 // TODO: CMIC
                 e.Graphics.FillRectangle(Brushes.LightGray, e.Bounds);
@@ -116,12 +118,14 @@ namespace MiLauncher
         internal void SelectNextItem()
         {
             if (listView.VirtualListSize == 0) return;
+
             VirtualListIndex++;
         }
 
         internal void SelectPreviousItem()
         {
             if (listView.VirtualListSize == 0) return;
+
             VirtualListIndex--;
         }
 
@@ -132,11 +136,15 @@ namespace MiLauncher
 
             if (ListViewSource.Any()) {
                 // To add() SelectedIndices, listView requires focus on, which is mentioned by MSDN
-                // Select the first item, which makes its color change automatically
-                // With MultiSelect false, adding a new index automatically removes old one
+                // And changing height seems to focus on list view
                 // TODO: CMIC
                 Height = listView.GetItemRect(0).Height * Math.Min(maxLineListView, listView.VirtualListSize + 1) + 30;
                 VirtualListIndex = 0;
+
+                //listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+                //// TODO: CMIC
+                //Width = listView.GetItemRect(0).Width + 40;
+
             }
             else {
                 Height = 0;
@@ -162,8 +170,15 @@ namespace MiLauncher
                 _ => SortKeyOption.Priority,
             };
             SetVirtualList();
-
         }
 
+        private void listView_DrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
+        {
+            //e.Graphics.FillRectangle(Brushes.Gray, e.Bounds);
+            TextRenderer.DrawText(e.Graphics, e.Header.Text, e.Font, e.Bounds, e.ForeColor, TextFormatFlags.Left);
+            using (Pen pen = new Pen(Color.Black)) {
+                e.Graphics.DrawLine(pen, e.Bounds.Left, e.Bounds.Bottom - 1, e.Bounds.Right, e.Bounds.Bottom - 1);
+            }
+        }
     }
 }
