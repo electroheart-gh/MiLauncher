@@ -19,7 +19,6 @@ namespace MiLauncher
         private ListForm listForm;
         private HashSet<FileStats> searchedFileSet;
         private CancellationTokenSource tokenSource;
-        //private SortKeyOption sortKeyOption = SortKeyOption.Priority;
 
         // Constant
         // TODO: Consider to make FileList.dat configurable

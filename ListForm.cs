@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
 namespace MiLauncher
@@ -41,6 +39,7 @@ namespace MiLauncher
                 Width = listView.GetItemRect(0).Width + 40;
 
                 FileStats selectedFileInfo = ListViewSource[_virtualListIndex];
+
                 if (SortKey == SortKeyOption.FullPathName) {
                     Path.Text = "Path";
                 }
@@ -140,11 +139,6 @@ namespace MiLauncher
                 // TODO: CMIC
                 Height = listView.GetItemRect(0).Height * Math.Min(maxLineListView, listView.VirtualListSize + 1) + 30;
                 VirtualListIndex = 0;
-
-                //listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-                //// TODO: CMIC
-                //Width = listView.GetItemRect(0).Width + 40;
-
             }
             else {
                 Height = 0;
@@ -174,9 +168,10 @@ namespace MiLauncher
 
         private void listView_DrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
         {
-            //e.Graphics.FillRectangle(Brushes.Gray, e.Bounds);
-            TextRenderer.DrawText(e.Graphics, e.Header.Text, e.Font, e.Bounds, e.ForeColor, TextFormatFlags.Left);
-            using (Pen pen = new Pen(Color.Black)) {
+            //e.Graphics.FillRectangle(Brushes.LightGray, e.Bounds);
+            //TextRenderer.DrawText(e.Graphics, e.Header.Text, e.Font, e.Bounds, e.ForeColor, TextFormatFlags.Left);
+            TextRenderer.DrawText(e.Graphics, e.Header.Text, e.Font, e.Bounds, Color.Gray, TextFormatFlags.Left);
+            using (Pen pen = new Pen(Color.Gray)) {
                 e.Graphics.DrawLine(pen, e.Bounds.Left, e.Bounds.Bottom - 1, e.Bounds.Right, e.Bounds.Bottom - 1);
             }
         }
