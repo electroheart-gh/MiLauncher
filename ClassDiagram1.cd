@@ -1,120 +1,51 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="MiLauncher.AppSettings">
-    <Position X="11.5" Y="2.5" Width="2" />
+  <Class Name="MiLauncher.CrawlMode">
+    <Position X="4" Y="1.25" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAEAAAAAAAAEAAABAAAAAAAAAAAA=</HashCode>
-      <FileName>AppSettings.cs</FileName>
+      <HashCode>AAAAACAAAAEAAAACAAgIAAAAAAAAIAAICAAAAAABQAA=</HashCode>
+      <FileName>CrawlMode.cs</FileName>
     </TypeIdentifier>
-  </Class>
-  <Class Name="MiLauncher.DirectorySearch">
-    <Position X="11.5" Y="5" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
-      <FileName>DirectorySearch.cs</FileName>
-    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="CrawlFileSet" />
+    </ShowAsCollectionAssociation>
   </Class>
   <Class Name="MiLauncher.FileStats">
-    <Position X="7.75" Y="0.5" Width="2" />
+    <Position X="11.5" Y="0.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AABAAAAACAAAAQAEAAAAAAAAAAAAAAAAAAAAACBAAAA=</HashCode>
       <FileName>FileStats.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="MiLauncher.FileSet">
-    <Position X="7.75" Y="3.5" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAAEAAAAAAAAAAAAAAAAAQAAIAAAAAAAAAABACAAAA=</HashCode>
-      <FileName>FileSet.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="MiLauncher.HotKey" BaseTypeListCollapsed="true">
-    <Position X="17.5" Y="0.5" Width="2" />
-    <Compartments>
-      <Compartment Name="Nested Types" Collapsed="false" />
-    </Compartments>
-    <NestedTypes>
-      <Class Name="MiLauncher.HotKey.HotKeyForm" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>HotKey.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Class>
-    </NestedTypes>
-    <TypeIdentifier>
-      <HashCode>AQAAAAEAACAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAA=</HashCode>
-      <FileName>HotKey.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
   <Class Name="MiLauncher.ListForm">
-    <Position X="4" Y="2.25" Width="2" />
+    <Position X="7.25" Y="2.25" Width="2.25" />
     <TypeIdentifier>
       <HashCode>FAgAAAiAICAAAGAEggCAAABCAAhAAACCABAIAKkAAAA=</HashCode>
       <FileName>ListForm.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="SortKey" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="ListViewItems" />
+    </ShowAsCollectionAssociation>
   </Class>
   <Class Name="MiLauncher.MainForm">
-    <Position X="0.75" Y="0.5" Width="2" />
-    <AssociationLine Name="listForm" Type="MiLauncher.ListForm">
-      <MemberNameLabel ManuallyPlaced="true">
-        <Position X="0.192" Y="0.051" />
-      </MemberNameLabel>
-    </AssociationLine>
+    <Position X="0.5" Y="0.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>kgAACAGIACAAQIABAECEECAjAACQBAAAAAAACABAEpA=</HashCode>
+      <HashCode>kgAACAGIACAAQIAAAECEECAjAACQAAAAAAAACABAEpA=</HashCode>
       <FileName>MainForm.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
+      <Field Name="crawlMode" />
       <Field Name="listForm" />
     </ShowAsAssociation>
     <ShowAsCollectionAssociation>
       <Field Name="searchedFileSet" />
-      <Field Name="baseFileSet" />
     </ShowAsCollectionAssociation>
   </Class>
-  <Class Name="MiLauncher.Program">
-    <Position X="17.5" Y="6.75" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAABABAAAAAA=</HashCode>
-      <FileName>Program.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="MiLauncher.SettingManager">
-    <Position X="11.5" Y="0.5" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAACAAIAgAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>SettingManager.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="KaoriYa.Migemo.Migemo" BaseTypeListCollapsed="true">
-    <Position X="14.5" Y="0.5" Width="2" />
-    <NestedTypes>
-      <Enum Name="KaoriYa.Migemo.Migemo.DictionaryId" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Migemo.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Enum>
-      <Enum Name="KaoriYa.Migemo.Migemo.OperatorIndex" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Migemo.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Enum>
-    </NestedTypes>
-    <TypeIdentifier>
-      <HashCode>CAAAAAIQCCAAACBAABEAAgAAQAAAIMiAAJAAJgEABAA=</HashCode>
-      <FileName>Migemo.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.221" />
-  </Class>
-  <Enum Name="MiLauncher.MOD_KEY">
-    <Position X="17.5" Y="4.25" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAAAACAAAAAAAAAAAAAAAAgAAAAAAAAAABAAAAAAAA=</HashCode>
-      <FileName>HotKey.cs</FileName>
-    </TypeIdentifier>
-  </Enum>
   <Enum Name="MiLauncher.SortKeyOption">
-    <Position X="7.75" Y="5.75" Width="2" />
+    <Position X="11.5" Y="4.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AABAAAAACAAAAQAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>FileStats.cs</FileName>
