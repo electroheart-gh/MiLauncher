@@ -44,7 +44,7 @@ namespace MiLauncher
             }
             try {
                 files = Directory.EnumerateDirectories(path)
-                    .Aggregate(files, (a, v) => a.Union(EnumerateAllFileSystemInfos(v)));
+                    .Aggregate(files, (a, v) => a.Union(EnumerateAllFileSystemInfos(v, searchPattern)));
             }
             catch (UnauthorizedAccessException) {
             }

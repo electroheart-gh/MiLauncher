@@ -5,7 +5,9 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace MiLauncher
 {
@@ -14,11 +16,12 @@ namespace MiLauncher
         //
         // Properties
         //
-        private List<FileStats> ListViewSource { get; set; }
-        private SortKeyOption SortKey { get; set; } = SortKeyOption.Priority;
+        internal List<FileStats> ListViewItems { get; private set; }
+        internal SortKeyOption SortKey { get; private set; } = SortKeyOption.Priority;
+        internal string ModeCaption { get; set; }
 
         private int _virtualListIndex;
-        private int VirtualListIndex
+        internal int VirtualListIndex
         {
             get {
                 return _virtualListIndex;
@@ -33,25 +36,61 @@ namespace MiLauncher
                 // And if GetItemRect(0).Y changed, list view scrolls, then resize column
                 var originalScrollPosition = listView.GetItemRect(0).Y;
                 listView.EnsureVisible(_virtualListIndex);
-                if (_virtualListIndex == 0 || originalScrollPosition != listView.GetItemRect(0).Y)
+
+                var headerString = DisplayColumnHeader(_virtualListIndex);
+
+                if (_virtualListIndex == 0 || originalScrollPosition != listView.GetItemRect(0).Y) {
+
+                    // *** Size is fine but too many flickers
+                    //Width = listView.GetItemRect(0).Width;
+                    //listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+                    //listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+                    //Width = listView.GetItemRect(0).Width + 40;
+
+                    // *** All header text cannot be shown when header is longer than content
+                    //listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+                    //Width = listView.GetItemRect(0).Width + 40;
+
+                    // *** Works fine!! No flickers!!
                     listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-                // TODO: CMIC
-                Width = listView.GetItemRect(0).Width + 40;
+                    int headerWidth = TextRenderer.MeasureText(headerString, listView.Font).Width;
+                    var properWidth = Math.Max(listView.GetItemRect(0).Width, headerWidth);
 
-                FileStats selectedFileInfo = ListViewSource[_virtualListIndex];
-
-                if (SortKey == SortKeyOption.FullPathName) {
-                    Path.Text = "Path";
-                }
-                else {
-                    Path.Text = string.Format("{0}: {1}", SortKey.ToString(), selectedFileInfo.SortValue(SortKey));
+                    listView.Columns[0].Width = properWidth;
+                    // TODO: CMIC
+                    Width = properWidth + 40;
                 }
             }
         }
+
         private static int PositiveModulo(int x, int y)
         {
             int z = x % y;
             return (z >= 0) ? z : z + y;
+        }
+
+        private string DisplayColumnHeader(int index)
+        {
+            Header.Text = SortKey switch {
+                SortKeyOption.FullPathName => "Path",
+                _ => Header.Text = string.Format("{0}: {1}", SortKey.ToString(), ListViewItems[index].SortValue(SortKey))
+            };
+
+            //if (SortKey == SortKeyOption.FullPathName) {
+            //    Header.Text = "Path";
+            //}
+            //else {
+            //    Header.Text = string.Format("{0}: {1}", SortKey.ToString(),
+            //                              ListViewItems[index].SortValue(SortKey));
+            //}
+
+            // Indicates crawl mode and its path in column header
+            //ModeCaption = "T:\\test\\test.txt";
+            if (ModeCaption is not null) {
+                Header.Text += String.Format("  <{0}>", ModeCaption);
+            }
+
+            return Header.Text;
         }
 
         //
@@ -81,9 +120,9 @@ namespace MiLauncher
 
         internal void SetVirtualList(List<FileStats> sourceItems = null)
         {
-            sourceItems ??= ListViewSource;
-            ListViewSource = sourceItems.OrderByDescending(x => x.SortValue(SortKey)).ToList();
-            listView.VirtualListSize = ListViewSource.Count;
+            sourceItems ??= ListViewItems;
+            ListViewItems = sourceItems.OrderByDescending(x => x.SortValue(SortKey)).ToList();
+            listView.VirtualListSize = ListViewItems.Count;
         }
 
         internal void SortVirtualList(SortKeyOption sortKey)
@@ -92,28 +131,33 @@ namespace MiLauncher
             SetVirtualList();
         }
 
-        internal string ExecItem()
+        internal FileStats ExecItem()
         {
             if (Visible & listView.VirtualListSize > 0) {
                 try {
                     //FileStats selectedFileInfo = ListViewSource.ElementAt(VirtualListIndex);
-                    FileStats selectedFileInfo = ListViewSource[VirtualListIndex];
-                    Process.Start("explorer.exe", selectedFileInfo.FullPathName);
+                    FileStats selectedFileStats = ListViewItems[VirtualListIndex];
+                    Process.Start("explorer.exe", selectedFileStats.FullPathName);
                     Visible = false;
-                    return selectedFileInfo.FullPathName;
+                    return selectedFileStats;
                 }
                 catch (FileNotFoundException) {
                     Debug.WriteLine("File Not Found");
                 }
             }
-            return string.Empty;
+            return null;
         }
 
         private void listView_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
-            e.Item = new ListViewItem(ListViewSource[e.ItemIndex].FullPathName);
+            e.Item = new ListViewItem(ListViewItems[e.ItemIndex].FullPathName);
         }
 
+        internal FileStats CurrentItem()
+        {
+            if (listView.VirtualListSize == 0) return null;
+            return ListViewItems[VirtualListIndex];
+        }
         internal void SelectNextItem()
         {
             if (listView.VirtualListSize == 0) return;
@@ -133,7 +177,7 @@ namespace MiLauncher
             Location = new Point(x ?? Location.X, y ?? Location.Y);
             Visible = true;
 
-            if (ListViewSource.Any()) {
+            if (ListViewItems.Any()) {
                 // To add() SelectedIndices, listView requires focus on, which is mentioned by MSDN
                 // And changing height seems to focus on list view
                 // TODO: CMIC
@@ -175,5 +219,13 @@ namespace MiLauncher
                 e.Graphics.DrawLine(pen, e.Bounds.Left, e.Bounds.Bottom - 1, e.Bounds.Right, e.Bounds.Bottom - 1);
             }
         }
+
+        //internal void CrawlUpwards()
+        //{
+        //    // backup
+        //    //CrawlModeOriginalPatterns=
+
+        //    ModeCaption = Directory.GetParent(ListViewItems[_virtualListIndex].FullPathName).ToString();
+        //}
     }
 }

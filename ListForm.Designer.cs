@@ -29,14 +29,14 @@
         private void InitializeComponent()
         {
             listView = new System.Windows.Forms.ListView();
-            Path = new System.Windows.Forms.ColumnHeader();
+            Header = new System.Windows.Forms.ColumnHeader();
             SuspendLayout();
             // 
             // listView
             // 
             listView.AutoArrange = false;
             listView.BackColor = System.Drawing.SystemColors.Window;
-            listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { Path });
+            listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { Header });
             listView.Dock = System.Windows.Forms.DockStyle.Fill;
             listView.ForeColor = System.Drawing.SystemColors.WindowText;
             listView.FullRowSelect = true;
@@ -55,9 +55,9 @@
             listView.RetrieveVirtualItem += listView_RetrieveVirtualItem;
             listView.KeyDown += listView_KeyDown;
             // 
-            // Path
+            // Header
             // 
-            Path.Text = "Path";
+            Header.Text = "Header";
             // 
             // ListForm
             // 
@@ -83,6 +83,6 @@
         #endregion
 
         public System.Windows.Forms.ListView listView;
-        private System.Windows.Forms.ColumnHeader Path;
+        private System.Windows.Forms.ColumnHeader Header;
     }
 }
