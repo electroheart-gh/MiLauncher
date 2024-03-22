@@ -3,7 +3,7 @@
   <Class Name="MiLauncher.CrawlMode">
     <Position X="4" Y="1.25" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAACAAAAEAAAACAAgIAAAAAAAAIAAICAAAAAABQAA=</HashCode>
+      <HashCode>AAAAACAEAAEAAAACAAgIAAAAAAAAIAAICAAAAAABQAA=</HashCode>
       <FileName>CrawlMode.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -33,7 +33,7 @@
   <Class Name="MiLauncher.MainForm">
     <Position X="0.5" Y="0.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>kgAACAGIACAAQIAAAECEECAjAACQAAAAAAAACABAEpA=</HashCode>
+      <HashCode>sgAACAGIACAAQIAAAECEECAjAACQACAAAAAACABAEpA=</HashCode>
       <FileName>MainForm.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -43,6 +43,13 @@
     <ShowAsCollectionAssociation>
       <Field Name="searchedFileSet" />
     </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="MiLauncher.ModeController">
+    <Position X="4" Y="5.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>qIQAAQAIAAEAAAAAQAAAAAQAAABAAAAACAICAAIBAIQ=</HashCode>
+      <FileName>ModeController.cs</FileName>
+    </TypeIdentifier>
   </Class>
   <Enum Name="MiLauncher.SortKeyOption">
     <Position X="11.5" Y="4.75" Width="2" />

@@ -6,6 +6,10 @@ using System.Text.RegularExpressions;
 
 namespace MiLauncher
 {
+    /// <summary>
+    /// Stores information of each file and provides methods to access them.
+    /// Supposed to be used with <see cref="SettingManager"/>
+    /// </summary>
     internal class FileStats
     {
         // JsonSerializer requires 'set' or 'private set' with [JsonInclude] 

@@ -5,6 +5,10 @@ using System.Linq;
 
 namespace MiLauncher
 {
+    /// <summary>
+    /// Provides static methods to search files recursively and return them 
+    /// as <see cref="IEnumerable{T}"/> of <see cref="string"/>
+    /// </summary>
     public class DirectorySearch
     {
         public static IEnumerable<string> EnumerateAllFileSystemEntries(string path)

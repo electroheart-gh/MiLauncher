@@ -3,9 +3,12 @@ using System.Collections.Generic;
 
 namespace MiLauncher
 {
+    /// <summary>
+    /// Stores all user settings that is supposed to be used with <see cref="SettingManager"/>
+    /// </summary>
     internal class AppSettings
     {
-        // TODO: Consider to use <Record> Type
+        // TODO: Consider to use <Record> Type (Can JsonSerializer handle other than properties?)
         public List<string> TargetFolders { get; set; }
         public int MinMigemoLength { get; set; }
         public int MaxListLine { get; set; }
@@ -21,8 +24,8 @@ namespace MiLauncher
             MinMigemoLength = 3;
             MaxListLine = 50;
 
-            // TODO: configuration for Keymap 
-            // TODO: configuration for specific application to open file, such as sakura
+            // TODO: settings for Keymap 
+            // TODO: settings for specific application to open file, such as sakura
         }
     }
 }

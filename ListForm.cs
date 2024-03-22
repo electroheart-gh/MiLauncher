@@ -11,13 +11,17 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace MiLauncher
 {
-    public partial class ListForm : Form
+    /// <summary>
+    /// Represents a window of the file list that has responsibilities
+    /// to control selected list item and display information for user.
+    /// </summary>
+    internal partial class ListForm : Form
     {
         //
         // Properties
         //
         internal List<FileStats> ListViewItems { get; private set; }
-        internal SortKeyOption SortKey { get; private set; } = SortKeyOption.Priority;
+        internal SortKeyOption SortKey { get; set; } = SortKeyOption.Priority;
         internal string ModeCaption { get; set; }
 
         private int _virtualListIndex;
@@ -54,11 +58,11 @@ namespace MiLauncher
                     // *** Works fine!! No flickers!!
                     listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
                     int headerWidth = TextRenderer.MeasureText(headerString, listView.Font).Width;
-                    var properWidth = Math.Max(listView.GetItemRect(0).Width, headerWidth);
+                    var maxWidth = Math.Max(listView.GetItemRect(0).Width, headerWidth);
 
-                    listView.Columns[0].Width = properWidth;
+                    listView.Columns[0].Width = maxWidth;
                     // TODO: CMIC
-                    Width = properWidth + 40;
+                    Width = maxWidth + 40;
                 }
             }
         }
@@ -84,8 +88,7 @@ namespace MiLauncher
             //                              ListViewItems[index].SortValue(SortKey));
             //}
 
-            // Indicates crawl mode and its path in column header
-            //ModeCaption = "T:\\test\\test.txt";
+            // Indicate mode information in column header
             if (ModeCaption is not null) {
                 Header.Text += String.Format("  <{0}>", ModeCaption);
             }
@@ -172,7 +175,7 @@ namespace MiLauncher
             VirtualListIndex--;
         }
 
-        internal void ShowAt(int? x = null, int? y = null)
+        internal void ShowAt(int? x = null, int? y = null, int index = 0)
         {
             Location = new Point(x ?? Location.X, y ?? Location.Y);
             Visible = true;
@@ -182,7 +185,7 @@ namespace MiLauncher
                 // And changing height seems to focus on list view
                 // TODO: CMIC
                 Height = listView.GetItemRect(0).Height * Math.Min(maxLineListView, listView.VirtualListSize + 1) + 30;
-                VirtualListIndex = 0;
+                VirtualListIndex = index;
             }
             else {
                 Height = 0;
@@ -219,13 +222,5 @@ namespace MiLauncher
                 e.Graphics.DrawLine(pen, e.Bounds.Left, e.Bounds.Bottom - 1, e.Bounds.Right, e.Bounds.Bottom - 1);
             }
         }
-
-        //internal void CrawlUpwards()
-        //{
-        //    // backup
-        //    //CrawlModeOriginalPatterns=
-
-        //    ModeCaption = Directory.GetParent(ListViewItems[_virtualListIndex].FullPathName).ToString();
-        //}
     }
 }

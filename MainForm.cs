@@ -12,6 +12,9 @@ using System.Windows.Forms;
 
 namespace MiLauncher
 {
+    /// <summary>
+    /// Represents a main window that accept user interface and delegates tasks to other windows/classes.
+    /// </summary>
     public partial class MainForm : Form
     {
         // Variables
@@ -21,8 +24,7 @@ namespace MiLauncher
         // private HashSet<FileStats> baseFileSet;
         private HashSet<FileStats> searchedFileSet;
         private CancellationTokenSource tokenSource;
-        private CrawlMode crawlMode;
-        // private string savedCmdBoxText;
+        private ModeController currentMode = new();
 
         // Constant
         // TODO: Consider to make FileList.dat configurable
@@ -38,6 +40,7 @@ namespace MiLauncher
             InitializeComponent();
         }
 
+        // Borderless winform with shadow
         protected override CreateParams CreateParams
         {
             get {
@@ -88,31 +91,32 @@ namespace MiLauncher
 
         private async void cmdBox_TextChanged(object sender, EventArgs e)
         {
-            if (tokenSource != null) {
-                tokenSource.Cancel();
-                tokenSource = null;
-            }
+            tokenSource?.Cancel();
+            tokenSource = null;
 
-            if (cmdBox.Text.Length == 0 && crawlMode is null) {
+            if (currentMode.IsRestoreMode()) {
+                //currentMode.ExitRestore();
+                return;
+            }
+            if (cmdBox.Text.Length == 0 && currentMode.IsPlain()) {
                 listForm.Visible = false;
                 return;
             }
-
-            tokenSource = new CancellationTokenSource();
-            CancellationToken token = tokenSource.Token;
 
             // Added ToArray() to apply eager evaluation because lazy evaluation makes it too slow 
             var patternsInCmdBox = cmdBox.Text.Split(wordSeparator, StringSplitOptions.RemoveEmptyEntries);
             var patternsTransformed = patternsInCmdBox.Select(transformByMigemo).ToArray();
 
             // Set baseFileSet depending on crawlMode or not
-            HashSet<FileStats> baseFileSet = crawlMode?.CrawlFileSet ?? searchedFileSet;
+            //HashSet<FileStats> baseFileSet = crawlMode?.CrawlFileSet ?? searchedFileSet;
+            HashSet<FileStats> baseFileSet = currentMode.GetCrawlFileSet() ?? searchedFileSet;
 
+            tokenSource = new CancellationTokenSource();
+            CancellationToken token = tokenSource.Token;
             var filteredList = await Task.Run(() => baseFileSet.FilterWithCancellation(patternsTransformed, token), token);
             if (token.IsCancellationRequested) return;
 
             listForm.SetVirtualList(filteredList);
-
 
             // TODO: CMIC
             listForm.ShowAt(Location.X - 6, Location.Y + Height - 5);
@@ -263,30 +267,37 @@ namespace MiLauncher
             if (e.KeyCode == Keys.Oemcomma && e.Control) {
                 if (!listForm.Visible) return;
 
-                //if (crawlMode is null) {
-                //    var targetPath = Path.GetDirectoryName(listForm.CurrentItem().FullPathName);
-                //    var newCrawlMode = CrawlMode.Crawl(targetPath, cmdBox.Text, listForm.VirtualListIndex, listForm.SortKey, listForm.ListViewItems);
-                //    if (newCrawlMode is null) return;
-                //}
-                //else {
-                //    var newCrawlMode = crawlMode.CrawlUp();
-                //    if (newCrawlMode is null) return;
-                //}
-
                 // Crawl and check if it works
-                CrawlMode newCrawlMode =
-                    (crawlMode is null) ?
-                    CrawlMode.Crawl(Path.GetDirectoryName(listForm.CurrentItem().FullPathName),
-                                    cmdBox.Text, listForm.VirtualListIndex, listForm.SortKey, listForm.ListViewItems) :
-                    crawlMode.CrawlUp();
-                if (newCrawlMode is null) return;
-                crawlMode = newCrawlMode;
+                //CrawlMode newCrawlMode =
+                //    (currentMode.IsCrawlMode()) ?
+                //    crawlMode.CrawlUp() :
+                //    CrawlMode.Crawl(Path.GetDirectoryName(listForm.CurrentItem().FullPathName),
+                //                    cmdBox.Text, listForm.VirtualListIndex, listForm.SortKey, listForm.ListViewItems);
+                //if (newCrawlMode is null) return;
+                //crawlMode = newCrawlMode;
+
+                // Crawl up and check if it works
+                //if (!currentMode.CrawlUp()) {
+                //    currentMode.Crawl(Path.GetDirectoryName(listForm.CurrentItem().FullPathName));
+                //    currentMode.PrepareRestore(cmdBox.Text, listForm.VirtualListIndex, listForm.SortKey, listForm.ListViewItems);
+                //}
+                //if (!currentMode.IsCrawlMode()) return;
+
+
+                //if (!currentMode.CrawlUp() && !currentMode.Crawl(Path.GetDirectoryName(listForm.CurrentItem().FullPathName)))
+                //    return;
+
+                if (!currentMode.CrawlUp(listForm.CurrentItem().FullPathName)) return;
+
+                if (!currentMode.IsRestorePrepared()) {
+                    currentMode.PrepareRestore(cmdBox.Text, listForm.VirtualListIndex, listForm.SortKey, listForm.ListViewItems);
+                }
 
                 // Continue process for crawl
                 cmdBox.Text = string.Empty;
 
-                listForm.ModeCaption = crawlMode.Caption;
-                listForm.SetVirtualList(crawlMode.CrawlFileSet.ToList());
+                listForm.ModeCaption = currentMode.GetCrawlCaption();
+                listForm.SetVirtualList(currentMode.GetCrawlFileSet().ToList());
 
                 listForm.ShowAt();
                 Activate();
@@ -294,17 +305,25 @@ namespace MiLauncher
             // Exit crawl mode
             if (e.KeyCode == Keys.G && e.Control) {
                 if (!listForm.Visible) return;
+                if (!currentMode.IsCrawlMode()) return;
 
-                cmdBox.Text = crawlMode.SavedCmdBoxText;
-                listForm.VirtualListIndex = crawlMode.SavedIndex;
-                listForm.SetVirtualList(crawlMode.SavedItems);
-                listForm.ShowAt();
-                crawlMode = null;
+                currentMode.ExitCrawl();
+
+                currentMode.ActivateRestore();
+                listForm.ModeCaption = null;
+                listForm.SortKey = currentMode.RestoreSortKey();
+                listForm.SetVirtualList(currentMode.RestoreItems());
+
+                cmdBox.Text = currentMode.RestoreCmdBoxText();
+
+                listForm.ShowAt(null, null, currentMode.RestoreIndex());
+                Activate();
+
+                currentMode.ExitRestore();
+
             }
 
             // TODO: Cycle backwards ListView sort key
-            // TODO: implement crawl folder mode like zii launcher, which requires another ListView class
-            // TODO: implement sorting list by timestamp, priority and alphabetic, which should update ListForm and  classes as well
             // TODO: implement search history using M-p, M-n
         }
 

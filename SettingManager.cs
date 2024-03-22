@@ -4,7 +4,10 @@ using System.Text.Json;
 
 namespace MiLauncher
 {
-    // Used to save AppSettings and FileList object in the specified files
+    /// <summary>
+    /// Provides functionality to save(load) an object to to(from) specified file with <see cref="JsonSerializer"/>."
+    /// </summary>
+    // Used to save(load) both a set of searched files and Application Settings
     internal class SettingManager
     {
         private static readonly JsonSerializerOptions s_writeOptions = new() {
