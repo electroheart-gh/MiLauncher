@@ -263,7 +263,7 @@ namespace MiLauncher
                 listForm.CycleSortKey();
                 listForm.ShowAt();
             }
-            // Crawl folder upward
+            // Crawl folder upwards
             if (e.KeyCode == Keys.Oemcomma && e.Control) {
                 if (!listForm.Visible) return;
 
@@ -288,6 +288,25 @@ namespace MiLauncher
                 //    return;
 
                 if (!currentMode.CrawlUp(listForm.CurrentItem().FullPathName)) return;
+
+                if (!currentMode.IsRestorePrepared()) {
+                    currentMode.PrepareRestore(cmdBox.Text, listForm.VirtualListIndex, listForm.SortKey, listForm.ListViewItems);
+                }
+
+                // Continue process for crawl
+                cmdBox.Text = string.Empty;
+
+                listForm.ModeCaption = currentMode.GetCrawlCaption();
+                listForm.SetVirtualList(currentMode.GetCrawlFileSet().ToList());
+
+                listForm.ShowAt();
+                Activate();
+            }
+            // Crawl folder downwards
+            if (e.KeyCode == Keys.OemPeriod && e.Control) {
+                if (!listForm.Visible) return;
+
+                if (!currentMode.CrawlDown(listForm.CurrentItem().FullPathName)) return;
 
                 if (!currentMode.IsRestorePrepared()) {
                     currentMode.PrepareRestore(cmdBox.Text, listForm.VirtualListIndex, listForm.SortKey, listForm.ListViewItems);

@@ -22,31 +22,36 @@ namespace MiLauncher
 
         internal ModeController()
         {
-
         }
 
         //
         // Methods for Crawl mode
         //
-
         internal bool Crawl(string path)
         {
             // Used to start crawl
             crawlMode = CrawlMode.Crawl(path);
             return crawlMode.Status == ModeStatus.Active;
         }
-        internal bool CrawlUp(string path)
+        internal bool CrawlUp(string itemPath)
         {
             // Returns false when no change needed
+            // If Crawl mode active, use CrawlPath instead of itemPath
             if (IsCrawlMode()) {
                 CrawlMode crawlResult = crawlMode.CrawlUp();
                 crawlMode = (crawlResult?.Status == ModeStatus.Active) ? crawlResult : crawlMode;
                 return crawlResult is not null;
             }
             else {
-                crawlMode = CrawlMode.Crawl(Path.GetDirectoryName(path));
+                crawlMode = CrawlMode.Crawl(Path.GetDirectoryName(itemPath));
                 return crawlMode is not null;
             }
+        }
+        internal bool CrawlDown(string itemPath)
+        {
+            CrawlMode crawlResult = CrawlMode.Crawl(itemPath);
+            crawlMode = (crawlResult?.Status == ModeStatus.Active) ? crawlResult : crawlMode;
+            return crawlMode is not null;
         }
         internal bool IsCrawlMode()
         {
