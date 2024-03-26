@@ -194,6 +194,7 @@ namespace MiLauncher
                 Width = 100;
             }
             listView.Refresh();
+            // Refresh();
         }
 
         // Key down event in listView makes focus on MainForm

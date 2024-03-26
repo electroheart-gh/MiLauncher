@@ -12,22 +12,25 @@ namespace MiLauncher
     /// </summary>
     internal class RestoreMode
     {
-        public RestoreMode(string text, int index, SortKeyOption sortKey, List<FileStats> items)
+        public RestoreMode(string text, int index, SortKeyOption sortKey, List<FileStats> items, int colWidth, int formWidth)
         {
             SavedText = text;
             SavedIndex = index;
             SavedSortKey = sortKey;
             SavedItems = items;
+            SavedColWidth = colWidth;
+            SavedFormWidth = formWidth;
             Status = ModeStatus.Prepared;
         }
 
         public ModeStatus Status { get; internal set; }
 
-        //private CrawlMode(string path, string cmdBoxText, int index, SortKeyOption sortKey, List<FileStats> items)
-        internal SortKeyOption SavedSortKey { get; }
         internal string SavedText { get; }
-        internal List<FileStats> SavedItems { get; }
         internal int SavedIndex { get; }
+        internal SortKeyOption SavedSortKey { get; }
+        internal List<FileStats> SavedItems { get; }
+        internal int SavedColWidth { get; }
+        internal int SavedFormWidth { get; }
 
     }
 }

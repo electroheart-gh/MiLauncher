@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace MiLauncher
 {
@@ -113,7 +114,8 @@ namespace MiLauncher
 
             tokenSource = new CancellationTokenSource();
             CancellationToken token = tokenSource.Token;
-            var filteredList = await Task.Run(() => baseFileSet.FilterWithCancellation(patternsTransformed, token), token);
+            var filteredList = await Task.Run
+                (() => baseFileSet.FilterWithCancellation(patternsTransformed, token), token);
             if (token.IsCancellationRequested) return;
 
             listForm.SetVirtualList(filteredList);
@@ -128,7 +130,8 @@ namespace MiLauncher
             {
                 using (Migemo migemo = new("./Dict/migemo-dict")) {
                     // TODO: make it config or const
-                    // TODO: Consider to make MatchCondition class, which should have a method to parse string to select condition
+                    // TODO: Consider to make MatchCondition class,
+                    // which should have a method to parse string to select condition
                     var prefix = "-!\\".Contains(pattern[..1]) ? pattern[..1] : "";
                     if (pattern.Length - prefix.Length < Program.appSettings.MinMigemoLength) {
                         return pattern;
@@ -290,7 +293,8 @@ namespace MiLauncher
                 if (!currentMode.CrawlUp(listForm.CurrentItem().FullPathName)) return;
 
                 if (!currentMode.IsRestorePrepared()) {
-                    currentMode.PrepareRestore(cmdBox.Text, listForm.VirtualListIndex, listForm.SortKey, listForm.ListViewItems);
+                    currentMode.PrepareRestore(cmdBox.Text, listForm.VirtualListIndex, listForm.SortKey,
+                        listForm.ListViewItems, listForm.listView.Columns[0].Width, listForm.Width);
                 }
 
                 // Continue process for crawl
@@ -309,7 +313,8 @@ namespace MiLauncher
                 if (!currentMode.CrawlDown(listForm.CurrentItem().FullPathName)) return;
 
                 if (!currentMode.IsRestorePrepared()) {
-                    currentMode.PrepareRestore(cmdBox.Text, listForm.VirtualListIndex, listForm.SortKey, listForm.ListViewItems);
+                    currentMode.PrepareRestore(cmdBox.Text, listForm.VirtualListIndex, listForm.SortKey,
+                        listForm.ListViewItems, listForm.listView.Columns[0].Width, listForm.Width);
                 }
 
                 // Continue process for crawl
@@ -332,14 +337,13 @@ namespace MiLauncher
                 listForm.ModeCaption = null;
                 listForm.SortKey = currentMode.RestoreSortKey();
                 listForm.SetVirtualList(currentMode.RestoreItems());
-
+                listForm.listView.Columns[0].Width = currentMode.RestoreColWidth();
+                listForm.Width = currentMode.RestoreFormWidth();
                 cmdBox.Text = currentMode.RestoreCmdBoxText();
-
                 listForm.ShowAt(null, null, currentMode.RestoreIndex());
-                Activate();
-
                 currentMode.ExitRestore();
 
+                Activate();
             }
 
             // TODO: Cycle backwards ListView sort key
@@ -371,7 +375,8 @@ namespace MiLauncher
         {
             // Move MainForm by left button dragging
             if (e.Button == MouseButtons.Left) {
-                Location = new Point(Location.X + e.Location.X - dragStart.X, Location.Y + e.Location.Y - dragStart.Y);
+                Location = new Point(Location.X + e.Location.X - dragStart.X,
+                                     Location.Y + e.Location.Y - dragStart.Y);
             }
         }
 
@@ -381,8 +386,5 @@ namespace MiLauncher
         // Using Non-backtracking and negative lookahead assertion of Regex
         [GeneratedRegex(@"(?>\w*\W*)(?!\w)")]
         private static partial Regex PreviousWordRegex();
-
-
     }
-
 }
