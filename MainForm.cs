@@ -121,7 +121,7 @@ namespace MiLauncher
             listForm.SetVirtualList(filteredList);
 
             // TODO: CMIC
-            listForm.ShowAt(Location.X - 6, Location.Y + Height - 5);
+            listForm.ShowAt(Location.X - 6, Location.Y + Height - 5); // resize both
 
             Activate();
             return;
@@ -264,7 +264,7 @@ namespace MiLauncher
                 if (!listForm.Visible) return;
 
                 listForm.CycleSortKey();
-                listForm.ShowAt();
+                listForm.ShowAt(); // resize width
             }
             // Crawl folder upwards
             if (e.KeyCode == Keys.Oemcomma && e.Control) {
@@ -293,8 +293,8 @@ namespace MiLauncher
                 if (!currentMode.CrawlUp(listForm.CurrentItem().FullPathName)) return;
 
                 if (!currentMode.IsRestorePrepared()) {
-                    currentMode.PrepareRestore(cmdBox.Text, listForm.VirtualListIndex, listForm.SortKey,
-                        listForm.ListViewItems, listForm.listView.Columns[0].Width, listForm.Width);
+                    currentMode.PrepareRestore(cmdBox.Text, listForm.VirtualListIndex, 
+                        listForm.SortKey, listForm.ListViewItems);
                 }
 
                 // Continue process for crawl
@@ -303,7 +303,7 @@ namespace MiLauncher
                 listForm.ModeCaption = currentMode.GetCrawlCaption();
                 listForm.SetVirtualList(currentMode.GetCrawlFileSet().ToList());
 
-                listForm.ShowAt();
+                listForm.ShowAt(); // resize both
                 Activate();
             }
             // Crawl folder downwards
@@ -313,8 +313,8 @@ namespace MiLauncher
                 if (!currentMode.CrawlDown(listForm.CurrentItem().FullPathName)) return;
 
                 if (!currentMode.IsRestorePrepared()) {
-                    currentMode.PrepareRestore(cmdBox.Text, listForm.VirtualListIndex, listForm.SortKey,
-                        listForm.ListViewItems, listForm.listView.Columns[0].Width, listForm.Width);
+                    currentMode.PrepareRestore(cmdBox.Text, listForm.VirtualListIndex, 
+                        listForm.SortKey, listForm.ListViewItems);
                 }
 
                 // Continue process for crawl
@@ -323,7 +323,7 @@ namespace MiLauncher
                 listForm.ModeCaption = currentMode.GetCrawlCaption();
                 listForm.SetVirtualList(currentMode.GetCrawlFileSet().ToList());
 
-                listForm.ShowAt();
+                listForm.ShowAt(); // resize both
                 Activate();
             }
             // Exit crawl mode
@@ -337,10 +337,10 @@ namespace MiLauncher
                 listForm.ModeCaption = null;
                 listForm.SortKey = currentMode.RestoreSortKey();
                 listForm.SetVirtualList(currentMode.RestoreItems());
-                listForm.listView.Columns[0].Width = currentMode.RestoreColWidth();
-                listForm.Width = currentMode.RestoreFormWidth();
+                //listForm.listView.Columns[0].Width = currentMode.RestoreColWidth();
+                //listForm.Width = currentMode.RestoreFormWidth();
                 cmdBox.Text = currentMode.RestoreCmdBoxText();
-                listForm.ShowAt(null, null, currentMode.RestoreIndex());
+                listForm.ShowAt(null, null, currentMode.RestoreIndex()); // resize both
                 currentMode.ExitRestore();
 
                 Activate();

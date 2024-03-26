@@ -36,34 +36,34 @@ namespace MiLauncher
                 // With MultiSelect false, adding a new index automatically removes old one
                 listView.SelectedIndices.Add(_virtualListIndex);
 
-                // Resize column at first
-                // And if GetItemRect(0).Y changed, list view scrolls, then resize column
-                var originalScrollPosition = listView.GetItemRect(0).Y;
-                listView.EnsureVisible(_virtualListIndex);
+                //// Resize column at first
+                //// And if GetItemRect(0).Y changed, list view scrolls, then resize column
+                //var originalScrollPosition = listView.GetItemRect(0).Y;
+                //listView.EnsureVisible(_virtualListIndex);
 
-                var headerString = DisplayColumnHeader(_virtualListIndex);
+                //var headerString = DisplayColumnHeader(_virtualListIndex);
 
-                if (_virtualListIndex == 0 || originalScrollPosition != listView.GetItemRect(0).Y) {
+                //if (_virtualListIndex == 0 || originalScrollPosition != listView.GetItemRect(0).Y) {
 
-                    // *** Size is fine but too many flickers
-                    //Width = listView.GetItemRect(0).Width;
-                    //listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-                    //listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
-                    //Width = listView.GetItemRect(0).Width + 40;
+                //    // *** Size is fine but too many flickers
+                //    //Width = listView.GetItemRect(0).Width;
+                //    //listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+                //    //listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+                //    //Width = listView.GetItemRect(0).Width + 40;
 
-                    // *** All header text cannot be shown when header is longer than content
-                    //listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-                    //Width = listView.GetItemRect(0).Width + 40;
+                //    // *** All header text cannot be shown when header is longer than content
+                //    //listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+                //    //Width = listView.GetItemRect(0).Width + 40;
 
-                    // *** Works fine!! No flickers!!
-                    listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-                    int headerWidth = TextRenderer.MeasureText(headerString, listView.Font).Width;
-                    var maxWidth = Math.Max(listView.GetItemRect(0).Width, headerWidth);
+                //    // *** Works fine!! No flickers!!
+                //    listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+                //    int headerWidth = TextRenderer.MeasureText(headerString, listView.Font).Width;
+                //    var maxWidth = Math.Max(listView.GetItemRect(0).Width, headerWidth);
 
-                    listView.Columns[0].Width = maxWidth;
-                    // TODO: CMIC
-                    Width = maxWidth + 40;
-                }
+                //    listView.Columns[0].Width = maxWidth;
+                //    // TODO: CMIC
+                //    Width = maxWidth + 40;
+                //}
             }
         }
 
@@ -79,14 +79,6 @@ namespace MiLauncher
                 SortKeyOption.FullPathName => "Path",
                 _ => Header.Text = string.Format("{0}: {1}", SortKey.ToString(), ListViewItems[index].SortValue(SortKey))
             };
-
-            //if (SortKey == SortKeyOption.FullPathName) {
-            //    Header.Text = "Path";
-            //}
-            //else {
-            //    Header.Text = string.Format("{0}: {1}", SortKey.ToString(),
-            //                              ListViewItems[index].SortValue(SortKey));
-            //}
 
             // Indicate mode information in column header
             if (ModeCaption is not null) {
@@ -158,14 +150,23 @@ namespace MiLauncher
 
         internal FileStats CurrentItem()
         {
-            if (listView.VirtualListSize == 0) return null;
-            return ListViewItems[VirtualListIndex];
+            return listView.VirtualListSize == 0 ? null : ListViewItems[VirtualListIndex];
         }
+
         internal void SelectNextItem()
         {
             if (listView.VirtualListSize == 0) return;
 
             VirtualListIndex++;
+            DisplayColumnHeader(VirtualListIndex);
+
+            var originalScrollPosition = listView.GetItemRect(0).Y;
+            listView.EnsureVisible(VirtualListIndex);
+
+            // Resize column width only if displaying initially or scrolling list in order to reduce flickers
+            // If GetItemRect(0).Y changes after EnsureVisible(), list view scrolls. Then, resize column
+            if (VirtualListIndex == 0 || originalScrollPosition != listView.GetItemRect(0).Y)
+                AdjustWidth();
         }
 
         internal void SelectPreviousItem()
@@ -173,8 +174,16 @@ namespace MiLauncher
             if (listView.VirtualListSize == 0) return;
 
             VirtualListIndex--;
-        }
+            DisplayColumnHeader(VirtualListIndex);
 
+            var originalScrollPosition = listView.GetItemRect(0).Y;
+            listView.EnsureVisible(VirtualListIndex);
+
+            // Resize column width only if displaying initially or scrolling list in order to reduce flickers
+            // If GetItemRect(0).Y changes after EnsureVisible(), list view scrolls. Then, resize column
+            if (VirtualListIndex == 0 || originalScrollPosition != listView.GetItemRect(0).Y)
+                AdjustWidth();
+        }
         internal void ShowAt(int? x = null, int? y = null, int index = 0)
         {
             Location = new Point(x ?? Location.X, y ?? Location.Y);
@@ -182,10 +191,12 @@ namespace MiLauncher
 
             if (ListViewItems.Any()) {
                 // To add() SelectedIndices, listView requires focus on, which is mentioned by MSDN
-                // And changing height seems to focus on list view
-                // TODO: CMIC
-                Height = listView.GetItemRect(0).Height * Math.Min(maxLineListView, listView.VirtualListSize + 1) + 30;
+                // Changing height in AdjustHeight() seems to focus on list view
+                AdjustHeight();
                 VirtualListIndex = index;
+                DisplayColumnHeader(VirtualListIndex);
+                listView.EnsureVisible(VirtualListIndex);
+                AdjustWidth();
             }
             else {
                 Height = 0;
@@ -194,7 +205,22 @@ namespace MiLauncher
                 Width = 100;
             }
             listView.Refresh();
-            // Refresh();
+        }
+
+        internal void AdjustHeight()
+        {
+            // TODO: CMIC
+            Height = listView.GetItemRect(0).Height * Math.Min(maxLineListView, listView.VirtualListSize + 1) + 30;
+        }
+        internal void AdjustWidth()
+        {
+            listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            int headerWidth = TextRenderer.MeasureText(Header.Text, listView.Font).Width;
+            var maxWidth = Math.Max(listView.GetItemRect(0).Width, headerWidth);
+
+            listView.Columns[0].Width = maxWidth;
+            // TODO: CMIC
+            Width = maxWidth + 40;
         }
 
         // Key down event in listView makes focus on MainForm

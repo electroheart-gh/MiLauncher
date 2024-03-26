@@ -82,10 +82,9 @@ namespace MiLauncher
         {
             return restoreMode?.Status == ModeStatus.Prepared || restoreMode?.Status == ModeStatus.Active;
         }
-        internal void PrepareRestore(string text, int index, SortKeyOption sortKey, 
-            List<FileStats> items, int colWidth, int formWidth)
+        internal void PrepareRestore(string text, int index, SortKeyOption sortKey, List<FileStats> items)
         {
-            restoreMode = new RestoreMode(text, index, sortKey, items, colWidth, formWidth);
+            restoreMode = new RestoreMode(text, index, sortKey, items);
         }
         internal void ActivateRestore()
         {
@@ -107,14 +106,6 @@ namespace MiLauncher
         {
             return restoreMode.SavedIndex;
         }
-        internal int RestoreColWidth()
-        {
-            return restoreMode.SavedColWidth;
-        }
-        internal int RestoreFormWidth()
-        {
-            return restoreMode.SavedFormWidth;
-        }
         internal void ExitRestore()
         {
             // TODO: consider to dispose instance
@@ -128,8 +119,6 @@ namespace MiLauncher
         {
             return !IsCrawlMode() && !IsRestoreMode();
         }
-
-
     }
     internal enum ModeStatus
     {
