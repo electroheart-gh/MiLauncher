@@ -67,6 +67,7 @@ namespace MiLauncher
             // Load File Set (HashSet<FileStats>)
             searchedFileSet = SettingManager.LoadSettings<HashSet<FileStats>>(searchedFileListDataFile) ?? [];
 
+            // TODO: Make it method
             // Search Files Async
             var newSearchedFileSet = await Task.Run(FileSet.SearchAllFiles);
             searchedFileSet = newSearchedFileSet.ImportPriorityAndExecTime(searchedFileSet).ToHashSet();
@@ -174,7 +175,7 @@ namespace MiLauncher
             if (e.KeyCode == Keys.Enter || (e.KeyCode == Keys.M && e.Control)) {
                 var execFileStats = listForm.ExecItem();
 
-                // TODO: Consider to make the value to adjust the priority '1' configurable
+                // TODO: CMIC priority +1
                 var fileStats = searchedFileSet.FirstOrDefault(x => x.FullPathName == execFileStats.FullPathName);
                 if (fileStats is null) {
                     // Add to searchedFileSet temporarily, even though it might be removed after searchAllFiles()
@@ -188,6 +189,8 @@ namespace MiLauncher
                 }
                 //SettingManager.SaveSettings(searchedFileSet, searchedFileListDataFile);
 
+                currentMode.ExitRestore();
+                currentMode.ExitCrawl();
                 cmdBox.Text = string.Empty;
                 Visible = false;
             }
