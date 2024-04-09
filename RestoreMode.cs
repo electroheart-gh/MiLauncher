@@ -18,8 +18,6 @@ namespace MiLauncher
             SavedIndex = index;
             SavedSortKey = sortKey;
             SavedItems = items;
-            //SavedColWidth = colWidth;
-            //SavedFormWidth = formWidth;
             Status = ModeStatus.Prepared;
         }
 
@@ -29,8 +27,6 @@ namespace MiLauncher
         internal int SavedIndex { get; }
         internal SortKeyOption SavedSortKey { get; }
         internal List<FileStats> SavedItems { get; }
-        //internal int SavedColWidth { get; }
-        //internal int SavedFormWidth { get; }
 
     }
 }

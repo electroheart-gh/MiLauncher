@@ -35,35 +35,6 @@ namespace MiLauncher
 
                 // With MultiSelect false, adding a new index automatically removes old one
                 listView.SelectedIndices.Add(_virtualListIndex);
-
-                //// Resize column at first
-                //// And if GetItemRect(0).Y changed, list view scrolls, then resize column
-                //var originalScrollPosition = listView.GetItemRect(0).Y;
-                //listView.EnsureVisible(_virtualListIndex);
-
-                //var headerString = DisplayColumnHeader(_virtualListIndex);
-
-                //if (_virtualListIndex == 0 || originalScrollPosition != listView.GetItemRect(0).Y) {
-
-                //    // *** Size is fine but too many flickers
-                //    //Width = listView.GetItemRect(0).Width;
-                //    //listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-                //    //listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
-                //    //Width = listView.GetItemRect(0).Width + 40;
-
-                //    // *** All header text cannot be shown when header is longer than content
-                //    //listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-                //    //Width = listView.GetItemRect(0).Width + 40;
-
-                //    // *** Works fine!! No flickers!!
-                //    listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-                //    int headerWidth = TextRenderer.MeasureText(headerString, listView.Font).Width;
-                //    var maxWidth = Math.Max(listView.GetItemRect(0).Width, headerWidth);
-
-                //    listView.Columns[0].Width = maxWidth;
-                //    // TODO: CMIC
-                //    Width = maxWidth + 40;
-                //}
             }
         }
 
@@ -99,6 +70,9 @@ namespace MiLauncher
         // TODO: CMIC
         const int maxLineListView = 30;
 
+        //
+        // Constructor
+        //
         public ListForm()
         {
             InitializeComponent();
@@ -243,7 +217,6 @@ namespace MiLauncher
         private void listView_DrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
         {
             //e.Graphics.FillRectangle(Brushes.LightGray, e.Bounds);
-            //TextRenderer.DrawText(e.Graphics, e.Header.Text, e.Font, e.Bounds, e.ForeColor, TextFormatFlags.Left);
             TextRenderer.DrawText(e.Graphics, e.Header.Text, e.Font, e.Bounds, Color.Gray, TextFormatFlags.Left);
             using (Pen pen = new Pen(Color.Gray)) {
                 e.Graphics.DrawLine(pen, e.Bounds.Left, e.Bounds.Bottom - 1, e.Bounds.Right, e.Bounds.Bottom - 1);

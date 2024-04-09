@@ -77,7 +77,7 @@ namespace MiLauncher
             catch (Exception e) when (e is UnauthorizedAccessException ||
                                       e is PathTooLongException ||
                                       e is IOException ||
-                                      e is DirectoryNotFoundException||
+                                      e is DirectoryNotFoundException ||
                                       e is ArgumentNullException) {
                 return null;
             }
@@ -100,5 +100,20 @@ namespace MiLauncher
                                                               y.FirstOrDefault()?.Priority,
                                                               y.FirstOrDefault()?.ExecTime)));
         }
+
+        internal static void UpdateBy
+                (this Dictionary<string, FileStats> oldFiles, Dictionary<string, FileStats> newFiles)
+        {
+            foreach (var newFile in newFiles) {
+                if (oldFiles.TryGetValue(newFile.Key, out FileStats value)) {
+                    oldFiles[newFile.Key] = new FileStats(newFile.Key, newFile.Value.UpdateTime, value.Priority, value.ExecTime);
+                }
+                else {
+                    oldFiles.Add(newFile.Key, newFile.Value);
+                }
+            }
+        }
+
+
     }
 }

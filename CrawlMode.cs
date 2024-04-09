@@ -15,97 +15,39 @@ namespace MiLauncher
         //
         // Properties
         //
-        private string _crawlPath;
-
-        internal string CrawlPath
-        {
-            get { return _crawlPath; }
-            set {
-                _crawlPath = value;
-                //CrawlFileSet = FileSet.SearchFilesInPath(value)?.ImportPriorityAndExecTime(SavedItems);
-                CrawlFileSet = FileSet.SearchFilesInPath(value);
-                Status = CrawlFileSet is null ? ModeStatus.Defective : ModeStatus.Active;
-                Caption = value is null ? null : string.Format("Crawling in: {0}", value);
-            }
-        }
+        internal string CrawlPath { get; private set; }
         internal HashSet<FileStats> CrawlFileSet { get; private set; }
         internal string Caption { get; private set; }
+        public ModeStatus Status { get; private set; }
 
-        //internal string SavedCmdBoxText { get; }
-        //internal int SavedIndex { get; }
-        //internal SortKeyOption SavedSortKey { get; }
-        //internal List<FileStats> SavedItems { get; }
-
-        public ModeStatus Status { get; internal set; }
-
-        //private CrawlMode(string path, string cmdBoxText, int index, SortKeyOption sortKey, List<FileStats> items)
-        //{
-        //    SavedCmdBoxText = cmdBoxText;
-        //    SavedIndex = index;
-        //    SavedSortKey = sortKey;
-        //    SavedItems = items;
-
-        //    // To use SavedItems, set CrawPath at last
-        //    CrawlPath = path;
-        //}
-
-        private CrawlMode(string path)
+        //
+        //Constructor
+        //
+        private CrawlMode(string path, HashSet<FileStats> sourceFileSet = null)
         {
             CrawlPath = path;
+            CrawlFileSet = FileSet.SearchFilesInPath(path);
+            if (sourceFileSet is not null) {
+                CrawlFileSet = CrawlFileSet?.ImportPriorityAndExecTime(sourceFileSet);
+            }
+            Status = CrawlFileSet is null ? ModeStatus.Defective : ModeStatus.Active;
+            Caption = path is null ? null : string.Format("Crawling in: {0}", path);
         }
 
-        internal bool IsValid()
-        {
-            return CrawlFileSet is not null;
-        }
-        internal static CrawlMode Crawl(string path)
+        //
+        // Methods
+        //
+        internal static CrawlMode Crawl(string path, HashSet<FileStats> sourceFileSet = null)
         {
             if (path is null) return null;
 
-            var newCrawlMode = new CrawlMode(path);
+            var newCrawlMode = new CrawlMode(path, sourceFileSet);
             return newCrawlMode.Status == ModeStatus.Active ? newCrawlMode : null;
         }
-        internal CrawlMode CrawlUp()
+        internal CrawlMode CrawlUp(HashSet<FileStats> sourceFileSet = null)
         {
-            var newPath = Path.GetDirectoryName(CrawlPath);
-            if (newPath is null) return null;
-
-            var newCrawlMode = new CrawlMode(newPath);
-            return newCrawlMode;
+            var upperPath = Path.GetDirectoryName(CrawlPath);
+            return Crawl(upperPath, sourceFileSet);
         }
-
-        //internal static CrawlMode Crawl(string path, string cmdBoxText, int index, SortKeyOption sortKey, List<FileStats> items)
-        //{
-        //    if (path is null) return null;
-
-        //    var newCrawlMode = new CrawlMode(path, cmdBoxText, index, sortKey, items);
-        //    return newCrawlMode.IsValid() ? newCrawlMode : null;
-
-        //}
-
-        //internal void Crawl(string targetPath = null)
-        //{
-        //    targetPath ??= Path.GetDirectoryName(_crawlPath);
-
-        //    HashSet<FileStats> result = FileSet.SearchFilesInPath(targetPath);
-        //    if (result is null) return;
-
-        //    CrawledFileSet = result;
-        //    _crawlPath = targetPath;
-        //}
-
-        //internal CrawlMode CrawlUp()
-        //{
-        //    var newPath = Path.GetDirectoryName(CrawlPath);
-        //    if (newPath is null) return null;
-
-        //    var newCrawlMode = new CrawlMode(newPath, SavedCmdBoxText, SavedIndex, SavedSortKey, SavedItems);
-        //    return newCrawlMode.IsValid() ? newCrawlMode : null;
-        //}
-
-
-
-
-
     }
 }
