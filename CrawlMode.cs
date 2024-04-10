@@ -27,11 +27,12 @@ namespace MiLauncher
         {
             CrawlPath = path;
             CrawlFileSet = FileSet.SearchFilesInPath(path);
-            if (sourceFileSet is not null) {
+            if (sourceFileSet is not null)
                 CrawlFileSet = CrawlFileSet?.ImportPriorityAndExecTime(sourceFileSet);
-            }
             Status = CrawlFileSet is null ? ModeStatus.Defective : ModeStatus.Active;
             Caption = path is null ? null : string.Format("Crawling in: {0}", path);
+
+            // Apply CrawlFileSet to sourceFileSet
         }
 
         //

@@ -86,6 +86,7 @@ namespace MiLauncher
         }
         internal void ActivateRestore()
         {
+            restoreMode ??= new RestoreMode();
             restoreMode.Status = ModeStatus.Active;
         }
         internal SortKeyOption RestoreSortKey()

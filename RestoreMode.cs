@@ -12,6 +12,10 @@ namespace MiLauncher
     /// </summary>
     internal class RestoreMode
     {
+        public RestoreMode()
+        {
+            Status = ModeStatus.Defective;
+        }
         public RestoreMode(string text, int index, SortKeyOption sortKey, List<FileStats> items)
         {
             SavedText = text;
