@@ -55,7 +55,6 @@ namespace MiLauncher
             if (ModeCaption is not null) {
                 Header.Text += String.Format("  <{0}>", ModeCaption);
             }
-
             return Header.Text;
         }
 

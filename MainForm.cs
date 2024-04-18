@@ -163,10 +163,11 @@ namespace MiLauncher
 
             // Close MainForm
             if (e.KeyCode == Keys.Escape) {
-                cmdBox.Text = string.Empty;
-                Visible = false;
-                listForm.Visible = false;
-                SettingManager.SaveSettings(searchedFileSet, searchedFileListDataFile);
+                CloseMainForm();
+                //cmdBox.Text = string.Empty;
+                //Visible = false;
+                ////listForm.Visible = false;
+                //SettingManager.SaveSettings(searchedFileSet, searchedFileListDataFile);
             }
             // Exec file with associated app
             if (e.KeyCode == Keys.Enter || (e.KeyCode == Keys.M && e.Control)) {
@@ -184,17 +185,18 @@ namespace MiLauncher
                     fileStats.Priority += 1;
                     fileStats.ExecTime = DateTime.Now;
                 }
-                //SettingManager.SaveSettings(searchedFileSet, searchedFileListDataFile);
 
-                currentMode.ExitCrawl();
+                CloseMainForm();
 
-                currentMode.ActivateRestore();
-                listForm.ModeCaption = null;
-                listForm.SortKey = currentMode.RestoreSortKey();
-                cmdBox.Text = string.Empty;
-                currentMode.ExitRestore();
+                //currentMode.ExitCrawl();
 
-                Visible = false;
+                //currentMode.ActivateRestore();
+                //listForm.ModeCaption = null;
+                //listForm.SortKey = currentMode.RestoreSortKey();
+                //cmdBox.Text = string.Empty;
+                //currentMode.ExitRestore();
+
+                //Visible = false;
             }
             // beginning of line
             if (e.KeyCode == Keys.A && e.Control) {
@@ -275,20 +277,17 @@ namespace MiLauncher
             if (e.KeyCode == Keys.Oemcomma && e.Control) {
                 if (!listForm.Visible) return;
 
-                // Try Crawl and check if it succeeds
+                // Try Crawl and check its return
                 if (!currentMode.CrawlUp(listForm.CurrentItem().FullPathName, searchedFileSet)) return;
 
                 if (!currentMode.IsRestorePrepared()) {
                     currentMode.PrepareRestore(cmdBox.Text, listForm.VirtualListIndex,
                         listForm.SortKey, listForm.ListViewItems);
                 }
-
-                // Continue process for crawl
+                currentMode.ApplyCrawlFileSet(searchedFileSet);
                 cmdBox.Text = string.Empty;
-
                 listForm.ModeCaption = currentMode.GetCrawlCaption();
                 listForm.SetVirtualList(currentMode.GetCrawlFileSet().ToList());
-                //listForm.SetVirtualList(currentMode.GetCrawlFileSet(searchedFileSet).ToList());
 
                 listForm.ShowAt();
                 Activate();
@@ -297,19 +296,17 @@ namespace MiLauncher
             if (e.KeyCode == Keys.OemPeriod && e.Control) {
                 if (!listForm.Visible) return;
 
+                // Try Crawl and check its return
                 if (!currentMode.CrawlDown(listForm.CurrentItem().FullPathName, searchedFileSet)) return;
 
                 if (!currentMode.IsRestorePrepared()) {
                     currentMode.PrepareRestore(cmdBox.Text, listForm.VirtualListIndex,
                         listForm.SortKey, listForm.ListViewItems);
                 }
-
-                // Continue process for crawl
+                currentMode.ApplyCrawlFileSet(searchedFileSet);
                 cmdBox.Text = string.Empty;
-
                 listForm.ModeCaption = currentMode.GetCrawlCaption();
                 listForm.SetVirtualList(currentMode.GetCrawlFileSet().ToList());
-                //listForm.SetVirtualList(currentMode.GetCrawlFileSet(searchedFileSet).ToList());
 
                 listForm.ShowAt();
                 Activate();
@@ -364,6 +361,21 @@ namespace MiLauncher
                 Location = new Point(Location.X + e.Location.X - dragStart.X,
                                      Location.Y + e.Location.Y - dragStart.Y);
             }
+        }
+
+        private void CloseMainForm()
+        {
+            currentMode.ExitCrawl();
+
+            currentMode.ActivateRestore();
+            listForm.ModeCaption = null;
+            listForm.SortKey = currentMode.RestoreSortKey();
+            cmdBox.Text = string.Empty;
+            currentMode.ExitRestore();
+
+            Visible = false;
+            listForm.Visible = false;
+            SettingManager.SaveSettings(searchedFileSet, searchedFileListDataFile);
         }
 
         [GeneratedRegex(@"\w*\W*")]

@@ -32,7 +32,8 @@ namespace MiLauncher
             // Returns false when no change needed
             // If Crawl mode active, use CrawlPath instead of itemPath
             if (IsCrawlMode()) {
-                CrawlMode crawlResult = crawlMode.CrawlUp(sourceFileSet);
+                var upperPath = Path.GetDirectoryName(crawlMode.CrawlPath);
+                CrawlMode crawlResult = CrawlMode.Crawl(upperPath, sourceFileSet);
                 crawlMode = (crawlResult?.Status == ModeStatus.Active) ? crawlResult : crawlMode;
                 return crawlResult is not null;
             }
@@ -117,6 +118,16 @@ namespace MiLauncher
         internal bool IsPlain()
         {
             return !IsCrawlMode() && !IsRestoreMode();
+        }
+
+        // Change both searchedFileSet and CrawlFileSet
+        internal void ApplyCrawlFileSet(HashSet<FileStats> sourceFileSet)
+        {
+            crawlMode.CrawlFileSet = crawlMode.CrawlFileSet.ImportPriorityAndExecTime(sourceFileSet);
+            if (Program.appSettings.TargetFolders.Any(x => crawlMode.CrawlPath.StartsWith(x))) {
+                sourceFileSet.RemoveWhere(x => Path.GetDirectoryName(x.FullPathName) == crawlMode.CrawlPath);
+                sourceFileSet.UnionWith(crawlMode.CrawlFileSet);
+            }
         }
     }
     internal enum ModeStatus
