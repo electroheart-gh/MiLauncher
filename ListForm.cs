@@ -44,18 +44,16 @@ namespace MiLauncher
             return (z >= 0) ? z : z + y;
         }
 
-        private string DisplayColumnHeader(int index)
+        private void DisplayColumnHeader(int index)
         {
             Header.Text = SortKey switch {
                 SortKeyOption.FullPathName => "Path",
                 _ => Header.Text = string.Format("{0}: {1}", SortKey.ToString(), ListViewItems[index].SortValue(SortKey))
             };
 
-            // Indicate mode information in column header
-            if (ModeCaption is not null) {
+            // If any, display additional information in column header
+            if (ModeCaption is not null)
                 Header.Text += String.Format("  <{0}>", ModeCaption);
-            }
-            return Header.Text;
         }
 
         //
@@ -93,12 +91,6 @@ namespace MiLauncher
             listView.VirtualListSize = ListViewItems.Count;
         }
 
-        internal void SortVirtualList(SortKeyOption sortKey)
-        {
-            SortKey = sortKey;
-            SetVirtualList();
-        }
-
         internal FileStats ExecItem()
         {
             if (Visible & listView.VirtualListSize > 0) {
@@ -119,6 +111,22 @@ namespace MiLauncher
         private void listView_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
             e.Item = new ListViewItem(ListViewItems[e.ItemIndex].FullPathName);
+
+            // CMIC
+            var maxColumnWidth = 500;
+            var truncatedPath = GetTruncatedString(ListViewItems[e.ItemIndex].FullPathName, maxColumnWidth);
+            e.Item = new ListViewItem(truncatedPath);
+        }
+
+        private string GetTruncatedString(string str, int width)
+        {
+            if (TextRenderer.MeasureText(str, listView.Font).Width > width) {
+                while (TextRenderer.MeasureText(str + "...", listView.Font).Width > width) {
+                    str = str[1..];
+                }
+                str = "..." + str;
+            }
+            return str;
         }
 
         internal FileStats CurrentItem()
@@ -190,6 +198,8 @@ namespace MiLauncher
             listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             int headerWidth = TextRenderer.MeasureText(Header.Text, listView.Font).Width;
             var maxWidth = Math.Max(listView.GetItemRect(0).Width, headerWidth);
+
+            Debug.WriteLine(maxWidth);
 
             listView.Columns[0].Width = maxWidth;
             // TODO: CMIC

@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="MiLauncher.CrawlMode">
-    <Position X="4" Y="1.25" Width="2" />
+    <Position X="7.75" Y="0.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAACAEAAEAAAACAAgIAAAAAAAAIAAICAAAAAABQAA=</HashCode>
+      <HashCode>AAAAACAEAAEAAAAAAAAAAAAAAAAAAAAICAAAAAAAAAA=</HashCode>
       <FileName>CrawlMode.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -11,52 +11,56 @@
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="MiLauncher.FileStats">
-    <Position X="11.5" Y="0.5" Width="2" />
+    <Position X="13" Y="3.25" Width="2" />
     <TypeIdentifier>
       <HashCode>AABAAAAACAAAAQAEAAAAAAAAAAAAAAAAAAAAACBAAAA=</HashCode>
       <FileName>FileStats.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MiLauncher.ListForm">
-    <Position X="7.25" Y="2.25" Width="2.25" />
+    <Position X="4.25" Y="7" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>FAgAAAiAICAAAGAEggCAAABCAAhAAACCABAIAKkAAAA=</HashCode>
+      <HashCode>FAAAAAiAICAAgGAEggCAAABCAApAAACCABAIAKkAAAA=</HashCode>
       <FileName>ListForm.cs</FileName>
     </TypeIdentifier>
-    <ShowAsAssociation>
-      <Property Name="SortKey" />
-    </ShowAsAssociation>
     <ShowAsCollectionAssociation>
       <Property Name="ListViewItems" />
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="MiLauncher.MainForm">
-    <Position X="0.5" Y="0.5" Width="2.25" />
+    <Position X="0.5" Y="2.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>sgAACAGIACAAQIAAAECEECAjAACQACAAAAAACABAEpA=</HashCode>
+      <HashCode>EgAACAGIACAAQIAAAECEECAjAACQgCAAAAAACABAEpA=</HashCode>
       <FileName>MainForm.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Field Name="crawlMode" />
       <Field Name="listForm" />
+      <Field Name="currentMode" />
     </ShowAsAssociation>
     <ShowAsCollectionAssociation>
       <Field Name="searchedFileSet" />
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="MiLauncher.ModeController">
-    <Position X="4" Y="5.75" Width="2" />
+    <Position X="4.25" Y="0.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>qIQAAQAIAAEAAAAAQAAAAAQAAABAAAAACAICAAIBAIQ=</HashCode>
+      <HashCode>qIQAAQAIAAAAAAAAQAAAAAYAAARAAAAACAICAAIBAIQ=</HashCode>
       <FileName>ModeController.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="crawlMode" />
+      <Field Name="restoreMode" />
+    </ShowAsAssociation>
   </Class>
-  <Enum Name="MiLauncher.SortKeyOption">
-    <Position X="11.5" Y="4.75" Width="2" />
+  <Class Name="MiLauncher.RestoreMode">
+    <Position X="7.75" Y="3" Width="2" />
     <TypeIdentifier>
-      <HashCode>AABAAAAACAAAAQAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>FileStats.cs</FileName>
+      <HashCode>AEAAAAAEAAAAAAACAAAIAAAAAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>RestoreMode.cs</FileName>
     </TypeIdentifier>
-  </Enum>
+    <ShowAsCollectionAssociation>
+      <Property Name="SavedItems" />
+    </ShowAsCollectionAssociation>
+  </Class>
   <Font Name="Yu Gothic UI" Size="9" />
 </ClassDiagram>
