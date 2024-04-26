@@ -335,8 +335,13 @@ namespace MiLauncher
 
         private void MainForm_Deactivate(object sender, EventArgs e)
         {
-            // TODO: consider when to save fileList
-            // SettingManager.SaveSettings<FileList>(fileList, fileListDataPath);
+            // As Sometimes Deactivate is called even if MainForm is active,
+            // So check ActiveForm is null or not
+            if (ActiveForm is null) {
+                // TODO: consider when to save fileList
+                // SettingManager.SaveSettings<FileList>(fileList, fileListDataPath);
+                CloseMainForm();
+            }
         }
 
         private void cmdBox_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
