@@ -34,7 +34,7 @@ namespace MiLauncher
                 if (!(pattern[..1] switch {
                     "-" => !IsMatchPattern(fileStats.FullPathName, pattern[1..]),
                     "!" => !IsMatchPattern(fileStats.FileName, pattern[1..]),
-                    "\\" => IsMatchPattern(fileStats.FullPathName, pattern[1..]),
+                    "/" => IsMatchPattern(fileStats.FullPathName, pattern[1..]),
                     _ => IsMatchPattern(fileStats.FileName, pattern),
                 })) {
                     return false;

@@ -127,7 +127,7 @@ namespace MiLauncher
                     // TODO: make it config or const
                     // TODO: Consider to make MatchCondition class,
                     // which should have a method to parse string to select condition
-                    var prefix = "-!\\".Contains(pattern[..1]) ? pattern[..1] : "";
+                    var prefix = "-!/".Contains(pattern[..1]) ? pattern[..1] : "";
                     if (pattern.Length - prefix.Length < Program.appSettings.MinMigemoLength) {
                         return pattern;
                     }
