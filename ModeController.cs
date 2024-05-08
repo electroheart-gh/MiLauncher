@@ -52,10 +52,24 @@ namespace MiLauncher
         {
             return crawlMode?.Status == ModeStatus.Active;
         }
-        internal string GetCrawlCaption()
+        internal (string, string) GetCrawlCaptions()
         {
-            return crawlMode.Caption;
+            return crawlMode.Captions;
         }
+
+        //internal string GetModeCaption()
+        //{
+        //    return IsCrawlMode() ? ("Crawling in: ", crawlMode.Caption) : null;
+        //}
+        //internal string GetModeCaptionOpt()
+        //{
+        //    return IsCrawlMode() ? 
+        //}
+        //internal string GetModeCaption(int offset = 0)
+        //{
+        //    return IsCrawlMode() ? FileStats.GetShortenedString(crawlMode.CrawlPath, offset) : null;
+        //}
+
         internal HashSet<FileStats> GetCrawlFileSet()
         {
             return crawlMode?.CrawlFileSet;

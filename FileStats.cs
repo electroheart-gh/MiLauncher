@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace MiLauncher
 {
@@ -18,6 +19,8 @@ namespace MiLauncher
         [JsonInclude]
         public string FileName { get; private set; }
         [JsonInclude]
+        public string ShortPathName { get; private set; }
+        [JsonInclude]
         public DateTime UpdateTime { get; private set; }
         [JsonInclude]
         public int Priority { get; set; }
@@ -27,11 +30,21 @@ namespace MiLauncher
         public FileStats()
         {
         }
-        public FileStats(string pathName, DateTime? updateTime = null, int? priority = null, DateTime? execTime = null)
+        public FileStats(string pathName)
         {
             FullPathName = pathName;
             FileName = Path.GetFileName(pathName);
-            UpdateTime = updateTime ?? File.GetLastWriteTime(pathName);
+            ShortPathName = GetShortenedString(pathName);
+            UpdateTime = File.GetLastWriteTime(pathName);
+            Priority = 0;
+            ExecTime = default;
+        }
+        public FileStats(string pathName, string fileName, string shortPathName, DateTime updateTime, int? priority, DateTime? execTime)
+        {
+            FullPathName = pathName;
+            FileName = fileName;
+            ShortPathName = shortPathName;
+            UpdateTime = updateTime;
             Priority = priority ?? 0;
             ExecTime = execTime ?? default;
         }
@@ -41,9 +54,23 @@ namespace MiLauncher
             return key switch {
                 SortKeyOption.FullPathName => FullPathName,
                 SortKeyOption.UpdateTime => UpdateTime,
-                SortKeyOption.ExecTime=> ExecTime,
+                SortKeyOption.ExecTime => ExecTime,
                 _ => Priority,
             };
+        }
+        internal static string GetShortenedString(string str, int offset = 0)
+        {
+            // CMIC
+            var font = new System.Drawing.Font("Meiryo UI", 9.75F, System.Drawing.FontStyle.Regular);
+            // CMIC
+            var realWidth = 1000 - offset;
+
+            if (TextRenderer.MeasureText(str, font).Width < realWidth) return null;
+
+            while (TextRenderer.MeasureText(str + "...", font).Width > realWidth) {
+                str = str[1..];
+            }
+            return "..." + str;
         }
     }
 

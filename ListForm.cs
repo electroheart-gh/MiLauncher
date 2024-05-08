@@ -22,7 +22,8 @@ namespace MiLauncher
         //
         internal List<FileStats> ListViewItems { get; private set; }
         internal SortKeyOption SortKey { get; set; } = SortKeyOption.Priority;
-        internal string ModeCaption { get; set; }
+        internal (string, string) ModeCaptions { get; set; }
+        //internal string ModeCaptionOpt { get; set; }
 
         private int _virtualListIndex;
         internal int VirtualListIndex
@@ -52,8 +53,13 @@ namespace MiLauncher
             };
 
             // If any, display additional information in column header
-            if (ModeCaption is not null)
-                Header.Text += String.Format("  <{0}>", ModeCaption);
+            //if (ModeCaptions is not null)
+            //    Header.Text += String.Format("  <{0}>", ModeCaptions);
+            if (ModeCaptions is not (null, null)) {
+                Header.Text += "  " + ModeCaptions.Item1;
+                var baseWidth = TextRenderer.MeasureText(Header.Text, listView.Font).Width;
+                Header.Text += GetShortenedString(ModeCaptions.Item2, baseWidth) ?? ModeCaptions.Item2;
+            }
         }
 
         //
@@ -110,12 +116,27 @@ namespace MiLauncher
 
         private void listView_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
-            e.Item = new ListViewItem(ListViewItems[e.ItemIndex].FullPathName);
+            e.Item = new ListViewItem(ListViewItems[e.ItemIndex].ShortPathName ?? ListViewItems[e.ItemIndex].FullPathName);
 
+            //// CMIC
+            //var maxColumnWidth = 500;
+            //var truncatedPath = GetTruncatedString(ListViewItems[e.ItemIndex].FullPathName, maxColumnWidth);
+            //e.Item = new ListViewItem(truncatedPath);
+        }
+
+        internal static string GetShortenedString(string str, int offset = 0)
+        {
             // CMIC
-            var maxColumnWidth = 500;
-            var truncatedPath = GetTruncatedString(ListViewItems[e.ItemIndex].FullPathName, maxColumnWidth);
-            e.Item = new ListViewItem(truncatedPath);
+            var font = new System.Drawing.Font("Meiryo UI", 9.75F, System.Drawing.FontStyle.Regular);
+            // CMIC
+            var realWidth = 1000 - offset;
+
+            if (TextRenderer.MeasureText(str, font).Width < realWidth) return null;
+
+            while (TextRenderer.MeasureText(str + "...", font).Width > realWidth) {
+                str = str[1..];
+            }
+            return "..." + str;
         }
 
         private string GetTruncatedString(string str, int width)
@@ -199,7 +220,7 @@ namespace MiLauncher
             int headerWidth = TextRenderer.MeasureText(Header.Text, listView.Font).Width;
             var maxWidth = Math.Max(listView.GetItemRect(0).Width, headerWidth);
 
-            Debug.WriteLine(maxWidth);
+            //Debug.WriteLine(maxWidth);
 
             listView.Columns[0].Width = maxWidth;
             // TODO: CMIC

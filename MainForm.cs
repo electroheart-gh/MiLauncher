@@ -286,7 +286,7 @@ namespace MiLauncher
                 }
                 currentMode.ApplyCrawlFileSet(searchedFileSet);
                 cmdBox.Text = string.Empty;
-                listForm.ModeCaption = currentMode.GetCrawlCaption();
+                listForm.ModeCaptions = currentMode.GetCrawlCaptions();
                 listForm.SetVirtualList(currentMode.GetCrawlFileSet().ToList());
 
                 listForm.ShowAt();
@@ -305,7 +305,7 @@ namespace MiLauncher
                 }
                 currentMode.ApplyCrawlFileSet(searchedFileSet);
                 cmdBox.Text = string.Empty;
-                listForm.ModeCaption = currentMode.GetCrawlCaption();
+                listForm.ModeCaptions = currentMode.GetCrawlCaptions();
                 listForm.SetVirtualList(currentMode.GetCrawlFileSet().ToList());
 
                 listForm.ShowAt();
@@ -319,7 +319,7 @@ namespace MiLauncher
                 currentMode.ExitCrawl();
 
                 currentMode.ActivateRestore();
-                listForm.ModeCaption = null;
+                listForm.ModeCaptions = (null, null);
                 listForm.SortKey = currentMode.RestoreSortKey();
                 listForm.SetVirtualList(currentMode.RestoreItems());
                 cmdBox.Text = currentMode.RestoreCmdBoxText();
@@ -373,7 +373,7 @@ namespace MiLauncher
             currentMode.ExitCrawl();
 
             currentMode.ActivateRestore();
-            listForm.ModeCaption = null;
+            listForm.ModeCaptions = (null, null);
             listForm.SortKey = currentMode.RestoreSortKey();
             cmdBox.Text = string.Empty;
             currentMode.ExitRestore();

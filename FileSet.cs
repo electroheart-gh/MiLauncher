@@ -96,6 +96,8 @@ namespace MiLauncher
                                       x => x.FullPathName,
                                       y => y.FullPathName,
                                       (x, y) => new FileStats(x.FullPathName,
+                                                              x.FileName,
+                                                              x.ShortPathName,
                                                               x.UpdateTime,
                                                               y.FirstOrDefault()?.Priority,
                                                               y.FirstOrDefault()?.ExecTime)));

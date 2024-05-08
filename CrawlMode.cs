@@ -18,7 +18,8 @@ namespace MiLauncher
         internal string CrawlPath { get; private set; }
         internal HashSet<FileStats> CrawlFileSet { get; set; }
         //internal HashSet<FileStats> CrawlFileSet { get; private set; }
-        internal string Caption { get; private set; }
+        internal (string, string) Captions { get; private set; }
+        //internal string Caption { get; private set; }
         public ModeStatus Status { get; private set; }
 
         //
@@ -32,7 +33,8 @@ namespace MiLauncher
                 CrawlFileSet = CrawlFileSet?.ImportPriorityAndExecTime(sourceFileSet);
             
             Status = CrawlFileSet is null ? ModeStatus.Defective : ModeStatus.Active;
-            Caption = path is null ? null : string.Format("Crawling in: {0}", path);
+            //Caption = path is null ? null : string.Format("Crawling in: {0}", path);
+            Captions = path is null ? (null, null) : ("Crawling in: ", path);
         }
 
         //
