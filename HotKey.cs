@@ -30,8 +30,7 @@ namespace MiLauncher
 
         private void raiseHotKeyPush()
         {
-            if (HotKeyPush != null)
-            {
+            if (HotKeyPush != null) {
                 HotKeyPush(this, EventArgs.Empty);
             }
         }
@@ -56,10 +55,8 @@ namespace MiLauncher
             public HotKeyForm(MOD_KEY modKey, Keys key, ThreadStart proc)
             {
                 this.proc = proc;
-                for (int i = 0x0000; i <= 0xbfff; i++)
-                {
-                    if (RegisterHotKey(this.Handle, i, modKey, key) != 0)
-                    {
+                for (int i = 0x0000; i <= 0xbfff; i++) {
+                    if (RegisterHotKey(this.Handle, i, modKey, key) != 0) {
                         id = i;
                         break;
                     }
@@ -70,10 +67,8 @@ namespace MiLauncher
             {
                 base.WndProc(ref m);
 
-                if (m.Msg == WM_HOTKEY)
-                {
-                    if ((int)m.WParam == id)
-                    {
+                if (m.Msg == WM_HOTKEY) {
+                    if ((int)m.WParam == id) {
                         proc();
                     }
                 }

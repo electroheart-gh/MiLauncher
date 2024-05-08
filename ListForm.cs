@@ -5,9 +5,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace MiLauncher
 {
@@ -53,8 +51,6 @@ namespace MiLauncher
             };
 
             // If any, display additional information in column header
-            //if (ModeCaptions is not null)
-            //    Header.Text += String.Format("  <{0}>", ModeCaptions);
             if (ModeCaptions is not (null, null)) {
                 Header.Text += "  " + ModeCaptions.Item1;
                 var baseWidth = TextRenderer.MeasureText(Header.Text, listView.Font).Width;
@@ -117,11 +113,6 @@ namespace MiLauncher
         private void listView_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
             e.Item = new ListViewItem(ListViewItems[e.ItemIndex].ShortPathName ?? ListViewItems[e.ItemIndex].FullPathName);
-
-            //// CMIC
-            //var maxColumnWidth = 500;
-            //var truncatedPath = GetTruncatedString(ListViewItems[e.ItemIndex].FullPathName, maxColumnWidth);
-            //e.Item = new ListViewItem(truncatedPath);
         }
 
         internal static string GetShortenedString(string str, int offset = 0)
@@ -137,17 +128,6 @@ namespace MiLauncher
                 str = str[1..];
             }
             return "..." + str;
-        }
-
-        private string GetTruncatedString(string str, int width)
-        {
-            if (TextRenderer.MeasureText(str, listView.Font).Width > width) {
-                while (TextRenderer.MeasureText(str + "...", listView.Font).Width > width) {
-                    str = str[1..];
-                }
-                str = "..." + str;
-            }
-            return str;
         }
 
         internal FileStats CurrentItem()
@@ -186,6 +166,7 @@ namespace MiLauncher
             if (VirtualListIndex == 0 || originalScrollPosition != listView.GetItemRect(0).Y)
                 AdjustWidth();
         }
+
         internal void ShowAt(int? x = null, int? y = null, int index = 0)
         {
             Location = new Point(x ?? Location.X, y ?? Location.Y);

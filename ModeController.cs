@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace MiLauncher
 {
@@ -57,27 +53,11 @@ namespace MiLauncher
             return crawlMode.Captions;
         }
 
-        //internal string GetModeCaption()
-        //{
-        //    return IsCrawlMode() ? ("Crawling in: ", crawlMode.Caption) : null;
-        //}
-        //internal string GetModeCaptionOpt()
-        //{
-        //    return IsCrawlMode() ? 
-        //}
-        //internal string GetModeCaption(int offset = 0)
-        //{
-        //    return IsCrawlMode() ? FileStats.GetShortenedString(crawlMode.CrawlPath, offset) : null;
-        //}
-
         internal HashSet<FileStats> GetCrawlFileSet()
         {
             return crawlMode?.CrawlFileSet;
         }
-        //internal HashSet<FileStats> GetCrawlFileSet(HashSet<FileStats> sourceFileSet)
-        //{
-        //    return crawlMode?.CrawlFileSet?.ImportPriorityAndExecTime(sourceFileSet);
-        //}
+
         internal void ExitCrawl()
         {
             // TODO: consider to dispose instance

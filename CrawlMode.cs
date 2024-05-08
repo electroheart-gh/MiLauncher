@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Reflection;
+﻿using System.Collections.Generic;
 
 namespace MiLauncher
 {
@@ -17,9 +13,7 @@ namespace MiLauncher
         //
         internal string CrawlPath { get; private set; }
         internal HashSet<FileStats> CrawlFileSet { get; set; }
-        //internal HashSet<FileStats> CrawlFileSet { get; private set; }
         internal (string, string) Captions { get; private set; }
-        //internal string Caption { get; private set; }
         public ModeStatus Status { get; private set; }
 
         //
@@ -31,9 +25,8 @@ namespace MiLauncher
             CrawlFileSet = FileSet.SearchFilesInPath(path);
             if (sourceFileSet is not null)
                 CrawlFileSet = CrawlFileSet?.ImportPriorityAndExecTime(sourceFileSet);
-            
+
             Status = CrawlFileSet is null ? ModeStatus.Defective : ModeStatus.Active;
-            //Caption = path is null ? null : string.Format("Crawling in: {0}", path);
             Captions = path is null ? (null, null) : ("Crawling in: ", path);
         }
 
@@ -47,11 +40,5 @@ namespace MiLauncher
             var newCrawlMode = new CrawlMode(path, sourceFileSet);
             return newCrawlMode.Status == ModeStatus.Active ? newCrawlMode : null;
         }
-
-        //internal CrawlMode CrawlUp(HashSet<FileStats> sourceFileSet = null)
-        //{
-        //    var upperPath = Path.GetDirectoryName(CrawlPath);
-        //    return Crawl(upperPath, sourceFileSet);
-        //}
     }
 }

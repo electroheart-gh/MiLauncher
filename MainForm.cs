@@ -1,15 +1,12 @@
 ﻿using KaoriYa.Migemo;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace MiLauncher
 {
@@ -164,10 +161,6 @@ namespace MiLauncher
             // Close MainForm
             if (e.KeyCode == Keys.Escape) {
                 CloseMainForm();
-                //cmdBox.Text = string.Empty;
-                //Visible = false;
-                ////listForm.Visible = false;
-                //SettingManager.SaveSettings(searchedFileSet, searchedFileListDataFile);
             }
             // Exec file with associated app
             if (e.KeyCode == Keys.Enter || (e.KeyCode == Keys.M && e.Control)) {
@@ -185,18 +178,7 @@ namespace MiLauncher
                     fileStats.Priority += 1;
                     fileStats.ExecTime = DateTime.Now;
                 }
-
                 CloseMainForm();
-
-                //currentMode.ExitCrawl();
-
-                //currentMode.ActivateRestore();
-                //listForm.ModeCaption = null;
-                //listForm.SortKey = currentMode.RestoreSortKey();
-                //cmdBox.Text = string.Empty;
-                //currentMode.ExitRestore();
-
-                //Visible = false;
             }
             // beginning of line
             if (e.KeyCode == Keys.A && e.Control) {
