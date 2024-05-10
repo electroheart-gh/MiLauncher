@@ -66,8 +66,7 @@ namespace MiLauncher
         //
         // Constants
         //
-        // TODO: CMIC
-        const int maxLineListView = 30;
+        //const int maxLineListView = 30;
 
         //
         // Constructor
@@ -81,7 +80,8 @@ namespace MiLauncher
         {
             if (VirtualListIndex == e.Item.Index) {
                 // TODO: CMIC
-                e.Graphics.FillRectangle(Brushes.LightGray, e.Bounds);
+                //e.Graphics.FillRectangle(Brushes.LightGray, e.Bounds);
+                e.Graphics.FillRectangle(new SolidBrush(MainForm.colorPattern4), e.Bounds);
             }
             e.DrawText();
         }
@@ -193,7 +193,7 @@ namespace MiLauncher
         internal void AdjustHeight()
         {
             // TODO: CMICst
-            Height = listView.GetItemRect(0).Height * Math.Min(maxLineListView, listView.VirtualListSize + 1) + 30;
+            Height = listView.GetItemRect(0).Height * Math.Min(Program.appSettings.MaxListLine, listView.VirtualListSize + 1) + 30;
         }
         internal void AdjustWidth()
         {
@@ -227,11 +227,13 @@ namespace MiLauncher
 
         private void listView_DrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
         {
-            //e.Graphics.FillRectangle(Brushes.LightGray, e.Bounds);
-            TextRenderer.DrawText(e.Graphics, e.Header.Text, e.Font, e.Bounds, Color.Gray, TextFormatFlags.Left);
-            using (Pen pen = new Pen(Color.Gray)) {
-                e.Graphics.DrawLine(pen, e.Bounds.Left, e.Bounds.Bottom - 1, e.Bounds.Right, e.Bounds.Bottom - 1);
-            }
+            // TODO: CMIC
+            e.Graphics.FillRectangle(new SolidBrush(MainForm.colorPattern2), e.Bounds);
+            TextRenderer.DrawText(e.Graphics, e.Header.Text, e.Font, e.Bounds, Color.White, TextFormatFlags.Left);
+            //TextRenderer.DrawText(e.Graphics, e.Header.Text, e.Font, e.Bounds, Color.LightGray, TextFormatFlags.Left);
+            //using (Pen pen = new Pen(Color.Gray)) {
+            //    e.Graphics.DrawLine(pen, e.Bounds.Left, e.Bounds.Bottom - 1, e.Bounds.Right, e.Bounds.Bottom - 1);
+            //}
         }
     }
 }

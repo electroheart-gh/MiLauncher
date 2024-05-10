@@ -61,7 +61,7 @@ namespace MiLauncher
             // TODO: CMIC High Priority
             var font = new System.Drawing.Font("Meiryo UI", 9.75F, System.Drawing.FontStyle.Regular);
             // TODO: CMIC High Priority
-            var realWidth = 1000 - offset;
+            var realWidth = Program.appSettings.MaxListWidth - offset;
 
             if (TextRenderer.MeasureText(str, font).Width < realWidth) return null;
 

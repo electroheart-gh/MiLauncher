@@ -12,17 +12,18 @@ namespace MiLauncher
         public List<string> TargetFolders { get; set; }
         public int MinMigemoLength { get; set; }
         public int MaxListLine { get; set; }
+        public int MaxListWidth { get; set; }
 
         public AppSettings()
         {
-            //var userProfilePath = Environment.GetEnvironmentVariable("UserProfile");
-            //TargetFolders = new List<string>();
+            // Default Settings
             TargetFolders = [
                 Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
-                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)                ];
-
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+                ];
             MinMigemoLength = 3;
-            MaxListLine = 50;
+            MaxListLine = 30;
+            MaxListWidth = 1000;
 
             // TODO: settings for Keymap 
             // TODO: settings for specific application to open file, such as sakura
