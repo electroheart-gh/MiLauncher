@@ -58,9 +58,9 @@ namespace MiLauncher
         }
         internal static string GetShortenedString(string str, int offset = 0)
         {
-            // CMIC
+            // TODO: CMIC High Priority
             var font = new System.Drawing.Font("Meiryo UI", 9.75F, System.Drawing.FontStyle.Regular);
-            // CMIC
+            // TODO: CMIC High Priority
             var realWidth = 1000 - offset;
 
             if (TextRenderer.MeasureText(str, font).Width < realWidth) return null;

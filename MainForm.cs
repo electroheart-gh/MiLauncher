@@ -25,7 +25,7 @@ namespace MiLauncher
         private ModeController currentMode = new();
 
         // Constant
-        // TODO: Consider to make FileList.dat configurable
+        // TODO: Consider to make SearchedFileListDataFile configurable
         private const string searchedFileListDataFile = "SearchedFileList.dat";
         private const char wordSeparator = ' ';
         private const int CS_DROPSHADOW = 0x00020000;
@@ -115,7 +115,7 @@ namespace MiLauncher
 
             listForm.SetVirtualList(filteredList);
 
-            // TODO: CMIC
+            // TODO: CMICst
             listForm.ShowAt(Location.X - 6, Location.Y + Height - 5);
 
             Activate();

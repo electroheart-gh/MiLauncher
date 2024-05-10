@@ -54,7 +54,7 @@ namespace MiLauncher
             if (ModeCaptions is not (null, null)) {
                 Header.Text += "  " + ModeCaptions.Item1;
                 var baseWidth = TextRenderer.MeasureText(Header.Text, listView.Font).Width;
-                Header.Text += GetShortenedString(ModeCaptions.Item2, baseWidth) ?? ModeCaptions.Item2;
+                Header.Text += FileStats.GetShortenedString(ModeCaptions.Item2, baseWidth) ?? ModeCaptions.Item2;
             }
         }
 
@@ -115,20 +115,20 @@ namespace MiLauncher
             e.Item = new ListViewItem(ListViewItems[e.ItemIndex].ShortPathName ?? ListViewItems[e.ItemIndex].FullPathName);
         }
 
-        internal static string GetShortenedString(string str, int offset = 0)
-        {
-            // CMIC
-            var font = new System.Drawing.Font("Meiryo UI", 9.75F, System.Drawing.FontStyle.Regular);
-            // CMIC
-            var realWidth = 1000 - offset;
+        //internal static string GetShortenedString(string str, int offset = 0)
+        //{
+        //    // TODO: CMIC
+        //    var font = new System.Drawing.Font("Meiryo UI", 9.75F, System.Drawing.FontStyle.Regular);
+        //    // TODO: CMIC
+        //    var realWidth = 1000 - offset;
 
-            if (TextRenderer.MeasureText(str, font).Width < realWidth) return null;
+        //    if (TextRenderer.MeasureText(str, font).Width < realWidth) return null;
 
-            while (TextRenderer.MeasureText(str + "...", font).Width > realWidth) {
-                str = str[1..];
-            }
-            return "..." + str;
-        }
+        //    while (TextRenderer.MeasureText(str + "...", font).Width > realWidth) {
+        //        str = str[1..];
+        //    }
+        //    return "..." + str;
+        //}
 
         internal FileStats CurrentItem()
         {
@@ -184,7 +184,7 @@ namespace MiLauncher
             else {
                 Height = 0;
                 listView.Columns[0].Width = 0;
-                // TODO: CMIC
+                // TODO: CMICst
                 Width = 100;
             }
             listView.Refresh();
@@ -192,7 +192,7 @@ namespace MiLauncher
 
         internal void AdjustHeight()
         {
-            // TODO: CMIC
+            // TODO: CMICst
             Height = listView.GetItemRect(0).Height * Math.Min(maxLineListView, listView.VirtualListSize + 1) + 30;
         }
         internal void AdjustWidth()
@@ -204,7 +204,7 @@ namespace MiLauncher
             //Debug.WriteLine(maxWidth);
 
             listView.Columns[0].Width = maxWidth;
-            // TODO: CMIC
+            // TODO: CMICst
             Width = maxWidth + 40;
         }
 
